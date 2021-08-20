@@ -1,0 +1,5 @@
+Move
+W A S D
+
+Toggle Fullscreen : F11
+Quit: Hold esc | Alt + F4
