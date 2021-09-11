@@ -18,22 +18,23 @@ VkAssets::AllAssets* VkAssets::getAssetInfo()
 
 VkAssets::VkAssets()
 {
+
 }
 
 //Create an instance for asset creation
 VkAssets::VkAssets(
-	VkPhysicalDevice* physicalDevice, VkDevice* logicalDevice, 
-	VkQueue* transferQueue, VkCommandPool* graphicsCommandPool, 
-	VkSampler* textureSampler, VkDescriptorPool* samplerDescriptorPool, 
-	VkDescriptorSetLayout* samplerSetLayout)
+	VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
+	VkQueue& transferQueue, VkCommandPool& graphicsCommandPool, 
+	VkSampler& textureSampler, VkDescriptorPool& samplerDescriptorPool, 
+	VkDescriptorSetLayout& samplerSetLayout)
 {
-	PhysicalDevice = physicalDevice;
-	Device = logicalDevice;
-	TransferQueue = transferQueue;
-	GraphicsCommandPool = graphicsCommandPool;
-	TextureSampler = textureSampler;
-	SamplerDescriptorPool = samplerDescriptorPool;
-	SamplerSetLayout = samplerSetLayout;
+	PhysicalDevice = &physicalDevice;
+	Device = &logicalDevice;
+	TransferQueue = &transferQueue;
+	GraphicsCommandPool = &graphicsCommandPool;
+	TextureSampler = &textureSampler;
+	SamplerDescriptorPool = &samplerDescriptorPool;
+	SamplerSetLayout = &samplerSetLayout;
 
 	addLight();
 }
@@ -114,7 +115,7 @@ int VkAssets::createMeshModel(std::string modelFile)
 
 	std::vector<std::string> textureNames = model.LoadMaterials(scene);
 
-	std::vector<int> matToTex;
+	std::vector<uint16_t> matToTex;
 	if (textureNames.size() > 0) {
 		matToTex.resize(textureNames.size());
 	}
@@ -160,7 +161,7 @@ void VkAssets::destroyMeshModel(int ModelID)
 #pragma endregion
 
 
-int VkAssets::addTexture(std::string fileName)
+uint16_t VkAssets::addTexture(std::string fileName)
 {
 	static std::mutex lockFuncT;
 

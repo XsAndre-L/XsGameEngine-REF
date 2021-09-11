@@ -13,7 +13,7 @@ class Entity
 public:
 	Entity();
 
-	glm::mat4 getModel();
+	const glm::mat4 getModel();
 	void updateModel();
 
 	void resetMatrix();

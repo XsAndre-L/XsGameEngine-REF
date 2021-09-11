@@ -9,11 +9,8 @@
 #include "GUI_Renderer.h"
 #include "AssetLoading/VkAssets.h"
 
-
-#include "GLFW_Window.h"
+#include "Window/Public/GLFW_Window.h"
 #include "Camera.h"
-
-
 
 
 class VulkanRenderer
@@ -198,7 +195,6 @@ private:
 
 public:
 	
-	
 
 	#ifdef GUI_LAYER
 		GUI_Renderer GUI;
@@ -208,6 +204,4 @@ public:
 	
 	VkAssets AssetManager;
 
-	
-	
 };

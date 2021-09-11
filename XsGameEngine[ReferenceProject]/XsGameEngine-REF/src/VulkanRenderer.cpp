@@ -50,12 +50,12 @@ int VulkanRenderer::init_VulkanRenderer(GLFWwindow* newWindow)
 
 
 		#ifdef GUI_LAYER
-			GUI = GUI_Renderer(window, &Instance, &mainDevice.logicalDevice, &mainDevice.physicalDevice, &graphicsQueue, indices.graphicsFamily, &renderPass, &graphicsCommandPool, &msaaSamples, &applyGraphics, &CurrentGraphicSettings ,&AssetManager);
+			GUI = GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings ,AssetManager);
 		#else
 			printf("GUI DISABLED");
 		#endif
 		
-		AssetManager = VkAssets(&mainDevice.physicalDevice, &mainDevice.logicalDevice, &graphicsQueue, &graphicsCommandPool, &textureSampler, &samplerDescriptorPool, &samplerSetLayout);
+		AssetManager = VkAssets(mainDevice.physicalDevice, mainDevice.logicalDevice, graphicsQueue, graphicsCommandPool, textureSampler, samplerDescriptorPool, samplerSetLayout);
 		
 	#pragma region Program
 
@@ -1642,16 +1642,16 @@ void VulkanRenderer::recordCommands(uint32_t currentFrame)
 			//For every meshModel
 			for (size_t i = 0; i < AssetManager.meshModelList.size(); i++)
 			{
-				MeshModel currentMeshModel = AssetManager.meshModelList[i];
+				MeshModel *currentMeshModel = &AssetManager.meshModelList[i];
 				if (AssetManager.meshModelList[i].getState()) { continue; }
-				auto temp = currentMeshModel.getModel();
+				auto temp = currentMeshModel->getModel();
 				
 				vkCmdPushConstants(commandBuffers[currentFrame], pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(Matrix), &temp);
 
 				//For every mesh inside the meshModel
-				for (size_t j = 0; j < currentMeshModel.getMeshCount(); j++)
+				for (size_t j = 0; j < currentMeshModel->getMeshCount(); j++)
 				{
-					VkMesh* currentMesh = currentMeshModel.getMesh(j);
+					VkMesh* currentMesh = currentMeshModel->getMesh(j);
 					VkBuffer vertexBuffers[1] = { currentMesh->getVertexBuffer() };
 					VkDeviceSize offsets[1] = { 0 };
 
@@ -1670,7 +1670,7 @@ void VulkanRenderer::recordCommands(uint32_t currentFrame)
 
 					//vkCmdDraw(commandBuffers[i], 12 * 3, 1, 0, 0);
 					//vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(firstMesh.getVertexCount()), 1, 0, 0);
-					vkCmdDrawIndexed(commandBuffers[currentFrame], currentMeshModel.getMesh(j)->getIndexCount(), 1, 0, 0, 0);
+					vkCmdDrawIndexed(commandBuffers[currentFrame], currentMeshModel->getMesh(j)->getIndexCount(), 1, 0, 0, 0);
 				}
 
 				
@@ -1678,9 +1678,10 @@ void VulkanRenderer::recordCommands(uint32_t currentFrame)
 
 		#ifdef GUI_LAYER
 			//The ImGUI Function That Renders The GUI
-			if(ImGui::GetCurrentContext)
+			if(ImGui::GetCurrentContext())
 				ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffers[currentFrame]);
 		#endif
+
 			vkCmdEndRenderPass(commandBuffers[currentFrame]);
 		}
 
@@ -1781,7 +1782,6 @@ void VulkanRenderer::recreateSwapChain()
 {
 	vkDeviceWaitIdle(mainDevice.logicalDevice);
 
-
 	cleanUpSwapChain();
 	createSwapChain();
 
@@ -1795,7 +1795,7 @@ void VulkanRenderer::recreateSwapChain()
 	createCommandBuffers();
 
 	#ifdef GUI_LAYER
-		GUI = GUI_Renderer(window, &Instance, &mainDevice.logicalDevice, &mainDevice.physicalDevice, &graphicsQueue, indices.graphicsFamily, &renderPass, &graphicsCommandPool, &msaaSamples, &applyGraphics, &CurrentGraphicSettings, &AssetManager);
+		GUI = GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings, AssetManager);
 	#endif
 }
 

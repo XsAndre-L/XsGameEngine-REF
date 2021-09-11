@@ -4,28 +4,28 @@
 
 
 
-#include "vendor/ImGUI/imgui.h"
-#include "vendor/ImGUI/imgui_impl_glfw.h"
-#include "vendor/ImGUI/imgui_impl_vulkan.h"
+#include "../vendor/ImGUI/imgui.h"
+#include "../vendor/ImGUI/imgui_impl_glfw.h"
+#include "../vendor/ImGUI/imgui_impl_vulkan.h"
 
 
 class GUI_Renderer
 {
 public:
 	GUI_Renderer();
-	GUI_Renderer(	GLFWwindow* window,
-					VkInstance* instance,
-					VkDevice* Device,
-					VkPhysicalDevice* PhysicalDevice,
-					VkQueue* Queue, 
+	GUI_Renderer(	GLFWwindow& window,
+					VkInstance& instance,
+					VkDevice& Device,
+					VkPhysicalDevice& PhysicalDevice,
+					VkQueue& Queue, 
 					uint32_t GraphicsFamily,
-					VkRenderPass* RenderPass,
-					VkCommandPool* GraphicsCommandPool,
-					VkSampleCountFlagBits* msaaSampleCount,
-					bool* ApplyGraphics,
-					GraphicSettings* CurrentGraphicSettings,
+					VkRenderPass& RenderPass,
+					VkCommandPool& GraphicsCommandPool,
+					VkSampleCountFlagBits& msaaSampleCount,
+					bool& ApplyGraphics,
+					GraphicSettings& CurrentGraphicSettings,
 
-					VkAssets* AssetManager
+					VkAssets& AssetManager
 	);
 
 
@@ -39,14 +39,14 @@ public:
 	void RenderMenus(bool* LocalTransform, glm::vec3* translation, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const VkAssets::AllAssets* AssetList);
 	void CleanUpGUI(VkDevice Device);
 	void CleanUpGuiComponents(VkDevice Device);
-	~GUI_Renderer();
+	~GUI_Renderer() = default;
 
 private:
 
 	//menu infos
 	struct sharedMenuInfo {
-		int* selectedObject;
-		const VkAssets::AllAssets* allAssets;
+		int* selectedObject{};
+		const VkAssets::AllAssets* allAssets{};
 	}sharedInfo;
 
 	//World Outliner
@@ -60,9 +60,9 @@ private:
 		bool ShowMenu = true;
 
 		bool* LocalTransform;
-		glm::vec3* position;
-		glm::vec3* rotation;
-		glm::vec3* scale;
+		glm::vec3* position{};
+		glm::vec3* rotation{};
+		glm::vec3* scale{};
 
 	}detailsInfo;
 
@@ -81,27 +81,27 @@ private:
 	//Initialization Info
 	struct IgInitInfo {
 		//CREATION
-		GLFWwindow* mainWindow;
-		VkInstance* instance;
-		VkDevice* Device;
-		VkPhysicalDevice* PhysicalDevice;
-		VkQueue* Queue;
-		uint32_t GraphicsFamily;
-		VkRenderPass* RenderPass;
-		VkCommandPool* GraphicsCommandPool;
+		GLFWwindow* mainWindow{};
+		VkInstance* instance{};
+		VkDevice* Device{};
+		VkPhysicalDevice* PhysicalDevice{};
+		VkQueue* Queue{};
+		uint32_t GraphicsFamily{};
+		VkRenderPass* RenderPass{};
+		VkCommandPool* GraphicsCommandPool{};
 
 		//SETTINGS
-		VkSampleCountFlagBits* MsaaSampleCount;
-		bool* ApplyGraphics;
-		GraphicSettings* CurrentGraphicSettings;
+		VkSampleCountFlagBits* MsaaSampleCount{};
+		bool* ApplyGraphics{};
+		GraphicSettings* CurrentGraphicSettings{};
 
 		//OBJECTS
-		VkAssets* AssetManager;
+		VkAssets* AssetManager{};
 	} IgInitInfo;
 	
 
 
-	VkDescriptorPool imguiPool;
+	VkDescriptorPool imguiPool{};
 
 	
 	void ShowFileMenu();

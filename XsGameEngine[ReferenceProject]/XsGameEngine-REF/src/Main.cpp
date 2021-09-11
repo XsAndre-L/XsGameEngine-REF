@@ -14,6 +14,11 @@ Camera camera;
 
 
 //Entry Point
+/**
+* The Entry Point
+* @author Andre Loubser
+* 
+*/
 int main()
 {
 	//CREATE WINDOW
@@ -24,9 +29,7 @@ int main()
 
 	//CREATE VULKAN INSTANCE -- needs the window so we get the window 
 	if (vulkanRenderer.init_VulkanRenderer(newWindow.getWindow()) == EXIT_FAILURE)
-	{
-		return EXIT_FAILURE;
-	}
+	{ return EXIT_FAILURE; }
 	
 
 	float deltaTime = 0.0f;

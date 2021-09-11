@@ -76,7 +76,7 @@ std::vector<std::string> MeshModel::LoadMaterials(const aiScene* scene)
 }
 
 //Loads a tree of meshes (mesh parent with child meshes)
-std::vector<VkMesh> MeshModel::LoadNode(VkPhysicalDevice* newPhysicalDevice, VkDevice* newDevice, VkQueue* transferQueue, VkCommandPool* transferCommandPool, aiNode* node, const aiScene* scene, std::vector<int> matToTex)
+std::vector<VkMesh> MeshModel::LoadNode(VkPhysicalDevice* newPhysicalDevice, VkDevice* newDevice, VkQueue* transferQueue, VkCommandPool* transferCommandPool, aiNode* node, const aiScene* scene, std::vector<uint16_t> matToTex)
 {
 	//std::vector<VkMesh> meshList;
 	// Go through each mesh at this node and create it, then add it to our meshList
@@ -98,7 +98,7 @@ std::vector<VkMesh> MeshModel::LoadNode(VkPhysicalDevice* newPhysicalDevice, VkD
 	return meshList;
 }
 
-VkMesh MeshModel::LoadMesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, aiMesh* mesh, const aiScene* scene, std::vector<int> matToTex)
+VkMesh MeshModel::LoadMesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, aiMesh* mesh, const aiScene* scene, std::vector<uint16_t> matToTex)
 {
 
 	std::vector<Vertex> vertices;

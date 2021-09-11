@@ -8,7 +8,7 @@ DirectionalLight::DirectionalLight()
 	//dlight.ambientIntensity = light.getLightInfo().ambientIntensity;
 	//dlight.diffuseIntensity = light.getLightInfo().diffuseIntensity;
 	dlight.lightDirection = glm::vec3(1.0f, 0.0f, 0.0f );
-	printf("%d\n", sizeof(DirectionalLightInfo));
+	//printf("%d\n", (int)sizeof(DirectionalLightInfo));
 }
 
 DirectionalLight::DirectionalLight(

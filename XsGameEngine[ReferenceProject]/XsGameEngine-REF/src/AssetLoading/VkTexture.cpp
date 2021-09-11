@@ -15,9 +15,9 @@ int VkTexture::createTexture(std::string fileName)
 {
 
 	//Create Texture Image and get its location in array
-	int textureImageLoc = createTextureImage(fileName);
+	bool TexSuccess = createTextureImage(fileName);
 
-	if (textureImageLoc == 1) { return 1; }
+	if (TexSuccess == false) { return 1; }
 
 	//Create image view and add to list 
 	textureImageView = createImageView(*Device, textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, mipLevel);
@@ -29,7 +29,7 @@ int VkTexture::createTexture(std::string fileName)
 	return 0;
 }
 
-int VkTexture::createTextureImage(std::string fileName)
+bool VkTexture::createTextureImage(std::string fileName)
 {
 	//Load Image File
 	int width, height;
@@ -37,7 +37,7 @@ int VkTexture::createTextureImage(std::string fileName)
 	stbi_uc* imageData = loadTextureFile(fileName, &width, &height, &imageSize);
 
 	if (imageData == nullptr) {
-		return 1;
+		return false;
 	}
 
 	//Calculate MipLevels								///busy
@@ -89,7 +89,7 @@ int VkTexture::createTextureImage(std::string fileName)
 
 
 
-	return 0;
+	return true;
 }
 
 // Generate MipMaps for given texture
@@ -191,11 +191,13 @@ stbi_uc* VkTexture::loadTextureFile(std::string fileName, int* width, int* heigh
 
 	if (!image)
 	{
-		printf("Failed to load Texture ( %s )", fileName);
+		//printf("Failed to load Texture ( %s )", fileName.c_str());
+		std::cout << "Failed to load Texture : " << fileName << std::endl;
 		image = nullptr;
 	}
 
-	*imageSize = *width * *height * 4;
+	//static_cast<uint64_t> because VkDeviceSize [imageSize] is 64bit large
+	*imageSize = static_cast<uint64_t>(*width) * *height * 4;
 
 	return image;
 }
@@ -203,10 +205,10 @@ stbi_uc* VkTexture::loadTextureFile(std::string fileName, int* width, int* heigh
 
 int VkTexture::createTextureDescriptor(VkImageView textureImage)
 {
-	VkDescriptorSet descriptorSet;
+	VkDescriptorSet descriptorSet{};
 
 	// Descriptor Set Allocation Info
-	VkDescriptorSetAllocateInfo setAllocInfo = {};
+	VkDescriptorSetAllocateInfo setAllocInfo{};
 	setAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	setAllocInfo.descriptorPool = *SamplerDescriptorPool;
 	setAllocInfo.descriptorSetCount = 1;
@@ -219,12 +221,12 @@ int VkTexture::createTextureDescriptor(VkImageView textureImage)
 		throw std::runtime_error("could not allocate info! -");// + std::to_string(result));
 	}
 
-	VkDescriptorImageInfo imageInfo = {};
+	VkDescriptorImageInfo imageInfo{};
 	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 	imageInfo.imageView = textureImage;
 	imageInfo.sampler = *TextureSampler;
 
-	VkWriteDescriptorSet descriptorWrite = {};
+	VkWriteDescriptorSet descriptorWrite{};
 	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 	descriptorWrite.dstSet = SamplerDescriptorSet;
 	descriptorWrite.dstBinding = 0;

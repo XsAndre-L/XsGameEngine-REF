@@ -110,7 +110,3 @@ void Camera::update()
 		*viewMatrix = newViewMatrix;
 	}
 }
-
-Camera::~Camera()
-{
-}

@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['v0_5882',['V0',['../struct_im_font_glyph.html#a26b7b7b9ee43ab67e98af9ea1131ce20',1,'ImFontGlyph']]],
+  ['v1_5883',['V1',['../struct_im_font_glyph.html#a3d28904aad639835cdff3e4416663d7c',1,'ImFontGlyph']]],
+  ['v_5foversample_5884',['v_oversample',['../structstbtt__pack__range.html#a6288f14006e257544db3d015c32b4113',1,'stbtt_pack_range::v_oversample()'],['../structstbtt__pack__context.html#a4b55efa27ef36e7f258afe92921784c0',1,'stbtt_pack_context::v_oversample()']]],
+  ['val_5ff_5885',['val_f',['../struct_im_gui_storage_1_1_im_gui_storage_pair.html#a600368daba0ffede52def40b10bdbd4f',1,'ImGuiStorage::ImGuiStoragePair']]],
+  ['val_5fi_5886',['val_i',['../struct_im_gui_storage_1_1_im_gui_storage_pair.html#ada14150f288132afbf2138ad8d9f721a',1,'ImGuiStorage::ImGuiStoragePair']]],
+  ['val_5fp_5887',['val_p',['../struct_im_gui_storage_1_1_im_gui_storage_pair.html#a9b0963410770bb225b1eef58d89ba2ec',1,'ImGuiStorage::ImGuiStoragePair']]],
+  ['valid_5888',['Valid',['../struct_im_draw_data.html#ad01ab9ce5e8843b7860ccbb3eb9a6554',1,'ImDrawData']]],
+  ['validationlayers_5889',['validationLayers',['../_vk_validation_8h.html#a7ca66b16460bd6b27fa5176e228218e8',1,'VkValidation.h']]],
+  ['value_5890',['Value',['../struct_im_color.html#a4cf43bd58e30decaa0248f839fc85e95',1,'ImColor']]],
+  ['values_5891',['Values',['../struct_im_gui_plot_array_getter_data.html#aa40ff2e945549744fc622891089ae0fd',1,'ImGuiPlotArrayGetterData']]],
+  ['varidx_5892',['VarIdx',['../struct_im_gui_style_mod.html#ab23c55941dbd0e156ce640a8fecb2feb',1,'ImGuiStyleMod']]],
+  ['vertexbuffer_5893',['VertexBuffer',['../struct_im_gui___impl_vulkan_h___frame_render_buffers.html#a868d4dc03c831c458a21ecc593e296d1',1,'ImGui_ImplVulkanH_FrameRenderBuffers']]],
+  ['vertexbuffermemory_5894',['VertexBufferMemory',['../struct_im_gui___impl_vulkan_h___frame_render_buffers.html#a141885e5f237387bb2ce1989aa73a76a',1,'ImGui_ImplVulkanH_FrameRenderBuffers']]],
+  ['vertexbuffersize_5895',['VertexBufferSize',['../struct_im_gui___impl_vulkan_h___frame_render_buffers.html#a4399b386e06992f5d340b558ed037539',1,'ImGui_ImplVulkanH_FrameRenderBuffers']]],
+  ['viewports_5896',['Viewports',['../struct_im_gui_context.html#aa8958dc7c05b83d00ad6439f3d539c44',1,'ImGuiContext']]],
+  ['visible_5897',['Visible',['../struct_im_font_glyph.html#a4e7d64945eeb9cf823c2ce7bb66a1e85',1,'ImFontGlyph']]],
+  ['visiblemaskbyindex_5898',['VisibleMaskByIndex',['../struct_im_gui_table.html#a7c13f14fa0933b15a4430123f49acb05',1,'ImGuiTable']]],
+  ['visibletabid_5899',['VisibleTabId',['../struct_im_gui_tab_bar.html#a1716495ecb746feb37f0b736edb50c89',1,'ImGuiTabBar']]],
+  ['visibletabwassubmitted_5900',['VisibleTabWasSubmitted',['../struct_im_gui_tab_bar.html#a9112067953a14bc707d2660dc1cf93b0',1,'ImGuiTabBar']]],
+  ['vtxbuffer_5901',['VtxBuffer',['../struct_im_draw_list.html#aa8ff4aee39cf3c3791b7e29a7b4264be',1,'ImDrawList']]],
+  ['vtxoffset_5902',['VtxOffset',['../struct_im_draw_cmd.html#a604086d3c94a18b3a79f171ee37edabb',1,'ImDrawCmd::VtxOffset()'],['../struct_im_draw_cmd_header.html#a88b7d50043b0a8b299aaa94a9a3cf121',1,'ImDrawCmdHeader::VtxOffset()']]],
+  ['vulkanrenderer_5903',['vulkanRenderer',['../_main_8cpp.html#ae7659a9d5fa1b2a03c6506f262e98268',1,'Main.cpp']]]
+];

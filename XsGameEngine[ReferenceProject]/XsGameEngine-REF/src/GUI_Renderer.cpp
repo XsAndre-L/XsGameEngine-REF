@@ -7,29 +7,40 @@ GUI_Renderer::GUI_Renderer()
 {
 }
 
-GUI_Renderer::GUI_Renderer(GLFWwindow* window, VkInstance* newInstance, VkDevice* newDevice, VkPhysicalDevice* newPhysicalDevice, VkQueue* newQueue, uint32_t newGraphicsFamily, VkRenderPass* newRenderPass, VkCommandPool* newGraphicsCommandPool, VkSampleCountFlagBits* msaaSampleCount, bool* ApplyGraphics, GraphicSettings* CurrentGraphicSettings, VkAssets* assetManager)
+GUI_Renderer::GUI_Renderer
+(
+	GLFWwindow &window, 
+	VkInstance& newInstance, 
+	VkDevice& newDevice, 
+	VkPhysicalDevice& newPhysicalDevice, 
+	VkQueue& newQueue, 
+	uint32_t newGraphicsFamily, 
+	VkRenderPass& newRenderPass, 
+	VkCommandPool& newGraphicsCommandPool, 
+	VkSampleCountFlagBits& msaaSampleCount, 
+	bool& ApplyGraphics, 
+	GraphicSettings& CurrentGraphicSettings, 
+	VkAssets& assetManager
+)
 {
-	IgInitInfo.mainWindow = window;
-	IgInitInfo.instance = newInstance;
-	IgInitInfo.Device = newDevice;
-	IgInitInfo.PhysicalDevice = newPhysicalDevice;
-	IgInitInfo.Queue = newQueue;
+	IgInitInfo.mainWindow = &window;
+	IgInitInfo.instance = &newInstance;
+	IgInitInfo.Device = &newDevice;
+	IgInitInfo.PhysicalDevice = &newPhysicalDevice;
+	IgInitInfo.Queue = &newQueue;
 	IgInitInfo.GraphicsFamily = newGraphicsFamily;
-	IgInitInfo.RenderPass = newRenderPass;
-	IgInitInfo.GraphicsCommandPool = newGraphicsCommandPool;
+	IgInitInfo.RenderPass = &newRenderPass;
+	IgInitInfo.GraphicsCommandPool = &newGraphicsCommandPool;
 
-	IgInitInfo.MsaaSampleCount = msaaSampleCount;
-	IgInitInfo.ApplyGraphics = ApplyGraphics;
-	IgInitInfo.CurrentGraphicSettings = CurrentGraphicSettings;
+	IgInitInfo.MsaaSampleCount = &msaaSampleCount;
+	IgInitInfo.ApplyGraphics = &ApplyGraphics;
+	IgInitInfo.CurrentGraphicSettings = &CurrentGraphicSettings;
 
-	IgInitInfo.AssetManager = assetManager;
+	IgInitInfo.AssetManager = &assetManager;
 	createImGuiInstance();
 	init_imGUI();
 }
 
-GUI_Renderer::~GUI_Renderer()
-{
-}
 
 //Create an Instance of ImGUI (Context)
 void GUI_Renderer::createImGuiInstance()
@@ -175,7 +186,7 @@ void GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::v
 
 
 	//imgui commands
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	mainMenuBar();
 
@@ -191,6 +202,8 @@ void GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::v
 	if (statsInfo.ShowMenu)
 		renderStatsOverlay();
 
+	
+
 	// Rendering
 	ImGui::Render();
 	ImDrawData* draw_data = ImGui::GetDrawData();
@@ -202,6 +215,7 @@ void GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::v
 
 #pragma endregion
 }
+
 
 //TODO : Function to handle shortcuts for selected window
 //void GUI_Renderer::ShortCutKeyInput(){}

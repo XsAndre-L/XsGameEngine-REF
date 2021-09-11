@@ -30,31 +30,31 @@
     <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLFW_Window.cpp">
+    <ClCompile Include="src\Window\Private\GLFW_Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\vendor\ImGUI\imgui.cpp">
+    <ClCompile Include="vendor\ImGUI\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\vendor\ImGUI\imgui_demo.cpp">
+    <ClCompile Include="vendor\ImGUI\imgui_demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\vendor\ImGUI\imgui_draw.cpp">
+    <ClCompile Include="vendor\ImGUI\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\vendor\ImGUI\imgui_tables.cpp">
+    <ClCompile Include="vendor\ImGUI\imgui_tables.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\vendor\ImGUI\imgui_widgets.cpp">
+    <ClCompile Include="vendor\ImGUI\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\vendor\ImGUI\imgui_impl_glfw.cpp">
+    <ClCompile Include="vendor\ImGUI\imgui_impl_glfw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\vendor\ImGUI\imgui_impl_vulkan.cpp">
+    <ClCompile Include="vendor\ImGUI\imgui_impl_vulkan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI_Renderer.cpp">
@@ -95,34 +95,34 @@
     <ClInclude Include="src\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GLFW_Window.h">
+    <ClInclude Include="src\Window\Public\GLFW_Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\vendor\ImGUI\imconfig.h">
+    <ClInclude Include="vendor\ImGUI\imconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\vendor\ImGUI\imgui.h">
+    <ClInclude Include="vendor\ImGUI\imgui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\vendor\ImGUI\imgui_internal.h">
+    <ClInclude Include="vendor\ImGUI\imgui_internal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\vendor\ImGUI\imstb_rectpack.h">
+    <ClInclude Include="vendor\ImGUI\imstb_rectpack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\vendor\ImGUI\imstb_textedit.h">
+    <ClInclude Include="vendor\ImGUI\imstb_textedit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\vendor\ImGUI\imstb_truetype.h">
+    <ClInclude Include="vendor\ImGUI\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\vendor\ImGUI\imgui_impl_glfw.h">
+    <ClInclude Include="vendor\ImGUI\imgui_impl_glfw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\vendor\ImGUI\imgui_impl_vulkan.h">
+    <ClInclude Include="vendor\ImGUI\imgui_impl_vulkan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GUI_Renderer.h">

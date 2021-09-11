@@ -7,18 +7,18 @@
 #include <thread>
 #include <mutex>
 
-static class VkAssets 
+class VkAssets 
 {
 public:
 	VkAssets();
 	VkAssets(
-		VkPhysicalDevice* physicalDevice,
-		VkDevice* logicalDevice,
-		VkQueue* transferQueue,
-		VkCommandPool* graphicsCommandPool,
-		VkSampler* textureSampler,
-		VkDescriptorPool* samplerDescriptorPool,
-		VkDescriptorSetLayout* samplerSetLayout
+		VkPhysicalDevice& physicalDevice,
+		VkDevice& logicalDevice,
+		VkQueue& transferQueue,
+		VkCommandPool& graphicsCommandPool,
+		VkSampler& textureSampler,
+		VkDescriptorPool& samplerDescriptorPool,
+		VkDescriptorSetLayout& samplerSetLayout
 	);
 
 	void asyncAssets(std::string ModelPath);
@@ -37,7 +37,7 @@ public:
 
 
 	#pragma region Textures
-	int addTexture(std::string fileName);
+	uint16_t addTexture(std::string fileName);
 
 	std::vector<std::string> textureNames;
 	std::vector<VkTexture> textureList;
@@ -63,10 +63,10 @@ public:
 
 	struct AllAssets
 	{
-		std::vector<std::string>* ModelNames;
-		std::vector<MeshModel>* modelPointers;
-		std::vector<VkTexture>* texturePointers;
-		AllLights* lightPointers;
+		std::vector<std::string>* ModelNames{};
+		std::vector<MeshModel>* modelPointers{};
+		std::vector<VkTexture>* texturePointers{};
+		AllLights* lightPointers{};
 	}allAssets;
 
 	AllAssets* getAssetInfo();
@@ -79,17 +79,17 @@ public:
 private:
 	int selectedModel = 0;
 
-	VkPhysicalDevice* PhysicalDevice;
-	VkDevice* Device;
-	VkQueue* TransferQueue;
-	VkCommandPool* GraphicsCommandPool;
+	VkPhysicalDevice* PhysicalDevice{ nullptr };
+	VkDevice* Device{ nullptr };
+	VkQueue* TransferQueue{ nullptr };
+	VkCommandPool* GraphicsCommandPool{ nullptr };
 
-	VkSampler* TextureSampler;
-	VkDescriptorPool* SamplerDescriptorPool;
-	VkDescriptorSetLayout* SamplerSetLayout;
+	VkSampler* TextureSampler{ nullptr };
+	VkDescriptorPool* SamplerDescriptorPool{ nullptr };
+	VkDescriptorSetLayout* SamplerSetLayout{ nullptr };
 
 
-	std::thread* AssetLoadThread = nullptr;
+	std::thread* AssetLoadThread{ nullptr };
 	
 };
 

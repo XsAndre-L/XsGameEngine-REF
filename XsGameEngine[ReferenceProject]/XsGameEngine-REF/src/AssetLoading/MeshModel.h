@@ -19,9 +19,9 @@ public:
 
 	std::vector<std::string> LoadMaterials(const aiScene * scene);
 	std::vector<VkMesh> LoadNode(VkPhysicalDevice* newPhysicalDevice, VkDevice* newDevice, VkQueue* transferQueue, VkCommandPool* transferCommandPool,
-		aiNode* node, const aiScene* scene, std::vector<int> matToTex);
+		aiNode* node, const aiScene* scene, std::vector<uint16_t> matToTex);
 	VkMesh LoadMesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, VkQueue transferQueue, VkCommandPool transferCommandPool,
-		aiMesh* mesh, const aiScene* scene, std::vector<int> matToTex);
+		aiMesh* mesh, const aiScene* scene, std::vector<uint16_t> matToTex);
 
 	std::vector<std::string>* getChildren() { return &Children; }
 	bool getState() { return DESTROYED; }

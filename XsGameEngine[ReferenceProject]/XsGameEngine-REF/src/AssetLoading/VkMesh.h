@@ -12,8 +12,8 @@ public:
 			int newTexId);
 
 
-	int getTexId() { return texId; };
-	void setTexId(int ID) { texId = ID; }
+	size_t getTexId() { return texId; };
+	void setTexId(size_t ID) { texId = ID; }
 
 	int getVertexCount() { return vertexCount; };
 	int getIndexCount() { return indexCount; };
@@ -24,7 +24,7 @@ public:
 	~VkMesh();
 private:
 
-	int texId;
+	size_t texId;
 
 	// Vertex Info
 	int vertexCount;

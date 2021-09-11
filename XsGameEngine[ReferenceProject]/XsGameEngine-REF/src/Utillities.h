@@ -107,19 +107,21 @@ static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t al
 			return i;
 		}
 	}
+	return 0;
 }
 
 static void createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDeviceSize bufferSize, VkBufferUsageFlags bufferUsage,
 	VkMemoryPropertyFlags bufferProperties, VkBuffer* buffer, VkDeviceMemory* bufferMemory)
 {
 	#pragma region Create Buffer
-	VkBufferCreateInfo bufferInfo = {};
+	VkBufferCreateInfo bufferInfo{};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	bufferInfo.size = bufferSize;
 	bufferInfo.usage = bufferUsage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	VkResult result = vkCreateBuffer(device, &bufferInfo, nullptr, buffer);
+	VkResult result{};
+	result = vkCreateBuffer(device, &bufferInfo, nullptr, buffer);
 	if (result != VK_SUCCESS)
 	{
 		throw std::runtime_error("Could not create Vertex Buffer!");
@@ -133,7 +135,7 @@ static void createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDev
 	#pragma endregion
 
 	#pragma region Allocate Memory In VkDeviceMemory	[findMemoryTypeIndex]
-	VkMemoryAllocateInfo memoryAllocateInfo = {};
+	VkMemoryAllocateInfo memoryAllocateInfo{};
 	memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	memoryAllocateInfo.allocationSize = memRequirements.size;
 	memoryAllocateInfo.memoryTypeIndex = findMemoryTypeIndex(physicalDevice, memRequirements.memoryTypeBits, bufferProperties);
@@ -265,8 +267,8 @@ static void transitionImageLayout(VkDevice device, VkQueue queue, VkCommandPool 
 	memoryBarrier.subresourceRange.layerCount = 1;
 	
 
-	VkPipelineStageFlags srcStage;
-	VkPipelineStageFlags dstStage;
+	VkPipelineStageFlags srcStage{};
+	VkPipelineStageFlags dstStage{};
 
 	//if transitioning from new image to image ready to receive data...
 	if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)

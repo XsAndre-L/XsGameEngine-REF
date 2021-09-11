@@ -7,7 +7,7 @@ Entity::Entity()
 	Matrix.transformMatrix = glm::mat4(1.0f);
 }
 
-glm::mat4 Entity::getModel()
+const glm::mat4 Entity::getModel()
 {
 	return Matrix.transformMatrix;
 }
@@ -30,6 +30,7 @@ void Entity::updateModel()
 		}
 	}
 	else {
+		//newModel = glm::rotate(newModel, glm::radians())
 		newModel = glm::rotate(newModel, glm::radians(Rotation.x), glm::vec3(1, 0, 0));
 		newModel = glm::rotate(newModel, glm::radians(Rotation.y), glm::vec3(0, 1, 0));
 		newModel = glm::rotate(newModel, glm::radians(Rotation.z), glm::vec3(0, 0, 1));
