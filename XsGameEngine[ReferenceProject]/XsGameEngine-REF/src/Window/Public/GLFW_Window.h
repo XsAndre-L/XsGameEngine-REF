@@ -19,13 +19,12 @@ public:
 	bool initWindow(std::string wName, const int width, const int height);
 	GLFWwindow* getWindow() { return mainWindow; }
 
-	
-	GLfloat cursorXChange();
-	GLfloat cursorYChange();
+	double cursorXChange();
+	double cursorYChange();
 
 	bool getCursorMode() { return CursorNormal; }
 	bool* getKeys() { return keys; }
-	float getScroll() { return scrollPos; }
+	double getScroll() { return scrollPos; }
 
 	bool shouldClose() { return glfwWindowShouldClose(mainWindow); }
 	~GLFW_Window();
@@ -45,18 +44,18 @@ private:
 	bool keys[1024];
 	static void key_callback(GLFWwindow* window, int key, int code, int action, int mode);
 
-	GLfloat lastX{};
-	GLfloat lastY{};
-	GLfloat xChange{ 0.0f };
-	GLfloat yChange{ 0.0f };
+	double lastX{};
+	double lastY{};
+	double xChange{ 0.0f };
+	double yChange{ 0.0f };
 	bool mouseFirstMoved;
 	static void cursor_position_callback(GLFWwindow* window, double xPos, double yPos);
 
 	bool SelectAction = false;
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-	GLfloat scrollPos = 1.0f;
-	GLfloat scrollChanges = 0.0f;
+	double scrollPos = 1.0f;
+	double scrollChanges = 0.0f;
 	static void scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
 
 	static void onMouse(int button, int state, int x, int y);

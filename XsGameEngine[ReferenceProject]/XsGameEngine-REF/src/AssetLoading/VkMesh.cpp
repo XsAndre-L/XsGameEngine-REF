@@ -3,15 +3,13 @@
 
 
 #pragma region Public Functions & Construction and Deconstruction
-VkMesh::VkMesh()
-{
-}
+
 
 VkMesh::VkMesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, int newTexId)
 {
 	
-	vertexCount = vertices->size();
-	indexCount = indices->size();
+	vertexCount = static_cast<uint32_t>(vertices->size());
+	indexCount = static_cast<uint32_t>(indices->size());
 	physicalDevice = newPhysicalDevice;
 	device = newDevice;
 
@@ -32,10 +30,6 @@ void VkMesh::destroyBuffers()
 	}
 }
 
-VkMesh::~VkMesh()
-{
-
-}
 #pragma endregion
 
 

@@ -1,12 +1,12 @@
 #pragma once
-#include "Utillities.h"
+#include "Renderer/Vulkan_Renderer/VulkanUtillities.h"
 #include "AssetLoading/VkAssets.h"
 
 
 
 #include "../vendor/ImGUI/imgui.h"
 #include "../vendor/ImGUI/imgui_impl_glfw.h"
-#include "../vendor/ImGUI/imgui_impl_vulkan.h"
+#include "../vendor/ImGUI/Vulkan/imgui_impl_vulkan.h"
 
 
 class GUI_Renderer
@@ -33,7 +33,7 @@ public:
 	ImVec4 clearColor = { 0.15f, 0.15f ,0.15f , 1.0f };
 
 	void createImGuiInstance();
-	void init_imGUI();
+	void init_imGUI_Vulkan();
 
 
 	void RenderMenus(bool* LocalTransform, glm::vec3* translation, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const VkAssets::AllAssets* AssetList);

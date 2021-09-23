@@ -112,16 +112,16 @@ void GLFW_Window::createCallbacks()
 
 #pragma region Input Callbacks
 
-GLfloat GLFW_Window::cursorXChange()
+double GLFW_Window::cursorXChange()
 {
-	GLfloat change = xChange;
+	double change = xChange;
 	xChange = 0;
 	return change;
 }
 
-GLfloat GLFW_Window::cursorYChange()
+double GLFW_Window::cursorYChange()
 {
-	GLfloat change = yChange;
+	double change = yChange;
 	yChange = 0;
 	return change;
 }
@@ -195,8 +195,6 @@ void GLFW_Window::cursor_position_callback(GLFWwindow* window, double xPos, doub
 
 		//glm::vec2 p = glm::clamp(glm::vec2(theWindow->xChange, theWindow->yChange), glm::vec2(-100.0f, -100.0f), glm::vec2(100.0f, 100.0f));
 
-		//theWindow->xChange = p.x;
-		//theWindow->yChange = p.y;
 		// Set last position to current position
 		theWindow->lastX = xPos;
 		theWindow->lastY = yPos;
@@ -205,8 +203,6 @@ void GLFW_Window::cursor_position_callback(GLFWwindow* window, double xPos, doub
 		theWindow->lastX = xPos;
 		theWindow->lastY = yPos;
 	}
-	
-
 }
 
 void GLFW_Window::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)

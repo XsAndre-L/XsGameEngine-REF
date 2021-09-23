@@ -31,7 +31,7 @@ void MeshModel::destroyModel()
 	if (getState()) { return; }
 	if (MODEL_INSTANCE) { this->~MeshModel(); return; }
 
-	printf("Mesh Count In Model : %d\n", getMeshCount());
+	//printf("Mesh Count In Model : %d\n", getMeshCount());
 	for (auto& mesh : meshList)
 	{
 		mesh.destroyBuffers();
@@ -62,7 +62,7 @@ std::vector<std::string> MeshModel::LoadMaterials(const aiScene* scene)
 			aiString path;
 			if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
-				int idx = std::string(path.data).rfind("\\");
+				size_t idx = std::string(path.data).rfind("\\");
 
 				std::string fileName = std::string(path.data).substr(idx + 1);
 				printf(fileName.c_str());

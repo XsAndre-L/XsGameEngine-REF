@@ -38,7 +38,7 @@ GUI_Renderer::GUI_Renderer
 
 	IgInitInfo.AssetManager = &assetManager;
 	createImGuiInstance();
-	init_imGUI();
+	init_imGUI_Vulkan();
 }
 
 
@@ -87,7 +87,7 @@ void ImGuiFontSubmit(VkDevice device, VkCommandPool commandPool, VkQueue queue) 
 
 }
 
-void GUI_Renderer::init_imGUI()
+void GUI_Renderer::init_imGUI_Vulkan()
 {
 	//1: create descriptor pool for IMGUI
 	// the size of the pool is very oversize, but it's copied from imgui demo itself.
@@ -110,7 +110,7 @@ void GUI_Renderer::init_imGUI()
 	pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 	pool_info.maxSets = 1000;
-	pool_info.poolSizeCount = std::size(pool_sizes);
+	pool_info.poolSizeCount = static_cast<uint32_t>(std::size(pool_sizes));
 	pool_info.pPoolSizes = pool_sizes;
 
 	VkResult result = vkCreateDescriptorPool(*IgInitInfo.Device, &pool_info, nullptr, &imguiPool);

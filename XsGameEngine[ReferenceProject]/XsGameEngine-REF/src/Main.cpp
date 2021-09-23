@@ -1,4 +1,6 @@
-#include "VulkanRenderer.h"
+#include "PreprocessorDefs.h"
+
+#include "Renderer/Vulkan_Renderer/VulkanRenderer.h"
 #include "Time.h"
 
 
@@ -19,6 +21,8 @@ Camera camera;
 * @author Andre Loubser
 * 
 */
+
+
 int main()
 {
 	//CREATE WINDOW
