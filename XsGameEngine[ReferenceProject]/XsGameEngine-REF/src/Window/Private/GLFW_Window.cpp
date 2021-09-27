@@ -17,9 +17,6 @@ GLFW_Window::GLFW_Window()
 	}
 }
 
-GLFW_Window::~GLFW_Window()
-{
-}
 
 void GLFW_Window::GetMaxMonitorResolution(int* w, int* h, int* refresh)
 {
@@ -51,14 +48,25 @@ bool GLFW_Window::initWindow(std::string wName = "Test Name", const int width = 
 	//Initialise GLFW
 	glfwInit();
 
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API );		//SET GLFW TO NOT WORK WITH OPENGL
+#ifdef OPENGL
+	//Set Version
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//Forwards Compatabillity
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#elif VULKAN
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);		//SET GLFW TO NOT WORK WITH OPENGL
 	//glfwWindowHint(GLFW_REFRESH_RATE, GLFW_FALSE);
 	glfwWindowHint(GLFW_AUTO_ICONIFY, GL_FALSE);		//DISABLES AUTOMATIC MINIMIZING
 	//glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);			//ENABLE WINDOW RESIZE ABILLITY
+#else 
+	printf("ERROR : NO GRAPHICS API DEFINED!");
+#endif
 
-
-	if (mainWindow == NULL)
+	if (mainWindow == nullptr)
 	{
 		mainWindow = glfwCreateWindow(width, height, wName.c_str(), glfwGetPrimaryMonitor(), NULL);
 	}
@@ -93,6 +101,9 @@ bool GLFW_Window::initWindow(std::string wName = "Test Name", const int width = 
 	glfwSetWindowUserPointer(mainWindow, this);		// Creates pointer on the window handle
 	//glfwSetWindowUserPointer(window, this);
 	//glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+
+	glfwMakeContextCurrent(mainWindow); //MIGHT NOT WORK WITH VULKAN // TODO
+
 	if (mainWindow) {
 		return true;
 	}

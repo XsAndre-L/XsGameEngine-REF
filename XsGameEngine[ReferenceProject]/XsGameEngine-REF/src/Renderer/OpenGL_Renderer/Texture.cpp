@@ -80,6 +80,7 @@ void Texture::UseTexture()
 
 void Texture::ClearTexture()
 {
+	printf("Deleting tex");
 	glDeleteTextures(1, &textureID);
 	textureID = 0;
 	width = 0;
@@ -91,5 +92,5 @@ void Texture::ClearTexture()
 
 Texture::~Texture()
 {
-	ClearTexture();
+	//ClearTexture();
 }

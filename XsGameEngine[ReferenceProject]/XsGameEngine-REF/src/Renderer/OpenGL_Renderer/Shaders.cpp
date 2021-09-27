@@ -1,5 +1,5 @@
 #include "Shaders.h"
-
+#include <iostream>
 
 Shaders::Shaders()
 {
@@ -9,8 +9,8 @@ Shaders::Shaders()
 	//ubo.uniformProjection = 0;
 	uniformEyePosition = 0;
 
-	pointLightCount = 0;
-	spotLightCount = 0;
+	//pointLightCount = 0;
+	//spotLightCount = 0;
 
 	CompileShaders();
 }
@@ -61,9 +61,8 @@ void Shaders::CompileShaders() {
 	std::vector<char> vShader = readFile("Shaders/OpenGL_Shaders/vert.spv");
 	std::vector<char> fShader = readFile("Shaders/OpenGL_Shaders/frag.spv");
 
-	//vertexShader = vShader.c_str();	//Using Vectors instead of strings now
-	//fragmentShader = fShader.c_str();
-
+	//vertexShader.append(vShader.data());	//Using Vectors instead of strings now
+	//fragmentShader.append(fShader.data());
 
 	AddShader(shaderProgram, vShader, GL_VERTEX_SHADER);
 	AddShader(shaderProgram, fShader, GL_FRAGMENT_SHADER);
@@ -89,22 +88,28 @@ void Shaders::CompileShaders() {
 	}
 
 	//Works
-	//uniformModel = glGetUniformLocation(shaderProgram, "model");
+	//ModelMat = glGetUniformLocation(shaderProgram, "model");
 	//uniformView = glGetUniformLocation(shaderProgram, "view");
 	//uniformProjection = glGetUniformLocation(shaderProgram, "projection");
-	glGenBuffers(sizeof(ubo), &UBObuffer);
+	
+	//Make a OpenGL Uniform Buffer Object
+	glGenBuffers(1, &UBObuffer);
 	glBindBuffer(GL_UNIFORM_BUFFER, UBObuffer);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(ubo), NULL, GL_STATIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	//Binding The Block to our UBObuffer
+	GLuint Block = glGetUniformBlockIndex(shaderProgram, "uboVP");
+	glUniformBlockBinding(shaderProgram, Block, 0);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBObuffer);	//Bind The Binding point (binding = 0) to UBObuffer Object
+
+	std::cout << "ubo sizzeee - " << sizeof(ubo) << std::endl;
 
 	//MVP.uniformModel = glGetUniformLocation(shaderProgram, "model");
 	//MVP.uniformView = glGetUniformLocation(shaderProgram, "view");
 	//MVP.uniformProjection = glGetUniformLocation(shaderProgram, "projection");//uboViewProjection   glGetAttribLocation
 	
-	GLuint Block = glGetUniformBlockIndex(shaderProgram, "uboVP");
-	glUniformBlockBinding(shaderProgram, Block, 0);
-
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBObuffer);
+	
 
 	//glUniformBlockBinding(shaderProgram, 0, 0);
 	//glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, Block);
@@ -241,42 +246,48 @@ std::vector<char> Shaders::readFile(const std::string& filePath)//const char* fi
 	
 }
 
-uint32_t Shaders::getProgram()
+const uint32_t Shaders::getProgram()
 {
 	return shaderProgram;
 }
 
-uint32_t Shaders::getUniformModel()
+const uint32_t Shaders::getUniformModel()
 {
 	//ubo.model
 	return UBObuffer;
 }
-uint32_t Shaders::getUniformProjection()
+const uint32_t Shaders::getUniformProjection()
 {
 	//ubo.projection
 	return UBObuffer;
 }
-uint32_t Shaders::getUniformView()
+const uint32_t Shaders::getUniformView()
 {
 	//ubo.view;
 	return UBObuffer;
 }
-uint32_t Shaders::getAmbientIntensityLocation()
+
+const uint32_t Shaders::getMvpLocation()
 {
-	return uniformDirectionalLight.uniformAmbientIntensity;
+	return UBObuffer;
 }
-uint32_t Shaders::getAmbientColourLocation()
-{
-	return uniformDirectionalLight.uniformColour;
-}
-uint32_t Shaders::getDiffuseIntensityLocation()
-{
-	return uniformDirectionalLight.uniformDiffuseIntensity;
-}
-uint32_t Shaders::getDirectionLocation()
-{
-	return uniformDirectionalLight.uniformDirection;
-}
+
+//uint32_t Shaders::getAmbientIntensityLocation()
+//{
+//	return uniformDirectionalLight.uniformAmbientIntensity;
+//}
+//uint32_t Shaders::getAmbientColourLocation()
+//{
+//	return uniformDirectionalLight.uniformColour;
+//}
+//uint32_t Shaders::getDiffuseIntensityLocation()
+//{
+//	return uniformDirectionalLight.uniformDiffuseIntensity;
+//}
+//uint32_t Shaders::getDirectionLocation()
+//{
+//	return uniformDirectionalLight.uniformDirection;
+//}
 uint32_t Shaders::getSpecularIntensityLocation()
 {
 	return uniformSpecularIntensity;
@@ -343,12 +354,15 @@ void Shaders::SetSpotLight(SpotLight* pLight, unsigned int lightCount)
 */
 void Shaders::clearShader()
 {
+	
 	if (shaderProgram != 0)
 	{
 		glDeleteProgram(shaderProgram);
 		shaderProgram = 0;
 	}
+	glDeleteBuffers(1, &UBObuffer);
 	UBObuffer = 0;
+	
 	//ubo.uniformModel = 0;
 	//ubo.uniformProjection = 0;
 }

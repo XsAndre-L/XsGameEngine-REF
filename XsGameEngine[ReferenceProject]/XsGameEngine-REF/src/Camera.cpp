@@ -4,10 +4,15 @@
 // Making a camera with defaul position and rotation
 Camera::Camera()
 {
+	position = glm::vec3(0.0f, 0.0f, 0.0f);
+	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	yaw = -90.0f;
 	pitch = 0.0f;
 
 	front = glm::vec3(0.0f, 0.0f, -1.0f);
+
+	moveSpeed = 1.0f;
+	turnSpeed = 4.0f;
 }
 
 // Making a camera with a new position and rotation

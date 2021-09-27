@@ -127,10 +127,12 @@ void Model::RenderModel()
 
 void Model::ClearModel()
 {
+	printf("CLEARING");
 	for (size_t i = 0; i < meshList.size(); i++)
 	{
 		if (meshList[i])
 		{
+			//printf("Deleting mesh %d\n", i);
 			delete meshList[i];
 			meshList[i] = nullptr;
 		}
@@ -140,6 +142,7 @@ void Model::ClearModel()
 	{
 		if (textureList[i])
 		{
+			//printf("Deleting Texture %d\n", i);
 			delete textureList[i];
 			textureList[i] = nullptr;
 		}
@@ -148,6 +151,7 @@ void Model::ClearModel()
 
 Model::~Model()
 {
+	//ClearModel();
 }
 
 

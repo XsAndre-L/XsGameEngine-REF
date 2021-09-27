@@ -5,8 +5,10 @@ class Mesh
 {
 public:
 	Mesh();
+	~Mesh() = default;
+
 	void createMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices);
-	~Mesh();
+	
 	
 	void renderMesh();
 

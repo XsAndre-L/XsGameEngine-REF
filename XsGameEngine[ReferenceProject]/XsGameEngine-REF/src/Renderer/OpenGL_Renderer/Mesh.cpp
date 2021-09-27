@@ -52,7 +52,4 @@ GLuint Mesh::getIndexCount()
 	return IndexCount;
 }
 
-Mesh::~Mesh()
-{
-}
 

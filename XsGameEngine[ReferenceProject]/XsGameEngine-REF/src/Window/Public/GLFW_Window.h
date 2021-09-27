@@ -27,7 +27,7 @@ public:
 	double getScroll() { return scrollPos; }
 
 	bool shouldClose() { return glfwWindowShouldClose(mainWindow); }
-	~GLFW_Window();
+	~GLFW_Window() = default;
 
 private:
 	GLFWwindow* mainWindow;

@@ -1209,8 +1209,8 @@ void VulkanRenderer::allocateDescriptorSets()				//Allocate Descriptor Sets and 
 
 void VulkanRenderer::createGraphicsPipeline()
 {
-	auto vertexShaderCode = readFile("Shaders/vert.spv");
-	auto fragmentShaderCode = readFile("Shaders/frag.spv");
+	auto vertexShaderCode = readFile("Shaders/Vulkan_Shaders/vert.spv");
+	auto fragmentShaderCode = readFile("Shaders/Vulkan_Shaders/frag.spv");
 
 	VkShaderModule vertexShaderModule = createShaderModule(vertexShaderCode);
 	VkShaderModule fragmentShaderModule = createShaderModule(fragmentShaderCode);

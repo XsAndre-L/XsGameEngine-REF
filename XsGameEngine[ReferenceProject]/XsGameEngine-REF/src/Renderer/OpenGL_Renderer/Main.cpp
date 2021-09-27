@@ -1,5 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 
+
 #include <stdio.h>
 #include <string.h>
 #include <vector>
@@ -7,25 +8,30 @@
 
 #include "CommonValues.h"
 
-#include "ProgramWindow.h"
+#include "OpenGL_Renderer.h"
+//#include "../../Window/Public/GLFW_Window.h"
+
+
 #include "Shaders.h"
 #include "Mesh.h"
-#include "Camera.h"
+
 
 #include "Texture.h"
-#include "DirectionalLight.h"
+//#include "DirectionalLight.h"
 //#include "PointLight.h"
 //#include "SpotLight.h"
 
 #include "Model.h"
-#include "Material.h"
+//#include "Material.h"
 
-#include "Time.h"
+#include "../../Time.h"
 
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 
+GLFW_Window newWindow;
+OpenGL_Renderer newRenderer_opengl;
 
 std::vector<Mesh*> meshList;
 
@@ -139,7 +145,7 @@ Assimp::Importer importer = Assimp::Importer();
 
 glm::vec3 LightPos(-4.0f, 0.0f, 0.0f);
 
-void GLMmovements(GLuint uniformModel, int modelIndex, ProgramWindow& window, Shaders& shaders)
+void GLMmovements(GLuint MVPuniform, int modelIndex,const Shaders& shaders )
 {
 	glm::mat4 model(1.0f);
 	if (modelIndex == 0 )
@@ -159,19 +165,16 @@ void GLMmovements(GLuint uniformModel, int modelIndex, ProgramWindow& window, Sh
 	}
 	else {
 		//model = glm::rotate(model, curAngle, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::translate(model, LightPos);
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		//model = glm::translate(model, LightPos);
+		//model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 	}
 
-	int bufferWidth, bufferHeight;
-	glfwGetFramebufferSize(window.getWindow(), &bufferWidth, &bufferHeight);
-	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)bufferWidth / (GLfloat)bufferHeight, 0.1f, 100.0f);
-
-	glBindBuffer(GL_UNIFORM_BUFFER, uniformModel);
+	glm::mat4 ViewMat = shaders.GetViewMatrix();
+	glBindBuffer(GL_UNIFORM_BUFFER, MVPuniform);
 
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, &model);
-	glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &projection);
-	glBufferSubData(GL_UNIFORM_BUFFER, 128, 64, shaders.GetViewMatrix());
+	//glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &projection);
+	glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &ViewMat);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -187,25 +190,24 @@ void pushModel(const char* fileName)
 
 //opengl32.lib
 int main() {
-
-	ProgramWindow window{};
-	
-
-	if (!window.createWindow(1256, 720))
-	{
-		glfwTerminate();
-		return 1;
+	//CREATE WINDOW
+	if (!newWindow.initWindow("WIN", 1920, 1080)) {		//1280, 720
+		return EXIT_FAILURE;
 	}
 
-	Shaders shaders{};
-	window.setShaders(&shaders);
-	Texture brickTexture;
+	
+	newRenderer_opengl.init_OpenGL_Renderer(newWindow.getWindow());
 
+
+	Shaders shaders;
+	//window.setShaders(&shaders);
+	//Texture brickTexture;
+	
 	//DirectionalLight mainLight;
 	//PointLight pointLights[MAX_POINT_LIGHTS];
 	//SpotLight spotLights[MAX_SPOT_LIGHTS];
 
-	Material shinyMaterial;
+	//Material shinyMaterial;
 
 	
 
@@ -217,24 +219,29 @@ int main() {
 
 	glfwSwapInterval(0);
 	
-	AddMesh();
+	//AddMesh();
 	
-	GLuint Program = shaders.getProgram();
+	//GLuint Program = shaders.getProgram();
 	
 
 	#pragma region Set Projection
-	glUseProgram(Program);
 	int bufferWidth, bufferHeight;
-	glfwGetFramebufferSize(window.getWindow(), &bufferWidth, &bufferHeight);
-
+	glfwGetFramebufferSize(newWindow.getWindow(), &bufferWidth, &bufferHeight);
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)bufferWidth / (GLfloat)bufferHeight, 0.1f, 100.0f);
-	//glUniformMatrix4fv(shaders.getUniformProjection(), 1, GL_FALSE, glm::value_ptr(projection));
+
+	glUseProgram(shaders.getProgram());
+		glBindBuffer(GL_UNIFORM_BUFFER, shaders.getMvpLocation());
+
+			glBufferSubData(GL_UNIFORM_BUFFER, 128, 64, &projection);
 	
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	
+	/////glUniformMatrix4fv(shaders.getUniformProjection(), 1, GL_FALSE, glm::value_ptr(projection));
 	glUseProgram(0);
 	#pragma endregion
 
-	Camera camera = Camera();
-	camera.setShaders(&shaders);
+	Camera camera;
+	//camera.setShaders(&shaders); // OLD
 	//Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 1.0f, 0.5f);
 
 	//brickTexture = Texture("Textures/brick.png");
@@ -271,31 +278,15 @@ int main() {
 
 	spotLightCount++;
 	*/
-	shinyMaterial = Material(1.0f, 32);
+	//shinyMaterial = Material(1.0f, 32);
 
 	//GLuint uniformSpecularIntensityLocation, uniformShininessLocation;
-
-	float change = 0.01;
-	int count = 0;
-	bool check = false;
 
     
 	float deltaTime = 0.0f;
 
-	while (!window.shouldClose())
+	while (!newWindow.shouldClose())
 	{
-		/*if (check == false)
-		{
-			count++;
-		}
-		else {
-			count--;
-		}
-
-		if (count % 1000 == 0)
-		{
-			check = !check;
-		}*/
 
 		//GLfloat now = glfwGetTime();
 		tTime.startTimeTracker();
@@ -305,14 +296,21 @@ int main() {
 		
 
 		glfwPollEvents();
-		camera.keyControl(window.getKeys(), window.getScroll(), deltaTime);
+
+		camera.setAsActive(shaders.ViewMatrix());
+
+		camera.checkInputs(newWindow.getCursorMode(), newWindow.getKeys(), newWindow.getScroll(), deltaTime);
+		camera.setCamera(newWindow.getCursorMode(), newWindow.cursorXChange(), newWindow.cursorYChange(), deltaTime);
+
+		camera.setCamera(newWindow.getCursorMode(), newWindow.cursorXChange(), newWindow.cursorYChange(), deltaTime);
+		//camera.keyControl(newWindow.getKeys(), newWindow.getScroll(), deltaTime);
 
 		glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		camera.setCamera(window.getXChange(), window.getYChange(), deltaTime);
-		//printf("POS : %f %f %f \n", camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
-		//printf("modd : %f %f %f \n", modelList[i])
+		
+		//camera.calculateViewMatrix();
+	
 		//LightPos = {-4.0f + (count * change), 0.0f, 0.0f};
 		/*pointLights[0] = PointLight(0.0f, 1.0f, 0.0f,
 									0.0f, 1.0f,
@@ -323,10 +321,10 @@ int main() {
 
 		//uniformSpecularIntensityLocation = shaders.getSpecularIntensityLocation();
 		//uniformShininessLocation = shaders.getShininessLocation();
-		camera.calculateViewMatrix();
-		glUseProgram(Program);
+		
+		glUseProgram(shaders.getProgram());
 
-		GLMmovements(shaders.getUniformModel(), 0, window, shaders);	// This sets the model Uniform
+		GLMmovements(shaders.getMvpLocation(), 0, shaders);	// This sets the model Uniform
 		for (size_t i = 0; i < modelList.size(); i++)
 		{
 			modelList[i]->RenderModel();
@@ -345,8 +343,13 @@ int main() {
 		glUseProgram(0);
 
 
-		glfwSwapBuffers(window.getWindow());
+		glfwSwapBuffers(newWindow.getWindow());
 	}
+
+	
+	
+	//glfwDestroyWindow(newWindow.getWindow());
+	newRenderer_opengl.shutdown_Renderer();
 
 	return 0;
 }
