@@ -1,17 +1,17 @@
 #pragma once
 //This Class in meant to keep track of all assets that are created 
 // Keeps track of all "Models" , "Textures" , "Lights"
-#include "MeshModel.h"
-#include "VkTexture.h"
-#include "Lights/DirectionalLight.h"
+#include "Vulkan_MeshModel.h"
+#include "Vulkan_Texture.h"
+#include "../Lights/DirectionalLight.h"
 #include <thread>
 #include <mutex>
 
-class VkAssets 
+class Vulkan_Assets 
 {
 public:
-	VkAssets();
-	VkAssets(
+	Vulkan_Assets() = default;
+	Vulkan_Assets(
 		VkPhysicalDevice& physicalDevice,
 		VkDevice& logicalDevice,
 		VkQueue& transferQueue,
@@ -27,12 +27,12 @@ public:
 	#pragma region 3D Models
 	int* SetSelected() { return &selectedModel; }
 	
-	int createMeshModel(std::string modelFile);
-	void destroyMeshModel(int MeshId);
+	int createVulkan_MeshModel(std::string modelFile);
+	void destroyVulkan_MeshModel(int MeshId);
 
 	//Scene Objects
-	std::vector<std::string> meshModelNames;
-	std::vector<MeshModel> meshModelList;
+	std::vector<std::string> Vulkan_MeshModelNames;
+	std::vector<Vulkan_MeshModel> Vulkan_MeshModelList;
 	#pragma endregion
 
 
@@ -40,7 +40,7 @@ public:
 	uint16_t addTexture(std::string fileName);
 
 	std::vector<std::string> textureNames;
-	std::vector<VkTexture> textureList;
+	std::vector<Vulkan_Texture> textureList;
 	#pragma endregion
 
 
@@ -54,18 +54,16 @@ public:
 	struct AllLights
 	{
 		DirectionalLight::DirectionalLightInfo directionalLight[MAX_DIRECTIONAL_LIGHTS];
-		
 
 	}allLights;
 	#pragma endregion
 
-	
 
 	struct AllAssets
 	{
 		std::vector<std::string>* ModelNames{};
-		std::vector<MeshModel>* modelPointers{};
-		std::vector<VkTexture>* texturePointers{};
+		std::vector<Vulkan_MeshModel>* modelPointers{};
+		std::vector<Vulkan_Texture>* texturePointers{};
 		AllLights* lightPointers{};
 	}allAssets;
 

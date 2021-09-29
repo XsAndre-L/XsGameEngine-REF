@@ -1,15 +1,22 @@
 #pragma once
 
-#include "../Renderer/Vulkan_Renderer/VulkanUtillities.h"
+#include "../../Renderer/Vulkan_Renderer/VulkanUtillities.h"
 
 #include <stb_image/stb_image.h>
 
 
 
-class VkTexture
+class Vulkan_Texture
 {
 public:
-	VkTexture(VkPhysicalDevice* physicalDevice, VkDevice* device, VkQueue* graphicsQueue, VkCommandPool* graphicsCommandPool, VkSampler* sampler, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* samplerSetLayout);
+	Vulkan_Texture(
+		VkPhysicalDevice* physicalDevice, 
+		VkDevice* device, 
+		VkQueue* graphicsQueue, 
+		VkCommandPool* graphicsCommandPool, 
+		VkSampler* sampler, 
+		VkDescriptorPool* descriptorPool, 
+		VkDescriptorSetLayout* samplerSetLayout);
 
 	int createTexture(std::string fileName);
 	bool createTextureImage(std::string fileName);

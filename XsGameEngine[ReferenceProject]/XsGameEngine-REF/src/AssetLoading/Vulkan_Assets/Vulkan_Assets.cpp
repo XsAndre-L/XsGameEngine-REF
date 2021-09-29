@@ -1,4 +1,4 @@
-#include "VkAssets.h"
+#include "Vulkan_Assets.h"
 #include <vector>
 #include <sstream>
 //#include <condition_variable>
@@ -6,27 +6,27 @@
 //#include <functional>
 //#include <chrono>
 
-VkAssets::AllAssets* VkAssets::getAssetInfo()
+Vulkan_Assets::AllAssets* Vulkan_Assets::getAssetInfo()
 {
-
-	allAssets.ModelNames = &meshModelNames;
-	allAssets.modelPointers = &meshModelList;
+	allAssets.ModelNames = &Vulkan_MeshModelNames;
+	allAssets.modelPointers = &Vulkan_MeshModelList;
 	allAssets.lightPointers = &allLights;
 	allAssets.texturePointers = &textureList;
 	return &allAssets;
 }
 
-VkAssets::VkAssets()
-{
-
-}
 
 //Create an instance for asset creation
-VkAssets::VkAssets(
-	VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
-	VkQueue& transferQueue, VkCommandPool& graphicsCommandPool, 
-	VkSampler& textureSampler, VkDescriptorPool& samplerDescriptorPool, 
-	VkDescriptorSetLayout& samplerSetLayout)
+Vulkan_Assets::Vulkan_Assets
+(
+	VkPhysicalDevice& physicalDevice, 
+	VkDevice& logicalDevice, 
+	VkQueue& transferQueue, 
+	VkCommandPool& graphicsCommandPool, 
+	VkSampler& textureSampler, 
+	VkDescriptorPool& samplerDescriptorPool, 
+	VkDescriptorSetLayout& samplerSetLayout
+)
 {
 	PhysicalDevice = &physicalDevice;
 	Device = &logicalDevice;
@@ -41,12 +41,12 @@ VkAssets::VkAssets(
 
 
 #pragma region Create Asset	
-void VkAssets::asyncAssets(std::string ModelPath) {
+void Vulkan_Assets::asyncAssets(std::string ModelPath) {
 	//addTexture(TexturePath);
-	createMeshModel(ModelPath);
+	createVulkan_MeshModel(ModelPath);
 }
 
-void VkAssets::createAsset(std::string ModelPath) {
+void Vulkan_Assets::createAsset(std::string ModelPath) {
 	
 	try
 	{
@@ -56,7 +56,7 @@ void VkAssets::createAsset(std::string ModelPath) {
 
 			delete(AssetLoadThread);
 		}
-		AssetLoadThread = new std::thread(&VkAssets::asyncAssets, this, ModelPath);
+		AssetLoadThread = new std::thread(&Vulkan_Assets::asyncAssets, this, ModelPath);
 	}
 	catch (const std::exception& e)
 	{
@@ -68,7 +68,7 @@ void VkAssets::createAsset(std::string ModelPath) {
 
 #pragma region Model Loading
 
-int VkAssets::createMeshModel(std::string modelFile)
+int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 {
 	static std::mutex lockFuncM;
 	//std::lock_guard<std::mutex> lock(lockFuncM);
@@ -78,20 +78,20 @@ int VkAssets::createMeshModel(std::string modelFile)
 
 	printf("success");
 	printf("creating: %s\n", modelFile.c_str());
-	MeshModel model = MeshModel();
+	Vulkan_MeshModel model = Vulkan_MeshModel();
 
 	//---Checks if model already exists
-	for (size_t i = 0; i < meshModelNames.size(); i++)
+	for (size_t i = 0; i < Vulkan_MeshModelNames.size(); i++)
 	{
-		if (meshModelNames.at(i) == modelFile.substr(7, modelFile.size())) 
+		if (Vulkan_MeshModelNames.at(i) == modelFile.substr(7, modelFile.size())) 
 		{
-			model = meshModelList.at(i);
+			model = Vulkan_MeshModelList.at(i);
 			model.resetMatrix();
 			model.makeInstance();
 
-			meshModelList.push_back(model);
+			Vulkan_MeshModelList.push_back(model);
 			//This gets the model name without the entire Path and adds it to the list of names
-			meshModelNames.push_back(modelFile.substr(7, modelFile.size()));
+			Vulkan_MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
 
 			lockFuncM.unlock();
 
@@ -100,7 +100,7 @@ int VkAssets::createMeshModel(std::string modelFile)
 	}
 	//---
 
-	#pragma region Read MeshModel from file
+	#pragma region Read Vulkan_MeshModel from file
 
 	// Import "scene" with multiple meshes
 	Assimp::Importer importer;
@@ -142,26 +142,26 @@ int VkAssets::createMeshModel(std::string modelFile)
 
 	model.LoadNode(PhysicalDevice, Device, TransferQueue, GraphicsCommandPool, scene->mRootNode, scene, matToTex);
 
-	meshModelList.push_back(model);
+	Vulkan_MeshModelList.push_back(model);
 	//This gets the model name without the entire Path and adds it to the list of names
-	meshModelNames.push_back(modelFile.substr(7, modelFile.size()));
+	Vulkan_MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
 
 	lockFuncM.unlock();
 
 	return 0;
 }
 
-void VkAssets::destroyMeshModel(int ModelID) 
+void Vulkan_Assets::destroyVulkan_MeshModel(int ModelID) 
 {
 	vkDeviceWaitIdle(*Device);
-	meshModelList.at(ModelID).destroyModel();
-	meshModelNames.at(ModelID) = "";
+	Vulkan_MeshModelList.at(ModelID).destroyModel();
+	Vulkan_MeshModelNames.at(ModelID) = "";
 }
 
 #pragma endregion
 
 
-uint16_t VkAssets::addTexture(std::string fileName)
+uint16_t Vulkan_Assets::addTexture(std::string fileName)
 {
 	static std::mutex lockFuncT;
 
@@ -172,9 +172,9 @@ uint16_t VkAssets::addTexture(std::string fileName)
 		if (textureNames.at(i) == fileName)
 		{
 			if (selectedModel != -1)
-				for (size_t j = 0; j < meshModelList.at(selectedModel).getMeshCount(); j++)
+				for (size_t j = 0; j < Vulkan_MeshModelList.at(selectedModel).getMeshCount(); j++)
 				{
-					meshModelList.at(selectedModel).getMesh(j)->setTexId(i);
+					Vulkan_MeshModelList.at(selectedModel).getMesh(j)->setTexId(i);
 					printf("Texture Changed");
 				}
 
@@ -183,7 +183,7 @@ uint16_t VkAssets::addTexture(std::string fileName)
 		}
 	}
 
-	VkTexture texture(PhysicalDevice, Device, TransferQueue, GraphicsCommandPool, TextureSampler, SamplerDescriptorPool, SamplerSetLayout);
+	Vulkan_Texture texture(PhysicalDevice, Device, TransferQueue, GraphicsCommandPool, TextureSampler, SamplerDescriptorPool, SamplerSetLayout);
 	int result = texture.createTexture(fileName);
 
 	if (result == 1) {
@@ -196,10 +196,10 @@ uint16_t VkAssets::addTexture(std::string fileName)
 	textureList.push_back(texture);
 	textureNames.push_back(fileName.c_str());
 
-	if (selectedModel < meshModelList.size()) {
-		for (size_t j = 0; j < meshModelList.at(selectedModel).getMeshCount(); j++)
+	if (selectedModel < Vulkan_MeshModelList.size()) {
+		for (size_t j = 0; j < Vulkan_MeshModelList.at(selectedModel).getMeshCount(); j++)
 		{
-			meshModelList.at(selectedModel).getMesh(j)->setTexId(textureList.size() - 1);
+			Vulkan_MeshModelList.at(selectedModel).getMesh(j)->setTexId(textureList.size() - 1);
 			printf("Texture Changed");
 		}
 	}
@@ -210,7 +210,7 @@ uint16_t VkAssets::addTexture(std::string fileName)
 }
 
 #pragma region Lights
-void VkAssets::addLight()
+void Vulkan_Assets::addLight()
 {
 	newLight = DirectionalLight();
 	//LightList.push_back(DirectionalLight());
@@ -229,7 +229,7 @@ void VkAssets::addLight()
 
 
 #pragma region CleanUp
-void VkAssets::cleanUpAssets()
+void Vulkan_Assets::cleanUpAssets()
 {
 	if (AssetLoadThread != nullptr) {
 
@@ -240,9 +240,9 @@ void VkAssets::cleanUpAssets()
 
 	}
 
-	for (size_t i = 0; i < meshModelList.size(); i++)
+	for (size_t i = 0; i < Vulkan_MeshModelList.size(); i++)
 	{
-		meshModelList[i].destroyModel();
+		Vulkan_MeshModelList[i].destroyModel();
 	}
 
 	for (size_t i = 0; i < textureList.size(); i++)

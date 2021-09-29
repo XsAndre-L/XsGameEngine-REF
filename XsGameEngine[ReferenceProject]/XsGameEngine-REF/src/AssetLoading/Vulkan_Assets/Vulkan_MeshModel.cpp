@@ -1,50 +1,50 @@
-#include "MeshModel.h"
+#include "Vulkan_MeshModel.h"
 
-/*MeshModel::MeshModel()
+/*Vulkan_MeshModel::Vulkan_MeshModel()
 {
 
 }*/
 
-MeshModel::MeshModel(/*std::vector<VkMesh> newMeshList*/)
+Vulkan_MeshModel::Vulkan_MeshModel(/*std::vector<Vulkan_Mesh> newMeshList*/)
 {
-	meshList.clear();
+	MeshList.clear();
 }
 
-size_t MeshModel::getMeshCount()
+size_t Vulkan_MeshModel::getMeshCount()
 {
-	return meshList.size();
+	return MeshList.size();
 }
 
-VkMesh* MeshModel::getMesh(size_t index)
+Vulkan_Mesh* Vulkan_MeshModel::getMesh(size_t index)
 {
-	if (index >= meshList.size())
+	if (index >= MeshList.size())
 	{
 		throw std::runtime_error("Attrmpted to access invalid Mesh index!");
 	}
 
-	return &meshList[index];
+	return &MeshList[index];
 }
 
 
-void MeshModel::destroyModel()
+void Vulkan_MeshModel::destroyModel()
 {
 	if (getState()) { return; }
-	if (MODEL_INSTANCE) { this->~MeshModel(); return; }
+	if (MODEL_INSTANCE) { this->~Vulkan_MeshModel(); return; }
 
 	//printf("Mesh Count In Model : %d\n", getMeshCount());
-	for (auto& mesh : meshList)
+	for (auto& mesh : MeshList)
 	{
 		mesh.destroyBuffers();
 	}
 	DESTROYED = true;
 }
 
-MeshModel::~MeshModel()
+Vulkan_MeshModel::~Vulkan_MeshModel()
 {
 }
 
 
-std::vector<std::string> MeshModel::LoadMaterials(const aiScene* scene)
+std::vector<std::string> Vulkan_MeshModel::LoadMaterials(const aiScene* scene)
 {	
 	//Create 1:1 sized list of textures
 	std::vector<std::string> textures;
@@ -76,31 +76,48 @@ std::vector<std::string> MeshModel::LoadMaterials(const aiScene* scene)
 }
 
 //Loads a tree of meshes (mesh parent with child meshes)
-std::vector<VkMesh> MeshModel::LoadNode(VkPhysicalDevice* newPhysicalDevice, VkDevice* newDevice, VkQueue* transferQueue, VkCommandPool* transferCommandPool, aiNode* node, const aiScene* scene, std::vector<uint16_t> matToTex)
+std::vector<Vulkan_Mesh> Vulkan_MeshModel::LoadNode
+(
+	VkPhysicalDevice* newPhysicalDevice, 
+	VkDevice* newDevice, 
+	VkQueue* transferQueue, 
+	VkCommandPool* transferCommandPool, 
+	aiNode* node, const aiScene* scene, 
+	std::vector<uint16_t> matToTex
+)
 {
-	//std::vector<VkMesh> meshList;
+	//std::vector<Vulkan_Mesh> meshList;
 	// Go through each mesh at this node and create it, then add it to our meshList
 	for (size_t i = 0; i < node->mNumMeshes; i++)
 	{
 		//vkWaitSemaphores(*newDevice, renderFinished->at(*currentFrame), )
 		
-		meshList.push_back(
-			LoadMesh(*newPhysicalDevice, *newDevice, *transferQueue, *transferCommandPool, scene->mMeshes[node->mMeshes[i]], scene, matToTex)
+		MeshList.push_back(
+			*LoadMesh(*newPhysicalDevice, *newDevice, *transferQueue, *transferCommandPool, scene->mMeshes[node->mMeshes[i]], scene, matToTex)
 		);
 	}
 	
 	for (size_t i = 0; i < node->mNumChildren; i++)
 	{
-		std::vector<VkMesh> newList = LoadNode(newPhysicalDevice, newDevice, transferQueue, transferCommandPool, node->mChildren[i], scene, matToTex);
+		std::vector<Vulkan_Mesh> newList = LoadNode(newPhysicalDevice, newDevice, transferQueue, transferCommandPool, node->mChildren[i], scene, matToTex);
 		//meshList.insert(meshList.end(), newList.begin(), newList.end());
 	}
 
-	return meshList;
+	return MeshList;
 }
 
-VkMesh MeshModel::LoadMesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, aiMesh* mesh, const aiScene* scene, std::vector<uint16_t> matToTex)
-{
 
+Vulkan_Mesh* Vulkan_MeshModel::LoadMesh
+(
+	VkPhysicalDevice newPhysicalDevice, 
+	VkDevice newDevice, 
+	VkQueue transferQueue, 
+	VkCommandPool transferCommandPool, 
+	aiMesh* mesh, 
+	const aiScene* scene, 
+	std::vector<uint16_t> matToTex
+)
+{
 	std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
 
@@ -144,7 +161,8 @@ VkMesh MeshModel::LoadMesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevic
 	}
 
 	// Create new mesh with details
-	VkMesh newMesh = VkMesh(newPhysicalDevice, newDevice, transferQueue, transferCommandPool, &vertices, &indices, 0); //matToTex[mesh->mMaterialIndex]
+
+	Vulkan_Mesh* newMesh = new Vulkan_Mesh(newPhysicalDevice, newDevice, transferQueue, transferCommandPool, &vertices, &indices, 0); //matToTex[mesh->mMaterialIndex]
 
 	return newMesh;
 }

@@ -1,6 +1,6 @@
-#include "VkTexture.h"
+#include "Vulkan_Texture.h"
 
-VkTexture::VkTexture(VkPhysicalDevice* physicalDevice,VkDevice* device, VkQueue* graphicsQueue, VkCommandPool* graphicsCommandPool, VkSampler* sampler, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* samplerSetLayout)
+Vulkan_Texture::Vulkan_Texture(VkPhysicalDevice* physicalDevice,VkDevice* device, VkQueue* graphicsQueue, VkCommandPool* graphicsCommandPool, VkSampler* sampler, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* samplerSetLayout)
 {
 	PhysicalDevice = physicalDevice;
 	Device = device;
@@ -11,7 +11,7 @@ VkTexture::VkTexture(VkPhysicalDevice* physicalDevice,VkDevice* device, VkQueue*
 	SamplerSetLayout = samplerSetLayout;
 }
 
-int VkTexture::createTexture(std::string fileName)
+int Vulkan_Texture::createTexture(std::string fileName)
 {
 
 	//Create Texture Image and get its location in array
@@ -29,7 +29,7 @@ int VkTexture::createTexture(std::string fileName)
 	return 0;
 }
 
-bool VkTexture::createTextureImage(std::string fileName)
+bool Vulkan_Texture::createTextureImage(std::string fileName)
 {
 	//Load Image File
 	int width, height;
@@ -93,7 +93,7 @@ bool VkTexture::createTextureImage(std::string fileName)
 }
 
 // Generate MipMaps for given texture
-void VkTexture::generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {		///busy
+void Vulkan_Texture::generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {		///busy
 
 	VkFormatProperties formatProperties;
 	vkGetPhysicalDeviceFormatProperties(*PhysicalDevice, imageFormat, &formatProperties);
@@ -182,7 +182,7 @@ void VkTexture::generateMipmaps(VkImage image, VkFormat imageFormat, int32_t tex
 	endAndSubmitCommandBuffer(*Device, *GraphicsCommandPool, *GraphicsQueue, commandBuffer);
 }
 
-stbi_uc* VkTexture::loadTextureFile(std::string fileName, int* width, int* height, VkDeviceSize* imageSize)
+stbi_uc* Vulkan_Texture::loadTextureFile(std::string fileName, int* width, int* height, VkDeviceSize* imageSize)
 {
 	int channels;
 
@@ -203,7 +203,7 @@ stbi_uc* VkTexture::loadTextureFile(std::string fileName, int* width, int* heigh
 }
 
 
-int VkTexture::createTextureDescriptor(VkImageView textureImage)
+int Vulkan_Texture::createTextureDescriptor(VkImageView textureImage)
 {
 	VkDescriptorSet descriptorSet{};
 
@@ -242,7 +242,7 @@ int VkTexture::createTextureDescriptor(VkImageView textureImage)
 	return 1;//samplerDescriptorSets.size() - 1;
 }
 
-void VkTexture::cleanUpTexture()
+void Vulkan_Texture::cleanUpTexture()
 {
 	if (getState()) { return; }
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "Renderer/Vulkan_Renderer/VulkanUtillities.h"
-#include "AssetLoading/VkAssets.h"
+#include "AssetLoading/Vulkan_Assets/Vulkan_Assets.h"
 
 
 
@@ -25,7 +25,7 @@ public:
 					bool& ApplyGraphics,
 					GraphicSettings& CurrentGraphicSettings,
 
-					VkAssets& AssetManager
+					Vulkan_Assets& AssetManager
 	);
 
 
@@ -36,7 +36,7 @@ public:
 	void init_imGUI_Vulkan();
 
 
-	void RenderMenus(bool* LocalTransform, glm::vec3* translation, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const VkAssets::AllAssets* AssetList);
+	void RenderMenus(bool* LocalTransform, glm::vec3* translation, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const Vulkan_Assets::AllAssets* AssetList);
 	void CleanUpGUI(VkDevice Device);
 	void CleanUpGuiComponents(VkDevice Device);
 	~GUI_Renderer() = default;
@@ -46,7 +46,7 @@ private:
 	//menu infos
 	struct sharedMenuInfo {
 		int* selectedObject{};
-		const VkAssets::AllAssets* allAssets{};
+		const Vulkan_Assets::AllAssets* allAssets{};
 	}sharedInfo;
 
 	//World Outliner
@@ -96,7 +96,7 @@ private:
 		GraphicSettings* CurrentGraphicSettings{};
 
 		//OBJECTS
-		VkAssets* AssetManager{};
+		Vulkan_Assets* AssetManager{};
 	} IgInitInfo;
 	
 

@@ -1,13 +1,13 @@
-#include "Mesh.h"
+#include "OpenGL_Mesh.h"
 
-Mesh::Mesh()
+OpenGL_Mesh::OpenGL_Mesh()
 {
 	VAO = 0;
 	VBO = 0;
 	IBO = 0;
 }
 
-void Mesh::createMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices)
+void OpenGL_Mesh::createMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices)
 {
 	IndexCount = numOfIndices;
 
@@ -37,7 +37,7 @@ void Mesh::createMesh(GLfloat *vertices, unsigned int *indices, unsigned int num
 }
 
 
-void Mesh::renderMesh()
+void OpenGL_Mesh::renderMesh()
 {
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
@@ -46,10 +46,5 @@ void Mesh::renderMesh()
 	glBindVertexArray(0);
 }
 
-
-GLuint Mesh::getIndexCount()
-{
-	return IndexCount;
-}
 
 

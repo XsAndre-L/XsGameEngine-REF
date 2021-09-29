@@ -12,7 +12,7 @@ Shaders::Shaders()
 	//pointLightCount = 0;
 	//spotLightCount = 0;
 
-	CompileShaders();
+	//CompileShaders();
 }
 
 

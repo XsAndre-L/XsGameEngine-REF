@@ -1,6 +1,6 @@
 #pragma once
-#include"../Renderer/Vulkan_Renderer/VulkanUtillities.h"
-//#define GLFW_INCLUDE_VULKAN
+//#include"../Renderer/Vulkan_Renderer/VulkanUtillities.h"
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <GLM/ext/matrix_transform.hpp>
 
@@ -13,11 +13,11 @@ class Entity
 public:
 	Entity();
 
-	const glm::mat4 getModel();
-	void updateModel();
+	const glm::mat4 getMatrix();
+	void updateMatrix();
 
 	void resetMatrix();
-	void setModel(glm::mat4 newModel);
+	void setMatrix(glm::mat4 newMatrix);
 
 	void setPosition(GLfloat x, GLfloat y, GLfloat z);
 	void setRotation(GLfloat x, GLfloat y, GLfloat z);

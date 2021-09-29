@@ -6,29 +6,30 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "Mesh.h"
-#include "Texture.h"
+#include "OpenGL_Mesh.h"
+#include "OpenGL_Texture.h"
+#include "../Entity.h"
 
-
-class Model
+class OpenGL_MeshModel : public Entity
 {
 public:
-	Model();
+	OpenGL_MeshModel() = default;
+	~OpenGL_MeshModel() = default;
 
 	void LoadModel(const std::string& fileName);
 	void RenderModel();
-	void ClearModel();
+	void destroyModel();
 
-	~Model();
-
+	
+	void LoadMaterials(const aiScene* Scene);
 private:
 
 	void LoadNode(aiNode* node, const aiScene* scene);
 	void LoadMesh(aiMesh* mesh, const aiScene* scene);
-	void LoadMaterials(const aiScene* Scene);
+	
 
-	std::vector<Mesh*> meshList;
-	std::vector<Texture*> textureList;
+	std::vector<OpenGL_Mesh*> meshList;
+	std::vector<OpenGL_Texture*> textureList;
 	std::vector<unsigned int> meshToTex;
 
 };

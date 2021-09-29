@@ -7,19 +7,19 @@
 #include <GLM/gtc/matrix_transform.hpp>
 
 #include "../../GUI_Renderer.h"
-#include "../../AssetLoading/VkAssets.h"
+#include "../../AssetLoading/Vulkan_Assets/Vulkan_Assets.h"
 
 #include "../../Window/Public/GLFW_Window.h"
 #include "../../Camera.h"
 
 
-class VulkanRenderer
+class Vulkan_Renderer
 {
 public:
 	//Vulkan Setup
-	VulkanRenderer() = default;
-	~VulkanRenderer() = default;
-	int init_VulkanRenderer(GLFWwindow* newWindow);		//initialize
+	Vulkan_Renderer() = default;
+	~Vulkan_Renderer() = default;
+	int init_Vulkan_Renderer(GLFWwindow* newWindow);		//initialize
 
 
 	glm::mat4* getViewMatrix() { return &uboViewProjection.view; }
@@ -203,6 +203,6 @@ public:
 		const bool GUI_LAYER = false;
 	#endif
 	
-	VkAssets AssetManager;
+	Vulkan_Assets AssetManager;
 
 };

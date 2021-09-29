@@ -1,11 +1,11 @@
 //#include "PreprocessorDefs.h"
-#include "VulkanRenderer.h"
+#include "Vulkan_Renderer.h"
 
 #include "VkValidation.h"
 
-#pragma region Public Functions [init, updateModel, draw, cleanUp]
+#pragma region Public Functions [init, updateMatrix, draw, cleanUp]
 //RECIEVES THE WINDOW AND THE CREATES ALL NEEDED VULKAN COMPONENTS (INSTANCE , Get PHYSICAL DEVICE , LOGICAL DEVICE)
-int VulkanRenderer::init_VulkanRenderer(GLFWwindow* newWindow)
+int Vulkan_Renderer::init_Vulkan_Renderer(GLFWwindow* newWindow)
 {
 	window = newWindow;
 
@@ -46,7 +46,7 @@ int VulkanRenderer::init_VulkanRenderer(GLFWwindow* newWindow)
 			printf("GUI DISABLED");
 		#endif
 		
-		AssetManager = VkAssets(mainDevice.physicalDevice, mainDevice.logicalDevice, graphicsQueue, graphicsCommandPool, textureSampler, samplerDescriptorPool, samplerSetLayout);
+		AssetManager = Vulkan_Assets(mainDevice.physicalDevice, mainDevice.logicalDevice, graphicsQueue, graphicsCommandPool, textureSampler, samplerDescriptorPool, samplerSetLayout);
 		
 	#pragma region Program
 
@@ -145,12 +145,12 @@ int VulkanRenderer::init_VulkanRenderer(GLFWwindow* newWindow)
 
 		AssetManager.addTexture("plain.png");
 		AssetManager.createAsset("Models/plane.obj");
-		while (AssetManager.meshModelList.size() <= 0)
+		while (AssetManager.Vulkan_MeshModelList.size() <= 0)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		}
 
-		//AssetManager.createMeshModel("Models/plane.obj");
+		//AssetManager.createVulkan_MeshModel("Models/plane.obj");
 
 	#pragma endregion
 
@@ -165,7 +165,7 @@ int VulkanRenderer::init_VulkanRenderer(GLFWwindow* newWindow)
 
 
 //THIS IS USED TO DRAW TO THE SCREEN
-void VulkanRenderer::draw()
+void Vulkan_Renderer::draw()
 {
 
 	#pragma region Get Available Image
@@ -250,7 +250,7 @@ void VulkanRenderer::draw()
 }
 
 //WHEN PROCRAM STOPS ALL CREATED INSTANCES AND DEVICES ARE DELETED
-void VulkanRenderer::cleanUp()
+void Vulkan_Renderer::cleanUp()
 {
 	vkDeviceWaitIdle(mainDevice.logicalDevice);
 
@@ -262,9 +262,9 @@ void VulkanRenderer::cleanUp()
 	#endif	
 	
 	
-	/*for (size_t i = 0; i < meshModelList.size(); i++)
+	/*for (size_t i = 0; i < Vulkan_MeshModelList.size(); i++)
 	{
-		meshModelList[i].destroyModel();
+		Vulkan_MeshModelList[i].destroyModel();
 	}*/
 
 	vkDestroyDescriptorPool(mainDevice.logicalDevice, samplerDescriptorPool, nullptr);
@@ -317,7 +317,7 @@ void VulkanRenderer::cleanUp()
 #pragma region Instance [createInstance, checkInstanceExtensionSupport, createSurface]
 
 //CREATE A NEW INSTANCE
-void VulkanRenderer::createInstance()
+void Vulkan_Renderer::createInstance()
 {
 	#pragma region Validation Layers
 	if (enableValidationLayers && !checkValidationLayerSupport()) {
@@ -395,7 +395,7 @@ void VulkanRenderer::createInstance()
 }
 
 //CHECK IF ALL INSTANCE EXTENSIONS ARE SUPPORTED
-bool VulkanRenderer::checkInstanceExtensionsSupport(std::vector<const char*>* checkExtensions)
+bool Vulkan_Renderer::checkInstanceExtensionsSupport(std::vector<const char*>* checkExtensions)
 {
 	uint32_t extensionCount = 0;
 	vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
@@ -424,7 +424,7 @@ bool VulkanRenderer::checkInstanceExtensionsSupport(std::vector<const char*>* ch
 }
 
 //CREATE SURFUCE ON WHICH WE CAN RENDER
-void VulkanRenderer::createSurface()
+void Vulkan_Renderer::createSurface()
 {
 	//creating a surface (returns result)
 	VkResult result = glfwCreateWindowSurface(Instance, window, nullptr, &Surface);
@@ -439,7 +439,7 @@ void VulkanRenderer::createSurface()
 
 #pragma region PhysicalDevice [getPhysicalDevice, checkDeviceSuitable, checkDeviceExtentionSupport, getQueueFamilies, getMaxUsableSampleCount]
 //GET GPU BY ENUMARATING THREW ALL GPUs
-void VulkanRenderer::getPhysicalDevice()
+void Vulkan_Renderer::getPhysicalDevice()
 {
 	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices(Instance, &deviceCount, nullptr);
@@ -464,7 +464,7 @@ void VulkanRenderer::getPhysicalDevice()
 }
 
 //CHECK IF THE GPU DEVICE IS SUITABLE FOR VULKAN
-bool VulkanRenderer::checkDeviceSuitable(VkPhysicalDevice device)
+bool Vulkan_Renderer::checkDeviceSuitable(VkPhysicalDevice device)
 {
 	/*
 	//INFO about the device itself (ID , name , type , vendor, ect)
@@ -496,7 +496,7 @@ bool VulkanRenderer::checkDeviceSuitable(VkPhysicalDevice device)
 }
 
 //CHECK IF ALL DEVICE EXTENSIONS ARE SUPPORTED
-bool VulkanRenderer::checkDeviceExtensionSupport(VkPhysicalDevice device)
+bool Vulkan_Renderer::checkDeviceExtensionSupport(VkPhysicalDevice device)
 {
 	#pragma region Get Available Extensions 
 	uint32_t extensionCount = 0;														// Extention Count
@@ -534,7 +534,7 @@ bool VulkanRenderer::checkDeviceExtensionSupport(VkPhysicalDevice device)
 }
 
 //CHECKING HOW MANY QUEUES DOES THE DEVICE SUPPORT
-QueueFamilyIndices VulkanRenderer::getQueueFamilies(VkPhysicalDevice device)
+QueueFamilyIndices Vulkan_Renderer::getQueueFamilies(VkPhysicalDevice device)
 {
 	QueueFamilyIndices indices;
 
@@ -577,7 +577,7 @@ QueueFamilyIndices VulkanRenderer::getQueueFamilies(VkPhysicalDevice device)
 }
 
 //MSAA FUNCTION
-VkSampleCountFlagBits VulkanRenderer::getMaxUsableSampleCount() {
+VkSampleCountFlagBits Vulkan_Renderer::getMaxUsableSampleCount() {
 	VkPhysicalDeviceProperties physicalDeviceProperties;
 	vkGetPhysicalDeviceProperties(mainDevice.physicalDevice, &physicalDeviceProperties);
 
@@ -595,7 +595,7 @@ VkSampleCountFlagBits VulkanRenderer::getMaxUsableSampleCount() {
 
 #pragma region LogicalDevice [createLogicalDevice]
 //CREATE LOGICAL DEVICE TO INTERFACE WITH HARDWARE
-void VulkanRenderer::createLogicalDevice()
+void Vulkan_Renderer::createLogicalDevice()
 {
 	//GET THE QUEUE FAMILIES FOR THE CHOSEN PHYSICAL DEVICE
 
@@ -652,7 +652,7 @@ void VulkanRenderer::createLogicalDevice()
 
 #pragma region Swapchain [createSwapChain, getSwapChainDetails, chooseBestSurfaceFormats, chooseBestPresentationMode, chooseSwapExtent, createImageView]
 //SwapChain is the info for Iteration between frames, also creates the images and image views
-void VulkanRenderer::createSwapChain()
+void Vulkan_Renderer::createSwapChain()
 {
 	#pragma region Swapchain Checks [SwapchainDetails, BestSurfaceFormats, presentMode, Extent]
 	//Get Swap CHain details so we can pick best settings
@@ -749,7 +749,7 @@ void VulkanRenderer::createSwapChain()
 }
 
 //GETTING THE SUPPORTED (CAPABILLITIES, FORMATS, PRESENTATION MODE)
-SwapChainDetails VulkanRenderer::getSwapChainDetails(VkPhysicalDevice device)
+SwapChainDetails Vulkan_Renderer::getSwapChainDetails(VkPhysicalDevice device)
 {
 	SwapChainDetails swapChainDetails;
 
@@ -788,7 +788,7 @@ SwapChainDetails VulkanRenderer::getSwapChainDetails(VkPhysicalDevice device)
 //	-- CHOOSE THE BEST SURFACE FORMAT
 //Format		: VK_FORMAT_R8G8A8_UNORM  || Backup VK_FORMAT_B8G8R8A8_UNORM
 //colorSpace	: VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
-VkSurfaceFormatKHR VulkanRenderer::chooseBestSurfaceFormats(const std::vector<VkSurfaceFormatKHR>& formats)
+VkSurfaceFormatKHR Vulkan_Renderer::chooseBestSurfaceFormats(const std::vector<VkSurfaceFormatKHR>& formats)
 {
 	//UNDEFINED MEANS ALL FORMATS ARE AVAILABLE
 	if (formats.size() == 1 && formats[0].format == VK_FORMAT_UNDEFINED)
@@ -810,7 +810,7 @@ VkSurfaceFormatKHR VulkanRenderer::chooseBestSurfaceFormats(const std::vector<Vk
 }
 
 //	-- PRESENTATION MODE
-VkPresentModeKHR VulkanRenderer::chooseBestPresentationMode(const std::vector<VkPresentModeKHR>& presentationModes)
+VkPresentModeKHR Vulkan_Renderer::chooseBestPresentationMode(const std::vector<VkPresentModeKHR>& presentationModes)
 {
 	//LOOK FOR MAILBOX PRESENTATION MODE [Optimal]
 	for (const auto& presentMode : presentationModes)
@@ -825,7 +825,7 @@ VkPresentModeKHR VulkanRenderer::chooseBestPresentationMode(const std::vector<Vk
 }
 
 //	-- EXTENT SIZE
-VkExtent2D VulkanRenderer::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities)
+VkExtent2D Vulkan_Renderer::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities)
 {
 	if (surfaceCapabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
 		return surfaceCapabilities.currentExtent;
@@ -851,7 +851,7 @@ VkExtent2D VulkanRenderer::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& surf
 #pragma endregion
 
 #pragma region RenderPass [createRenderPass]
-void VulkanRenderer::createRenderPass()
+void Vulkan_Renderer::createRenderPass()
 {
 	#pragma region Attatchment Descriptions and References
 	//Attachment Descriptions
@@ -990,7 +990,7 @@ void VulkanRenderer::createRenderPass()
 
 #pragma region Descriptor Set Layouts & Push Constant Ranges
 //Needs to happen Before Graphics Pipeline is created
-void VulkanRenderer::createDescriptorSetLayouts()
+void Vulkan_Renderer::createDescriptorSetLayouts()
 {
 	#pragma region Uniform Values Descriptor Set Layout
 	// UNIFORM VALUES DESCRIPTOR SET LAYOUT
@@ -1046,7 +1046,7 @@ void VulkanRenderer::createDescriptorSetLayouts()
 
 }
 
-void VulkanRenderer::createPushConstantRange()
+void Vulkan_Renderer::createPushConstantRange()
 {
 	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	pushConstantRange.offset = 0;
@@ -1056,11 +1056,11 @@ void VulkanRenderer::createPushConstantRange()
 
 #pragma region Descriptor Set Allocation [createUniformBuffers(), createDescriptorPool(), allocateDescriptorSets()]
 //UniformBuffers are buffers in memory that is made accesible in read only format to shaders, so the shaders can read constant parameter data
-void VulkanRenderer::createUniformBuffers()					//Need to bind Descriptor Sets with Uniform Buffer
+void Vulkan_Renderer::createUniformBuffers()					//Need to bind Descriptor Sets with Uniform Buffer
 {
 	#pragma region Create Uniform Buffer for Every swapChainImage
 	//Buffer size will be size of all Uniform Buffer Object variables
-	VkDeviceSize bufferSize = sizeof(UboViewProjection) + sizeof(VkAssets::AllLights);
+	VkDeviceSize bufferSize = sizeof(UboViewProjection) + sizeof(Vulkan_Assets::AllLights);
 
 	// One uniform buffer for each image
 	uniformBuffer.resize(swapChainImages.size());
@@ -1076,7 +1076,7 @@ void VulkanRenderer::createUniformBuffers()					//Need to bind Descriptor Sets w
 }
 
 //Descriptor Pools are used to allocate Descriptor sets from
-void VulkanRenderer::createDescriptorPool()					//Allocated from pool so we Create a Pool
+void Vulkan_Renderer::createDescriptorPool()					//Allocated from pool so we Create a Pool
 {
 	#pragma region Create Decriptor Pool to Allocate Descriptor Sets from
 
@@ -1129,7 +1129,7 @@ void VulkanRenderer::createDescriptorPool()					//Allocated from pool so we Crea
 }
 
 //Allocates DescriptorSets from DescriptorPool and binds the Sets to the UniformBuffers
-void VulkanRenderer::allocateDescriptorSets()				//Allocate Descriptor Sets and then Bind them with Uniform Buffer
+void Vulkan_Renderer::allocateDescriptorSets()				//Allocate Descriptor Sets and then Bind them with Uniform Buffer
 {
 	#pragma region Allocate Descriptor Sets
 	//Resize Descriptor Set list so one for every buffer
@@ -1180,7 +1180,7 @@ void VulkanRenderer::allocateDescriptorSets()				//Allocate Descriptor Sets and 
 		VkDescriptorBufferInfo lightBufferInfo = {};
 		lightBufferInfo.buffer = uniformBuffer[i];
 		lightBufferInfo.offset = sizeof(UboViewProjection);
-		lightBufferInfo.range = sizeof(VkAssets::AllLights);
+		lightBufferInfo.range = sizeof(Vulkan_Assets::AllLights);
 
 
 		//Data about connection between binding and buffer
@@ -1207,7 +1207,7 @@ void VulkanRenderer::allocateDescriptorSets()				//Allocate Descriptor Sets and 
 //Reads Shaders and then sets up The Pipeline
 #pragma region Graphics Pipeline [createGraphicsPipeline(), createShaderModule()]
 
-void VulkanRenderer::createGraphicsPipeline()
+void Vulkan_Renderer::createGraphicsPipeline()
 {
 	auto vertexShaderCode = readFile("Shaders/Vulkan_Shaders/vert.spv");
 	auto fragmentShaderCode = readFile("Shaders/Vulkan_Shaders/frag.spv");
@@ -1447,7 +1447,7 @@ void VulkanRenderer::createGraphicsPipeline()
 	#pragma endregion
 }
 
-VkShaderModule VulkanRenderer::createShaderModule(const std::vector<char>& code)
+VkShaderModule Vulkan_Renderer::createShaderModule(const std::vector<char>& code)
 {
 	VkShaderModuleCreateInfo shaderModuleCreateInfo = {};
 	shaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -1469,13 +1469,13 @@ VkShaderModule VulkanRenderer::createShaderModule(const std::vector<char>& code)
 
 
 #pragma region Images [createDepthResources(), chooseSupportedFormat()]
-void VulkanRenderer::createColorResources() {
+void Vulkan_Renderer::createColorResources() {
 	VkFormat colorFormat = swapChainImageFormat;
 
 	colorImage = createImage(mainDevice.physicalDevice, mainDevice.logicalDevice, swapChainExtent.width, swapChainExtent.height, 1, msaaSamples, colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &colorImageMemory);
 	colorImageView = createImageView(mainDevice.logicalDevice, colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 }
-void VulkanRenderer::createDepthResources()
+void Vulkan_Renderer::createDepthResources()
 {
 	//ChooseSupported format has been run inside createRenderPass()
 	depthBufferImage = createImage(mainDevice.physicalDevice, mainDevice.logicalDevice, swapChainExtent.width, swapChainExtent.height, 1 , msaaSamples, depthImageFormat, VK_IMAGE_TILING_OPTIMAL,
@@ -1484,7 +1484,7 @@ void VulkanRenderer::createDepthResources()
 	depthBufferImageView = createImageView(mainDevice.logicalDevice, depthBufferImage, depthImageFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 }
 
-VkFormat VulkanRenderer::chooseSupportedFormat(const std::vector<VkFormat>& formats, VkImageTiling tiling, VkFormatFeatureFlags featureFlags)
+VkFormat Vulkan_Renderer::chooseSupportedFormat(const std::vector<VkFormat>& formats, VkImageTiling tiling, VkFormatFeatureFlags featureFlags)
 {
 	for (VkFormat format : formats)
 	{
@@ -1509,7 +1509,7 @@ VkFormat VulkanRenderer::chooseSupportedFormat(const std::vector<VkFormat>& form
 
 #pragma region Frame Buffers [createFrameBuffers()]
 
-void VulkanRenderer::createFrameBuffers()
+void Vulkan_Renderer::createFrameBuffers()
 {
 	// Resize framebuffer count to equal swapChain image count
 	swapChainFramebuffers.resize(swapChainImages.size());
@@ -1557,7 +1557,7 @@ void VulkanRenderer::createFrameBuffers()
 
 #pragma region Command Buffers [createCommandPool(), createCommandBuffers()]
 
-void VulkanRenderer::createCommandPool()
+void Vulkan_Renderer::createCommandPool()
 {
 	//QueueFamilyIndices queueFamilyIndices = indices;
 
@@ -1575,7 +1575,7 @@ void VulkanRenderer::createCommandPool()
 
 }
 
-void VulkanRenderer::createCommandBuffers()
+void Vulkan_Renderer::createCommandBuffers()
 {
 	//Resize command buffer count to one for each frame buffer
 	commandBuffers.resize(swapChainFramebuffers.size());
@@ -1597,7 +1597,7 @@ void VulkanRenderer::createCommandBuffers()
 #pragma endregion
 
 #pragma region Record Commands [recordCommands()]
-void VulkanRenderer::recordCommands(uint32_t currentFrame)
+void Vulkan_Renderer::recordCommands(uint32_t currentFrame)
 {
 	//printf("req");
 	VkCommandBufferBeginInfo bufferBeginInfo = {};
@@ -1624,25 +1624,25 @@ void VulkanRenderer::recordCommands(uint32_t currentFrame)
 		{
 			throw std::runtime_error("Failerd to begin Command Buffer!");
 		}
-		//printf("MODELS NUM - %d\n", AssetManager.meshModelList.size());
+		//printf("MODELS NUM - %d\n", AssetManager.Vulkan_MeshModelList.size());
 		{
 			vkCmdBeginRenderPass(commandBuffers[currentFrame], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-			//For every meshModel
-			for (size_t i = 0; i < AssetManager.meshModelList.size(); i++)
+			//For every Vulkan_MeshModel
+			for (size_t i = 0; i < AssetManager.Vulkan_MeshModelList.size(); i++)
 			{
-				MeshModel *currentMeshModel = &AssetManager.meshModelList[i];
-				if (AssetManager.meshModelList[i].getState()) { continue; }
-				auto temp = currentMeshModel->getModel();
+				Vulkan_MeshModel *currentVulkan_MeshModel = &AssetManager.Vulkan_MeshModelList[i];
+				if (AssetManager.Vulkan_MeshModelList[i].getState()) { continue; }
+				auto temp = currentVulkan_MeshModel->getMatrix();
 				
 				vkCmdPushConstants(commandBuffers[currentFrame], pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(Matrix), &temp);
 
-				//For every mesh inside the meshModel
-				for (size_t j = 0; j < currentMeshModel->getMeshCount(); j++)
+				//For every mesh inside the Vulkan_MeshModel
+				for (size_t j = 0; j < currentVulkan_MeshModel->getMeshCount(); j++)
 				{
-					VkMesh* currentMesh = currentMeshModel->getMesh(j);
+					Vulkan_Mesh* currentMesh = currentVulkan_MeshModel->getMesh(j);
 					VkBuffer vertexBuffers[1] = { currentMesh->getVertexBuffer() };
 					VkDeviceSize offsets[1] = { 0 };
 
@@ -1652,7 +1652,7 @@ void VulkanRenderer::recordCommands(uint32_t currentFrame)
 
 					if (AssetManager.textureList[currentMesh->getTexId()].getState()) { continue; }
 				
-					std::array<VkDescriptorSet, 2>descriptorSetGroup = { descriptorSets[currentFrame],  AssetManager.textureList[currentMesh->getTexId()].getSDS() };//currentMeshModel.getMesh(j)->getTexId()  
+					std::array<VkDescriptorSet, 2>descriptorSetGroup = { descriptorSets[currentFrame],  AssetManager.textureList[currentMesh->getTexId()].getSDS() };//currentVulkan_MeshModel.getMesh(j)->getTexId()  
 
 					vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, static_cast<uint32_t>(descriptorSetGroup.size()), descriptorSetGroup.data(), 0, nullptr);
 
@@ -1661,7 +1661,7 @@ void VulkanRenderer::recordCommands(uint32_t currentFrame)
 
 					//vkCmdDraw(commandBuffers[i], 12 * 3, 1, 0, 0);
 					//vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(firstMesh.getVertexCount()), 1, 0, 0);
-					vkCmdDrawIndexed(commandBuffers[currentFrame], currentMeshModel->getMesh(j)->getIndexCount(), 1, 0, 0, 0);
+					vkCmdDrawIndexed(commandBuffers[currentFrame], currentVulkan_MeshModel->getMesh(j)->getIndexCount(), 1, 0, 0, 0);
 				}
 
 				
@@ -1687,7 +1687,7 @@ void VulkanRenderer::recordCommands(uint32_t currentFrame)
 #pragma endregion
 
 #pragma region Syncronisation [Semaphores and Fences]
-void VulkanRenderer::createSynchronisation()
+void Vulkan_Renderer::createSynchronisation()
 {
 	imageAvailable.resize(MAX_FRAME_DRAWS);
 	renderFinished.resize(MAX_FRAME_DRAWS);
@@ -1717,7 +1717,7 @@ void VulkanRenderer::createSynchronisation()
 #pragma endregion
 
 
-void VulkanRenderer::updateUniformBuffer(uint32_t imageIndex)
+void Vulkan_Renderer::updateUniformBuffer(uint32_t imageIndex)
 {
 	void* data;
 	vkMapMemory(mainDevice.logicalDevice, uniformBufferMemory[imageIndex], 0, sizeof(UboViewProjection), 0, &data);
@@ -1728,8 +1728,8 @@ void VulkanRenderer::updateUniformBuffer(uint32_t imageIndex)
 	//for (size_t i = 0; i < AssetManager.LightList.size(); i++)
 	//{
 	//printf("dirr : %f\n", AssetManager.allLights.directionalLight.lightDirection.x);
-	vkMapMemory(mainDevice.logicalDevice, uniformBufferMemory[imageIndex], sizeof(UboViewProjection), sizeof(VkAssets::AllLights), 0, &data);
-	memcpy(data, &AssetManager.allLights, sizeof(VkAssets::AllLights));
+	vkMapMemory(mainDevice.logicalDevice, uniformBufferMemory[imageIndex], sizeof(UboViewProjection), sizeof(Vulkan_Assets::AllLights), 0, &data);
+	memcpy(data, &AssetManager.allLights, sizeof(Vulkan_Assets::AllLights));
 	vkUnmapMemory(mainDevice.logicalDevice, uniformBufferMemory[imageIndex]);
 	//}
 	
@@ -1738,7 +1738,7 @@ void VulkanRenderer::updateUniformBuffer(uint32_t imageIndex)
 #pragma region Texture Loading
 
 //Vulkan Exclusive (gets called once to create a texture sampler)
-void VulkanRenderer::createTextureSampler()
+void Vulkan_Renderer::createTextureSampler()
 {
 	//Sampler Creation Info 
 	VkSamplerCreateInfo samplerCreateInfo = {};
@@ -1769,7 +1769,7 @@ void VulkanRenderer::createTextureSampler()
 
 #pragma region SwapChain Recreation
 
-void VulkanRenderer::recreateSwapChain()
+void Vulkan_Renderer::recreateSwapChain()
 {
 	vkDeviceWaitIdle(mainDevice.logicalDevice);
 
@@ -1790,7 +1790,7 @@ void VulkanRenderer::recreateSwapChain()
 	#endif
 }
 
-void VulkanRenderer::cleanUpSwapChain()
+void Vulkan_Renderer::cleanUpSwapChain()
 {
 	#ifdef GUI_LAYER
 		GUI.CleanUpGuiComponents(mainDevice.logicalDevice);
@@ -1829,7 +1829,7 @@ void VulkanRenderer::cleanUpSwapChain()
 #pragma endregion
 
 
-void VulkanRenderer::setCurrentSampleCount(int sampleCount)
+void Vulkan_Renderer::setCurrentSampleCount(int sampleCount)
 {
 	
 	if (maxMsaaSamples >= static_cast<VkSampleCountFlagBits>(sampleCount))

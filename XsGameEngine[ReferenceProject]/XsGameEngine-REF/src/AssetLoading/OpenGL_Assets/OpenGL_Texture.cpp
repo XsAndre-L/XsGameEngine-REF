@@ -1,11 +1,11 @@
-#include "Texture.h"
+#include "OpenGL_Texture.h"
 
-Texture::Texture()
+OpenGL_Texture::OpenGL_Texture()
 {
 	fileLocation = (char*)"";
 }
 
-Texture::Texture(const char* fileLoc)
+OpenGL_Texture::OpenGL_Texture(const char* fileLoc)
 {
 	textureID = 0;
 	width = 0;
@@ -14,7 +14,7 @@ Texture::Texture(const char* fileLoc)
 	fileLocation = (char*)fileLoc;
 }
 
-bool Texture::LoadTexture()
+bool OpenGL_Texture::LoadTexture()
 {
 	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
 	if (!texData)
@@ -42,7 +42,7 @@ bool Texture::LoadTexture()
 }
 
 
-bool Texture::LoadTextureA()
+bool OpenGL_Texture::LoadTextureA()
 {
 	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
 	if (!texData)
@@ -71,14 +71,14 @@ bool Texture::LoadTextureA()
 
 
 
-void Texture::UseTexture()
+void OpenGL_Texture::UseTexture()
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 }
 
-void Texture::ClearTexture()
+void OpenGL_Texture::ClearTexture()
 {
 	printf("Deleting tex");
 	glDeleteTextures(1, &textureID);
@@ -90,7 +90,7 @@ void Texture::ClearTexture()
 }
 
 
-Texture::~Texture()
+OpenGL_Texture::~OpenGL_Texture()
 {
 	//ClearTexture();
 }

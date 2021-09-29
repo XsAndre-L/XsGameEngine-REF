@@ -161,15 +161,28 @@
     <None Include="Shaders\vert.spv" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AssetLoading\Entity.h" />
+    <ClInclude Include="src\AssetLoading\Lights\DirectionalLight.h" />
+    <ClInclude Include="src\AssetLoading\Lights\Light.h" />
+    <ClInclude Include="src\AssetLoading\Vulkan_Assets\Vulkan_Assets.h" />
+    <ClInclude Include="src\AssetLoading\Vulkan_Assets\Vulkan_Mesh.h" />
+    <ClInclude Include="src\AssetLoading\Vulkan_Assets\Vulkan_MeshModel.h" />
+    <ClInclude Include="src\AssetLoading\Vulkan_Assets\Vulkan_Texture.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\GUI_Renderer.h" />
+    <ClInclude Include="src\PreprocessorDefs.h" />
     <ClInclude Include="src\ProgramLayers\ProgramLayers.h" />
     <ClInclude Include="src\Renderer\OpenGL_Renderer\CommonValues.h" />
-    <ClInclude Include="src\Renderer\OpenGL_Renderer\Light.h" />
-    <ClInclude Include="src\Renderer\OpenGL_Renderer\Mesh.h" />
-    <ClInclude Include="src\Renderer\OpenGL_Renderer\Model.h" />
+    <ClInclude Include="src\Renderer\OpenGL_Renderer\Material.h" />
+    <ClInclude Include="src\AssetLoading\OpenGL_Assets\OpenGL_Assets.h" />
+    <ClInclude Include="src\AssetLoading\OpenGL_Assets\OpenGL_Mesh.h" />
+    <ClInclude Include="src\AssetLoading\OpenGL_Assets\OpenGL_MeshModel.h" />
     <ClInclude Include="src\Renderer\OpenGL_Renderer\OpenGL_Renderer.h" />
+    <ClInclude Include="src\AssetLoading\OpenGL_Assets\OpenGL_Texture.h" />
     <ClInclude Include="src\Renderer\OpenGL_Renderer\Shaders.h" />
-    <ClInclude Include="src\Renderer\OpenGL_Renderer\Texture.h" />
+    <ClInclude Include="src\Renderer\Vulkan_Renderer\VkValidation.h" />
+    <ClInclude Include="src\Renderer\Vulkan_Renderer\VulkanUtillities.h" />
+    <ClInclude Include="src\Renderer\Vulkan_Renderer\Vulkan_Renderer.h" />
     <ClInclude Include="src\Time.h" />
     <ClInclude Include="src\Window\Public\GLFW_Window.h" />
     <ClInclude Include="vendor\ImGUI\imconfig.h" />
@@ -182,14 +195,24 @@
     <ClInclude Include="vendor\ImGUI\Vulkan\imgui_impl_vulkan.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AssetLoading\Entity.cpp" />
+    <ClCompile Include="src\AssetLoading\Lights\DirectionalLight.cpp" />
+    <ClCompile Include="src\AssetLoading\Lights\Light.cpp" />
+    <ClCompile Include="src\AssetLoading\Vulkan_Assets\Vulkan_Assets.cpp" />
+    <ClCompile Include="src\AssetLoading\Vulkan_Assets\Vulkan_Mesh.cpp" />
+    <ClCompile Include="src\AssetLoading\Vulkan_Assets\Vulkan_MeshModel.cpp" />
+    <ClCompile Include="src\AssetLoading\Vulkan_Assets\Vulkan_Texture.cpp" />
     <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Renderer\OpenGL_Renderer\Light.cpp" />
-    <ClCompile Include="src\Renderer\OpenGL_Renderer\Main.cpp" />
-    <ClCompile Include="src\Renderer\OpenGL_Renderer\Mesh.cpp" />
-    <ClCompile Include="src\Renderer\OpenGL_Renderer\Model.cpp" />
+    <ClCompile Include="src\GUI_Renderer.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Renderer\OpenGL_Renderer\Material.cpp" />
+    <ClCompile Include="src\AssetLoading\OpenGL_Assets\OpenGL_Assets.cpp" />
+    <ClCompile Include="src\AssetLoading\OpenGL_Assets\OpenGL_Mesh.cpp" />
+    <ClCompile Include="src\AssetLoading\OpenGL_Assets\OpenGL_MeshModel.cpp" />
     <ClCompile Include="src\Renderer\OpenGL_Renderer\OpenGL_Renderer.cpp" />
+    <ClCompile Include="src\AssetLoading\OpenGL_Assets\OpenGL_Texture.cpp" />
     <ClCompile Include="src\Renderer\OpenGL_Renderer\Shaders.cpp" />
-    <ClCompile Include="src\Renderer\OpenGL_Renderer\Texture.cpp" />
+    <ClCompile Include="src\Renderer\Vulkan_Renderer\Vulkan_Renderer.cpp" />
     <ClCompile Include="src\Time.cpp" />
     <ClCompile Include="src\Window\Private\GLFW_Window.cpp" />
     <ClCompile Include="vendor\ImGUI\imgui.cpp" />

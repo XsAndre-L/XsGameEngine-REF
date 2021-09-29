@@ -11,8 +11,8 @@ Camera::Camera()
 
 	front = glm::vec3(0.0f, 0.0f, -1.0f);
 
-	moveSpeed = 1.0f;
-	turnSpeed = 4.0f;
+	moveSpeed = 2.0f;
+	turnSpeed = 8.0f;
 }
 
 // Making a camera with a new position and rotation

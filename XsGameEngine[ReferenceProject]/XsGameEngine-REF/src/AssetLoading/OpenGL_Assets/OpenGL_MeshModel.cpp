@@ -1,10 +1,7 @@
-#include "Model.h"
+#include "OpenGL_MeshModel.h"
 
-Model::Model()
-{
-}
 
-void Model::LoadModel(const std::string& fileName)
+void OpenGL_MeshModel::LoadModel(const std::string& fileName)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
@@ -23,7 +20,7 @@ void Model::LoadModel(const std::string& fileName)
 	LoadMaterials(scene);
 }
 
-void Model::LoadNode(aiNode* node, const aiScene* scene)
+void OpenGL_MeshModel::LoadNode(aiNode* node, const aiScene* scene)
 {
 	for (size_t i = 0; i < node->mNumMeshes; i++)
 	{
@@ -35,7 +32,7 @@ void Model::LoadNode(aiNode* node, const aiScene* scene)
 	}
 }
 
-void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
+void OpenGL_MeshModel::LoadMesh(aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<GLfloat> vertices;
 	std::vector<unsigned int> indices;
@@ -62,13 +59,13 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 		}
 	}
 
-	Mesh* newMesh = new Mesh();
+	OpenGL_Mesh* newMesh = new OpenGL_Mesh();
 	newMesh->createMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
 	meshList.push_back(newMesh);
 	meshToTex.push_back(mesh->mMaterialIndex);
 }
 
-void Model::LoadMaterials(const aiScene* scene)
+void OpenGL_MeshModel::LoadMaterials(const aiScene* scene)
 {
 
 	textureList.resize(scene->mNumMaterials);
@@ -90,7 +87,7 @@ void Model::LoadMaterials(const aiScene* scene)
 
 				std::string texPath = std::string("src/Renderer/OpenGL_Renderer/Textures/") + fileName;
 
-				textureList[i] = new Texture(texPath.c_str());
+				textureList[i] = new OpenGL_Texture(texPath.c_str());
 				printf(texPath.c_str());
 				if (!textureList[i]->LoadTexture())
 				{
@@ -103,13 +100,13 @@ void Model::LoadMaterials(const aiScene* scene)
 
 		if (!textureList[i])
 		{
-			textureList[i] = new Texture("src/Renderer/OpenGL_Renderer/Textures/plain.png");
+			textureList[i] = new OpenGL_Texture("src/Renderer/OpenGL_Renderer/Textures/plain.png");
 			textureList[i]->LoadTextureA();
 		}
 	}
 }
 
-void Model::RenderModel()
+void OpenGL_MeshModel::RenderModel()
 {
 	for (size_t i = 0; i < meshList.size(); i++)
 	{
@@ -125,7 +122,7 @@ void Model::RenderModel()
 	}
 }
 
-void Model::ClearModel()
+void OpenGL_MeshModel::destroyModel()
 {
 	printf("CLEARING");
 	for (size_t i = 0; i < meshList.size(); i++)
@@ -149,9 +146,6 @@ void Model::ClearModel()
 	}
 }
 
-Model::~Model()
-{
-	//ClearModel();
-}
+
 
 

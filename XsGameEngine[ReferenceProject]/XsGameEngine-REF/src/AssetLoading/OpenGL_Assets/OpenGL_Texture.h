@@ -3,12 +3,12 @@
 #include <stb_image/stb_image.h>
 
 
-class Texture
+class OpenGL_Texture
 {
 public:
-	Texture();
-	Texture(const char * fileLoc);
-	~Texture();
+	OpenGL_Texture();
+	OpenGL_Texture(const char * fileLoc);
+	~OpenGL_Texture();
 
 	bool LoadTexture();
 	bool LoadTextureA();

@@ -20,7 +20,7 @@ GUI_Renderer::GUI_Renderer
 	VkSampleCountFlagBits& msaaSampleCount, 
 	bool& ApplyGraphics, 
 	GraphicSettings& CurrentGraphicSettings, 
-	VkAssets& assetManager
+	Vulkan_Assets& assetManager
 )
 {
 	IgInitInfo.mainWindow = &window;
@@ -151,7 +151,7 @@ void GUI_Renderer::init_imGUI_Vulkan()
 }
 
 //Main Render Menus Function
-void GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const VkAssets::AllAssets* AssetList)
+void GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const Vulkan_Assets::AllAssets* AssetList)
 {
 	//Hide and unhide Content Browser
 	if (ImGui::IsKeyPressed(ImGui::GetIO().KeyMap[ImGuiKey_Space]) && ImGui::GetIO().KeysDown[GLFW_KEY_LEFT_CONTROL]) {
@@ -365,7 +365,7 @@ void GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 		ImGui::OpenPopup("OptionsPopUp");
 
 		if (ImGui::Button("Delete")) {
-			IgInitInfo.AssetManager->destroyMeshModel(uid);
+			IgInitInfo.AssetManager->destroyVulkan_MeshModel(uid);
 		}
 		
 		ImGui::EndPopup();
@@ -373,7 +373,7 @@ void GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 	
 	if (node_open)
 	{
-		std::vector<std::string> ChildNodes = *IgInitInfo.AssetManager->meshModelList.at(uid).getChildren();
+		std::vector<std::string> ChildNodes = *IgInitInfo.AssetManager->Vulkan_MeshModelList.at(uid).getChildren();
 		//static float placeholder_members[8] = { 0.0f, 0.0f, 1.0f, 3.1416f, 100.0f, 999.0f };
 		for (int i = 0; i < ChildNodes.size(); i++)
 		{
@@ -520,7 +520,7 @@ void GUI_Renderer::renderContentMenu() {
 
 				if (ImGui::Button(nameString.c_str(), ImVec2(100.0f, 100.0f)))
 				{
-					if (IgInitInfo.AssetManager->meshModelList.size() < MAX_OBJECTS) {
+					if (IgInitInfo.AssetManager->Vulkan_MeshModelList.size() < MAX_OBJECTS) {
 						IgInitInfo.AssetManager->createAsset(modelPath.string());
 					}
 				}
