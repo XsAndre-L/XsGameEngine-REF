@@ -9,6 +9,7 @@
 #include "CommonValues.h"
 
 #include <GLM/glm.hpp>
+
 //#include "DirectionalLight.h"
 //#include "PointLight.h"
 //#include "SpotLight.h"
@@ -24,6 +25,7 @@ public:
 
 	void AddShader(GLuint& program, std::vector<char> ShaderCode/*const char* ShaderCode*/, GLenum shaderType);
 	void CompileShaders();
+	void SetProjection(glm::mat4 Projection);
 	std::vector<char> readFile(const std::string& filePath);		//MODIFIED
 
 	//swaped GLuint with uint32_t 

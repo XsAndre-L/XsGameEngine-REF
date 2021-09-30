@@ -17,6 +17,8 @@
 
 #include "../../Camera.h"
 
+#include "OpenGL_GUI_Renderer.h"
+
 class OpenGL_Renderer
 {
 public:
@@ -24,10 +26,12 @@ public:
 	~OpenGL_Renderer() = default;
 
 	int init_OpenGL_Renderer(GLFWwindow* newWindow);		//initialize
+
 	//void pushModel(const char* fileName);
 	void draw();
 
 	Shaders* getShaders() { return &shaders; }
+	glm::mat4* getViewMatrix(){ return shaders.ViewMatrix(); }
 
 	void shutdown_Renderer();
 private:
@@ -40,6 +44,7 @@ private:
 public:
 
 	OpenGL_Assets AssetManager;
+	OpenGL_GUI_Renderer GUI_Renderer;
 	//std::vector<OpenGL_MeshModel*> modelList;
 };
 

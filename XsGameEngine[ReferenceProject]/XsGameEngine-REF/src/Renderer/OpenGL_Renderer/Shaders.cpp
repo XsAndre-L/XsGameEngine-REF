@@ -194,6 +194,21 @@ void Shaders::CompileShaders() {
 	//glBindFragDataLocation(shaderProgram, 0, "outColor");
 }
 
+void Shaders::SetProjection(glm::mat4 projection) {
+
+	#pragma region Set Projection
+	glUseProgram(shaderProgram);
+	glBindBuffer(GL_UNIFORM_BUFFER, getMvpLocation());
+
+	glBufferSubData(GL_UNIFORM_BUFFER, 128, 64, &projection);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	/////glUniformMatrix4fv(shaders.getUniformProjection(), 1, GL_FALSE, glm::value_ptr(projection));
+	glUseProgram(0);
+	#pragma endregion
+}
+
 std::vector<char> Shaders::readFile(const std::string& filePath)//const char* filePath)
 {
 

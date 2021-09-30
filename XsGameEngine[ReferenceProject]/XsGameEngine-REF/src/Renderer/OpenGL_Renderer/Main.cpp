@@ -19,6 +19,7 @@ OpenGL_Renderer newRenderer_opengl;
 
 Time tTime;
 
+Camera camera;
 
 //void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount, unsigned int vLength, unsigned int normalOffset)
 //{
@@ -146,25 +147,6 @@ int main() {
 	//AddMesh();
 	
 	//GLuint Program = shaders.getProgram();
-	
-
-	#pragma region Set Projection
-	int bufferWidth, bufferHeight;
-	glfwGetFramebufferSize(newWindow.getWindow(), &bufferWidth, &bufferHeight);
-	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)bufferWidth / (GLfloat)bufferHeight, 0.1f, 100.0f);
-
-	glUseProgram(newRenderer_opengl.getShaders()->getProgram());
-		glBindBuffer(GL_UNIFORM_BUFFER, newRenderer_opengl.getShaders()->getMvpLocation());
-
-			glBufferSubData(GL_UNIFORM_BUFFER, 128, 64, &projection);
-	
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	
-	/////glUniformMatrix4fv(shaders.getUniformProjection(), 1, GL_FALSE, glm::value_ptr(projection));
-	glUseProgram(0);
-	#pragma endregion
-
-	Camera camera;
 
     
 	float deltaTime = 0.0f;

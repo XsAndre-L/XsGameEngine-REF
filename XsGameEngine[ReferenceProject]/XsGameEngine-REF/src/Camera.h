@@ -23,8 +23,6 @@ public:
 	glm::vec3 getCamFront() { return front * -1.0f; }
 	void checkInputs(bool cursorMode, bool* keys, float scroll, GLfloat deltaTime);
 
-	
-
 private:
 	glm::mat4* viewMatrix = nullptr;
 

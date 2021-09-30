@@ -1,19 +1,19 @@
 #pragma once
-#include "Renderer/Vulkan_Renderer/VulkanUtillities.h"
-#include "AssetLoading/Vulkan_Assets/Vulkan_Assets.h"
+#include "VulkanUtillities.h"
+#include "../../AssetLoading/Vulkan_Assets/Vulkan_Assets.h"
 
 
 
-#include "../vendor/ImGUI/imgui.h"
-#include "../vendor/ImGUI/imgui_impl_glfw.h"
-#include "../vendor/ImGUI/Vulkan/imgui_impl_vulkan.h"
+#include "../../../vendor/ImGUI/imgui.h"
+#include "../../../vendor/ImGUI/imgui_impl_glfw.h"
+#include "../../../vendor/ImGUI/Vulkan/imgui_impl_vulkan.h"
 
 
-class GUI_Renderer
+class Vulkan_GUI_Renderer
 {
 public:
-	GUI_Renderer();
-	GUI_Renderer(	GLFWwindow& window,
+	Vulkan_GUI_Renderer();
+	Vulkan_GUI_Renderer(	GLFWwindow& window,
 					VkInstance& instance,
 					VkDevice& Device,
 					VkPhysicalDevice& PhysicalDevice,
@@ -39,7 +39,7 @@ public:
 	void RenderMenus(bool* LocalTransform, glm::vec3* translation, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const Vulkan_Assets::AllAssets* AssetList);
 	void CleanUpGUI(VkDevice Device);
 	void CleanUpGuiComponents(VkDevice Device);
-	~GUI_Renderer() = default;
+	~Vulkan_GUI_Renderer() = default;
 
 private:
 

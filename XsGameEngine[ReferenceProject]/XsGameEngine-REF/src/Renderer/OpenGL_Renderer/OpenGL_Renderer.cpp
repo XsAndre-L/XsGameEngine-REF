@@ -12,7 +12,7 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 	{
 		printf("Glew initialization failed!");
 		glfwDestroyWindow(newWindow);
-		return false;
+		return 1;
 
 	}
 
@@ -26,9 +26,24 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 
 
 	shaders.CompileShaders();
+	/*int bufferWidth, bufferHeight;
+	glfwGetFramebufferSize(newWindow.getWindow(), &bufferWidth, &bufferHeight);*/
+	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	shaders.SetProjection(projection);
+
+	/// <summary>
+	AssetManager.createOpenGL_MeshModel("src/Renderer/OpenGL_Renderer/Models/plane.obj");
+	AssetManager.createOpenGL_MeshModel("src/Renderer/OpenGL_Renderer/Models/hatchet.obj");
+
+	glfwSwapInterval(1);
+
+	bool test = true;
+	GUI_Renderer = OpenGL_GUI_Renderer(*newWindow, test);
+	GUI_Renderer.createImGuiInstance();
 
 	return 0;
 }
+
 
 //void OpenGL_Renderer::pushModel(const char* fileName)
 //{
@@ -75,6 +90,12 @@ void GLMmovements(GLuint MVPuniform, int modelIndex, const Shaders& shaders)
 
 void OpenGL_Renderer::draw()
 {
+	
+
+	glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+
 	glUseProgram(shaders.getProgram());
 
 	GLMmovements(shaders.getMvpLocation(), 0, shaders);	// This sets the model Uniform
@@ -92,16 +113,27 @@ void OpenGL_Renderer::draw()
 
 	//glUniformMatrix4fv(shaders.getUniformView(), 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 	//glUniform3f(shaders.getEyePositionLocation(), camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
-
+	
 	glUseProgram(0);
+
+	GUI_Renderer.RenderMenus();
+	
+	#ifdef GUI_LAYER
+	//The ImGUI Function That Renders The GUI
+	if (ImGui::GetCurrentContext())
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	#endif
+
+	glfwSwapBuffers(window);
 }
+
+
 
 void OpenGL_Renderer::shutdown_Renderer()
 {
-	printf("Deleting Window");
-	glfwDestroyWindow(window);
-
-	glfwTerminate();
+	printf("Deleting Renderer\n");
+	GUI_Renderer.CleanUpGuiComponents();
+	GUI_Renderer.CleanUpGUI();
 }
 
 #pragma endregion

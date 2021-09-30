@@ -1,13 +1,13 @@
-#include "GUI_Renderer.h"
+#include "Vulkan_GUI_Renderer.h"
 #include <iostream>
 #include <filesystem>
 #include <math.h>
 
-GUI_Renderer::GUI_Renderer()
+Vulkan_GUI_Renderer::Vulkan_GUI_Renderer()
 {
 }
 
-GUI_Renderer::GUI_Renderer
+Vulkan_GUI_Renderer::Vulkan_GUI_Renderer
 (
 	GLFWwindow &window, 
 	VkInstance& newInstance, 
@@ -43,7 +43,7 @@ GUI_Renderer::GUI_Renderer
 
 
 //Create an Instance of ImGUI (Context)
-void GUI_Renderer::createImGuiInstance()
+void Vulkan_GUI_Renderer::createImGuiInstance()
 {
 	// Setup Dear ImGui context
 	#pragma region ImGui
@@ -87,7 +87,7 @@ void ImGuiFontSubmit(VkDevice device, VkCommandPool commandPool, VkQueue queue) 
 
 }
 
-void GUI_Renderer::init_imGUI_Vulkan()
+void Vulkan_GUI_Renderer::init_imGUI_Vulkan()
 {
 	//1: create descriptor pool for IMGUI
 	// the size of the pool is very oversize, but it's copied from imgui demo itself.
@@ -151,7 +151,7 @@ void GUI_Renderer::init_imGUI_Vulkan()
 }
 
 //Main Render Menus Function
-void GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const Vulkan_Assets::AllAssets* AssetList)
+void Vulkan_GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const Vulkan_Assets::AllAssets* AssetList)
 {
 	//Hide and unhide Content Browser
 	if (ImGui::IsKeyPressed(ImGui::GetIO().KeyMap[ImGuiKey_Space]) && ImGui::GetIO().KeysDown[GLFW_KEY_LEFT_CONTROL]) {
@@ -218,10 +218,10 @@ void GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::v
 
 
 //TODO : Function to handle shortcuts for selected window
-//void GUI_Renderer::ShortCutKeyInput(){}
+//void Vulkan_GUI_Renderer::ShortCutKeyInput(){}
 
 #pragma region Main Bar
-void GUI_Renderer::ShowFileMenu()
+void Vulkan_GUI_Renderer::ShowFileMenu()
 {
 	ImGui::MenuItem("(demo menu)", NULL, false, false);
 	if (ImGui::MenuItem("New")) {}
@@ -297,7 +297,7 @@ void GUI_Renderer::ShowFileMenu()
 	if (ImGui::MenuItem("Quit", "Alt+F4")) { glfwSetWindowShouldClose(IgInitInfo.mainWindow, GL_TRUE); }
 }
 
-void GUI_Renderer::mainMenuBar() {
+void Vulkan_GUI_Renderer::mainMenuBar() {
 	if (ImGui::BeginMainMenuBar())
 	{
 		//FILE BUTTON
@@ -334,7 +334,7 @@ void GUI_Renderer::mainMenuBar() {
 
 #pragma region Outliner
 
-void GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
+void Vulkan_GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 {
 	// Use object uid as identifier. Most commonly you could also use the object pointer as a base ID.
 	ImGui::PushID(uid);
@@ -398,7 +398,7 @@ void GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 }
 
 //All active rendered meshes
-void GUI_Renderer::renderOutlinerMenu()
+void Vulkan_GUI_Renderer::renderOutlinerMenu()
 {
 
 	ImGui::Begin("World Outliner");
@@ -429,7 +429,7 @@ void Entity_Details()
 
 }
 
-void GUI_Renderer::renderDetailsMenu()
+void Vulkan_GUI_Renderer::renderDetailsMenu()
 {
 	ImGui::Begin("Details");
 
@@ -490,7 +490,7 @@ void GUI_Renderer::renderDetailsMenu()
 
 
 
-void GUI_Renderer::renderContentMenu() {
+void Vulkan_GUI_Renderer::renderContentMenu() {
 	float ySize = 300.0f;
 	ImGui::SetNextWindowSize({ ImGui::GetMainViewport()->Size.x, ySize});
 	ImGui::SetNextWindowPos({ ImGui::GetMainViewport()->GetCenter().x - (ImGui::GetMainViewport()->Size.x/2.0f), (ImGui::GetMainViewport()->GetCenter().y + (ImGui::GetMainViewport()->Size.y / 2.0f)) - ySize }, false);
@@ -554,7 +554,7 @@ void GUI_Renderer::renderContentMenu() {
 	ImGui::End();
 }
 
-void GUI_Renderer::renderStatsOverlay()
+void Vulkan_GUI_Renderer::renderStatsOverlay()
 {
 	const float PAD = 10.0f;
 	static int corner = 0;
@@ -602,14 +602,14 @@ void GUI_Renderer::renderStatsOverlay()
 }
 
 //Secondly Destroys
-void GUI_Renderer::CleanUpGUI(VkDevice Device)
+void Vulkan_GUI_Renderer::CleanUpGUI(VkDevice Device)
 {
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 }
 
 //First Destroys
-void GUI_Renderer::CleanUpGuiComponents(VkDevice Device)
+void Vulkan_GUI_Renderer::CleanUpGuiComponents(VkDevice Device)
 {
 	ImGui_ImplVulkan_Shutdown();
 	vkDestroyDescriptorPool(Device, imguiPool, nullptr);

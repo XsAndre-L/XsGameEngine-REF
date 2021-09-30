@@ -41,7 +41,7 @@ int Vulkan_Renderer::init_Vulkan_Renderer(GLFWwindow* newWindow)
 
 
 		#ifdef GUI_LAYER
-			GUI = GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings ,AssetManager);
+			GUI = Vulkan_GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings ,AssetManager);
 		#else
 			printf("GUI DISABLED");
 		#endif
@@ -250,7 +250,7 @@ void Vulkan_Renderer::draw()
 }
 
 //WHEN PROCRAM STOPS ALL CREATED INSTANCES AND DEVICES ARE DELETED
-void Vulkan_Renderer::cleanUp()
+void Vulkan_Renderer::shutdown_Renderer()
 {
 	vkDeviceWaitIdle(mainDevice.logicalDevice);
 
@@ -1786,7 +1786,7 @@ void Vulkan_Renderer::recreateSwapChain()
 	createCommandBuffers();
 
 	#ifdef GUI_LAYER
-		GUI = GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings, AssetManager);
+		GUI = Vulkan_GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings, AssetManager);
 	#endif
 }
 

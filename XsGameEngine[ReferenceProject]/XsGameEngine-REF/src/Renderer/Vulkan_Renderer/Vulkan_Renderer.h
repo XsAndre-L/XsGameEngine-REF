@@ -6,7 +6,7 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 
-#include "../../GUI_Renderer.h"
+#include "Vulkan_GUI_Renderer.h"
 #include "../../AssetLoading/Vulkan_Assets/Vulkan_Assets.h"
 
 #include "../../Window/Public/GLFW_Window.h"
@@ -26,7 +26,7 @@ public:
 	glm::mat4* getProjectionMatrix() { return &uboViewProjection.projection; }
 
 	void draw();
-	void cleanUp();
+	void shutdown_Renderer();
 	ImVec4 clearColor = { 0.15f, 0.15f ,0.15f , 1.0f};
 
 	
@@ -198,7 +198,7 @@ public:
 	
 
 	#ifdef GUI_LAYER
-		GUI_Renderer GUI;
+		Vulkan_GUI_Renderer GUI;
 	#else
 		const bool GUI_LAYER = false;
 	#endif
