@@ -31,15 +31,21 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 	shaders.SetProjection(projection);
 
-	/// <summary>
-	AssetManager.createOpenGL_MeshModel("src/Renderer/OpenGL_Renderer/Models/plane.obj");
-	AssetManager.createOpenGL_MeshModel("src/Renderer/OpenGL_Renderer/Models/hatchet.obj");
+	
 
 	glfwSwapInterval(1);
 
+	#ifdef GUI_LAYER
 	bool test = true;
-	GUI_Renderer = OpenGL_GUI_Renderer(*newWindow, test);
+	GUI_Renderer = OpenGL_GUI_Renderer(*newWindow, test, AssetManager);
 	GUI_Renderer.createImGuiInstance();
+	#endif
+
+	/// <summary>
+	std::string Obj1 = "Models/plane.obj";
+	std::string Obj2 = "Models/basicOBJ.obj";
+	AssetManager.createOpenGL_MeshModel(Obj1.c_str());
+	AssetManager.createOpenGL_MeshModel(Obj2.c_str());
 
 	return 0;
 }
@@ -52,34 +58,35 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 //	modelList.push_back(myModel);
 //}
 
-void GLMmovements(GLuint MVPuniform, int modelIndex, const Shaders& shaders)
+void GLMmovements(OpenGL_MeshModel mod, GLuint MVPuniform, int modelIndex, const Shaders& shaders)
 {
-	glm::mat4 model(1.0f);
-	if (modelIndex == 0)
-	{
-#pragma region Updates
-
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 1.0f));
-#pragma endregion
-	}
-	else if (modelIndex == 2)
-	{
-		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -2.0f));
-		model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-	}
-	else {
-		//model = glm::rotate(model, curAngle, glm::vec3(0.0f, 1.0f, 0.0f));
-		//model = glm::translate(model, LightPos);
-		//model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-	}
+//	glm::mat4 model(1.0f);
+//	if (modelIndex == 0)
+//	{
+//#pragma region Updates
+//
+//		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
+//		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 1.0f));
+//#pragma endregion
+//	}
+//	else if (modelIndex == 2)
+//	{
+//		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -2.0f));
+//		model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+//
+//		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+//	}
+//	else {
+//		//model = glm::rotate(model, curAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+//		//model = glm::translate(model, LightPos);
+//		//model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+//	}
 
 	glm::mat4 ViewMat = shaders.GetViewMatrix();
+	glm::mat4 ModelMat = mod.getMatrix();
 	glBindBuffer(GL_UNIFORM_BUFFER, MVPuniform);
 
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, &model);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, &ModelMat);
 	//glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &projection);
 	glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &ViewMat);
 
@@ -90,18 +97,18 @@ void GLMmovements(GLuint MVPuniform, int modelIndex, const Shaders& shaders)
 
 void OpenGL_Renderer::draw()
 {
-	
-
-	glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
+	glClearColor(GUI_Renderer.clearColor.x,GUI_Renderer.clearColor.y,GUI_Renderer.clearColor.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 
 	glUseProgram(shaders.getProgram());
 
-	GLMmovements(shaders.getMvpLocation(), 0, shaders);	// This sets the model Uniform
+	
 	for (size_t i = 0; i < AssetManager.OpenGL_MeshModelList.size(); i++)
 	{
+		
 		AssetManager.OpenGL_MeshModelList[i].RenderModel();
+		GLMmovements(AssetManager.OpenGL_MeshModelList[i], shaders.getMvpLocation(), 0, shaders);	// This sets the model Uniform
 	}
 	//printf("size %i",(modelList.size()));
 
@@ -116,11 +123,13 @@ void OpenGL_Renderer::draw()
 	
 	glUseProgram(0);
 
-	GUI_Renderer.RenderMenus();
 	
 	#ifdef GUI_LAYER
-	//The ImGUI Function That Renders The GUI
-	if (ImGui::GetCurrentContext())
+		AssetManager.OpenGL_MeshModelList[*AssetManager.SetSelected()].updateMatrix();
+		OpenGL_MeshModel* mesh = &AssetManager.OpenGL_MeshModelList[*AssetManager.SetSelected()];
+		GUI_Renderer.RenderMenus(mesh->getTransformType(),mesh->getPosition(),mesh->getRotation(),mesh->getScale(),AssetManager.SetSelected() ,AssetManager.getAssetInfo());
+		//The ImGUI Function That Renders The GUI
+		if (ImGui::GetCurrentContext())
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	#endif
 
@@ -132,8 +141,11 @@ void OpenGL_Renderer::draw()
 void OpenGL_Renderer::shutdown_Renderer()
 {
 	printf("Deleting Renderer\n");
-	GUI_Renderer.CleanUpGuiComponents();
-	GUI_Renderer.CleanUpGUI();
+
+	#ifdef GUI_LAYER
+		GUI_Renderer.CleanUpGuiComponents();
+		GUI_Renderer.CleanUpGUI();
+	#endif
 }
 
 #pragma endregion

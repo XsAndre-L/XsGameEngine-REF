@@ -1,11 +1,14 @@
 #pragma once
 //This Class in meant to keep track of all assets that are created 
 // Keeps track of all "Models" , "Textures" , "Lights"
+#include "../../CommonValues.h"
 #include "Vulkan_MeshModel.h"
 #include "Vulkan_Texture.h"
 #include "../Lights/DirectionalLight.h"
+
 #include <thread>
 #include <mutex>
+
 
 class Vulkan_Assets 
 {

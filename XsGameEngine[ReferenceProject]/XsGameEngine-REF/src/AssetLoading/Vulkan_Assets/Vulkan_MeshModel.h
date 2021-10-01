@@ -11,13 +11,15 @@ class Vulkan_MeshModel : public Entity
 {
 public:
 	Vulkan_MeshModel();
-	//Vulkan_MeshModel(std::vector<Vulkan_Mesh> newMeshList);
+	~Vulkan_MeshModel() = default;
+	
 	size_t getMeshCount();
 
 	Vulkan_Mesh* getMesh(size_t index);
 
 
-	std::vector<std::string> LoadMaterials(const aiScene * scene);
+	std::vector<std::string> LoadMaterials(
+		const aiScene * scene);
 
 	std::vector<Vulkan_Mesh> LoadNode(
 		VkPhysicalDevice* newPhysicalDevice, 
@@ -42,7 +44,7 @@ public:
 	void makeInstance() { MODEL_INSTANCE = true; }
 
 	void destroyModel();
-	~Vulkan_MeshModel();
+	
 
 private:
 

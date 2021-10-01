@@ -6,7 +6,7 @@
 
 #include <GLEW/glew.h>
 
-#include "CommonValues.h"
+//#include "CommonValues.h"
 
 #include <GLM/glm.hpp>
 

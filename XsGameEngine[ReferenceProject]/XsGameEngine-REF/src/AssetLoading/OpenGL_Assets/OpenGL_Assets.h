@@ -6,6 +6,7 @@
 //#include "Lights/DirectionalLight.h"
 //#include "PointLight.h"
 //#include "SpotLight.h"
+#include <iostream>
 #include <thread>
 #include <mutex>
 
@@ -57,10 +58,10 @@ public:
 
 	struct AllAssets
 	{
-		/*std::vector<std::string>* ModelNames{};
-		std::vector<Vulkan_MeshModel>* modelPointers{};
-		std::vector<Vulkan_Texture>* texturePointers{};
-		AllLights* lightPointers{};*/
+		std::vector<std::string>* ModelNames{};
+		std::vector<OpenGL_MeshModel>* modelPointers{};
+		std::vector<OpenGL_Texture>* texturePointers{};
+		//AllLights* lightPointers{};
 	}allAssets;
 
 	AllAssets* getAssetInfo();

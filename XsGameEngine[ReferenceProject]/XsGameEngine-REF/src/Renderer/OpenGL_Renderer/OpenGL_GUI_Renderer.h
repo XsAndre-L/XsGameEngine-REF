@@ -1,5 +1,5 @@
 #pragma once
-//#include "VulkanUtillities.h"
+#include "../../CommonValues.h"
 //#include <GLEW/glew.h>
 #include "../../AssetLoading/OpenGL_Assets/OpenGL_Assets.h"
 
@@ -14,11 +14,12 @@ class OpenGL_GUI_Renderer
 {
 public:
 	OpenGL_GUI_Renderer();
-	OpenGL_GUI_Renderer(	GLFWwindow& window,
-					bool& ApplyGraphics/*,
-					GraphicSettings& CurrentGraphicSettings,
+	OpenGL_GUI_Renderer(	
+		GLFWwindow& window,
+		bool& ApplyGraphics,
+		/*GraphicSettings& CurrentGraphicSettings,*/
 
-					OpenGL_Assets& AssetManager*/
+		OpenGL_Assets& AssetManager
 	);
 
 
@@ -29,7 +30,7 @@ public:
 	//void init_imGUI_Vulkan();
 
 
-	void RenderMenus(/*bool* LocalTransform, glm::vec3* translation, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const OpenGL_Assets::AllAssets* AssetList*/);
+	void RenderMenus(bool* LocalTransform, glm::vec3* translation, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const OpenGL_Assets::AllAssets* AssetList);
 	void CleanUpGUI();
 	void CleanUpGuiComponents();
 	~OpenGL_GUI_Renderer() = default;
@@ -82,7 +83,7 @@ private:
 		//GraphicSettings* CurrentGraphicSettings{};
 
 		////OBJECTS
-		//OpenGL_Assets* AssetManager{};
+		OpenGL_Assets* AssetManager{};
 	} IgInitInfo;
 	
 
@@ -93,12 +94,12 @@ private:
 	void ShowFileMenu();
 	void mainMenuBar();
 
-	//void ShowOutlinerTree(const char* prefix, int uid);
-	//void renderOutlinerMenu();
+	void ShowOutlinerTree(const char* prefix, int uid);
+	void renderOutlinerMenu();
 
-	//void renderDetailsMenu();
-	//void renderContentMenu();
-	//void renderStatsOverlay();
+	void renderDetailsMenu();
+	void renderContentMenu();
+	void renderStatsOverlay();
 
 };
 

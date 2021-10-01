@@ -155,8 +155,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="Shaders\frag.spv" />
     <None Include="Shaders\vert.spv" />
   </ItemGroup>
@@ -173,7 +171,7 @@
     <ClInclude Include="src\Renderer\Vulkan_Renderer\Vulkan_GUI_Renderer.h" />
     <ClInclude Include="src\PreprocessorDefs.h" />
     <ClInclude Include="src\ProgramLayers\ProgramLayers.h" />
-    <ClInclude Include="src\Renderer\OpenGL_Renderer\CommonValues.h" />
+    <ClInclude Include="src\CommonValues.h" />
     <ClInclude Include="src\Renderer\OpenGL_Renderer\Material.h" />
     <ClInclude Include="src\AssetLoading\OpenGL_Assets\OpenGL_Assets.h" />
     <ClInclude Include="src\AssetLoading\OpenGL_Assets\OpenGL_Mesh.h" />

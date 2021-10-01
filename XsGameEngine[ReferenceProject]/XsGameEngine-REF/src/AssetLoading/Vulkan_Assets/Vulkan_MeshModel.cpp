@@ -39,21 +39,17 @@ void Vulkan_MeshModel::destroyModel()
 	DESTROYED = true;
 }
 
-Vulkan_MeshModel::~Vulkan_MeshModel()
-{
-}
-
 
 std::vector<std::string> Vulkan_MeshModel::LoadMaterials(const aiScene* scene)
 {	
 	//Create 1:1 sized list of textures
 	std::vector<std::string> textures;
-	textures.resize(scene->mNumMaterials-2);
+	textures.resize(scene->mNumMaterials);
 	//std::vector<std::string> textureList(0);
 
 	for (size_t i = 0; i < textures.size(); i++)
 	{
-		aiMaterial* material = scene->mMaterials[i+2];
+		aiMaterial* material = scene->mMaterials[i];
 
 		textures[i] = "";
 
@@ -162,7 +158,7 @@ Vulkan_Mesh* Vulkan_MeshModel::LoadMesh
 
 	// Create new mesh with details
 
-	Vulkan_Mesh* newMesh = new Vulkan_Mesh(newPhysicalDevice, newDevice, transferQueue, transferCommandPool, &vertices, &indices, 0); //matToTex[mesh->mMaterialIndex]
+	Vulkan_Mesh* newMesh = new Vulkan_Mesh(newPhysicalDevice, newDevice, transferQueue, transferCommandPool, &vertices, &indices, matToTex[mesh->mMaterialIndex]); //
 
 	return newMesh;
 }

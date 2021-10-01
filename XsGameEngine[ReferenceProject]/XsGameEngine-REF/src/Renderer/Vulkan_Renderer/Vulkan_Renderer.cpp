@@ -144,7 +144,7 @@ int Vulkan_Renderer::init_Vulkan_Renderer(GLFWwindow* newWindow)
 		};
 
 		AssetManager.addTexture("plain.png");
-		AssetManager.createAsset("Models/plane.obj");
+		AssetManager.createVulkan_MeshModel("Models/plane.obj");
 		while (AssetManager.Vulkan_MeshModelList.size() <= 0)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(5));

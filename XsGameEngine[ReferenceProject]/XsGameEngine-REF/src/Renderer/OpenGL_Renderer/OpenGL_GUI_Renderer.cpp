@@ -10,17 +10,18 @@ OpenGL_GUI_Renderer::OpenGL_GUI_Renderer()
 OpenGL_GUI_Renderer::OpenGL_GUI_Renderer
 (
 	GLFWwindow &window, 
-	bool& ApplyGraphics/*, 
+	bool& ApplyGraphics,/*, 
 	GraphicSettings& CurrentGraphicSettings, 
 	OpenGL_Assets& assetManager*/
+	OpenGL_Assets& AssetManager
 )
 {
 	IgInitInfo.mainWindow = &window;
 	
 	IgInitInfo.ApplyGraphics = &ApplyGraphics;
-	/*IgInitInfo.CurrentGraphicSettings = &CurrentGraphicSettings;
+	/*IgInitInfo.CurrentGraphicSettings = &CurrentGraphicSettings;*/
 
-	IgInitInfo.AssetManager = &assetManager;*/
+	IgInitInfo.AssetManager = &AssetManager;
 	
 	//init_imGUI_Vulkan();
 }
@@ -138,7 +139,7 @@ void OpenGL_GUI_Renderer::createImGuiInstance()
 //}
 
 //Main Render Menus Function
-void OpenGL_GUI_Renderer::RenderMenus(/*bool* LocalTransform, glm::vec3* position, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const OpenGL_Assets::AllAssets* AssetList*/)
+void OpenGL_GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const OpenGL_Assets::AllAssets* AssetList)
 {
 	//Hide and unhide Content Browser
 	if (ImGui::IsKeyPressed(ImGui::GetIO().KeyMap[ImGuiKey_Space]) && ImGui::GetIO().KeysDown[GLFW_KEY_LEFT_CONTROL]) {
@@ -148,7 +149,7 @@ void OpenGL_GUI_Renderer::RenderMenus(/*bool* LocalTransform, glm::vec3* positio
 	//glfwGetWindowSize(IgInitInfo.mainWindow, &sharedInfo.width, &sharedInfo.height);
 	//Set Info
 	//sharedInfo
-	/*sharedInfo.selectedObject = selectedObject;
+	sharedInfo.selectedObject = selectedObject;
 	//sharedInfo.modelNames = AssetList->ModelNames;
 	sharedInfo.allAssets = AssetList;
 
@@ -156,7 +157,7 @@ void OpenGL_GUI_Renderer::RenderMenus(/*bool* LocalTransform, glm::vec3* positio
 	detailsInfo.LocalTransform = LocalTransform;
 	detailsInfo.position = position;
 	detailsInfo.rotation = rotation;
-	detailsInfo.scale = scale;*/
+	detailsInfo.scale = scale;
 
 	//menu 'WORLD OUTLINER'
 	//NON
@@ -177,17 +178,17 @@ void OpenGL_GUI_Renderer::RenderMenus(/*bool* LocalTransform, glm::vec3* positio
 	
 	mainMenuBar();
 
-	//if(outlinerInfo.ShowMenu)
-		//renderOutlinerMenu();
+	if(outlinerInfo.ShowMenu)
+		renderOutlinerMenu();
 
-	//if(detailsInfo.ShowMenu)
-		//renderDetailsMenu();
+	if(detailsInfo.ShowMenu)
+		renderDetailsMenu();
 
-	//if(browserInfo.ShowMenu)
-		//renderContentMenu();
+	if(browserInfo.ShowMenu)
+		renderContentMenu();
 
-	//if (statsInfo.ShowMenu)
-		//renderStatsOverlay();
+	if (statsInfo.ShowMenu)
+		renderStatsOverlay();
 
 	
 
@@ -320,7 +321,7 @@ void OpenGL_GUI_Renderer::mainMenuBar() {
 #pragma endregion
 
 #pragma region Outliner
-/*
+
 void OpenGL_GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 {
 	// Use object uid as identifier. Most commonly you could also use the object pointer as a base ID.
@@ -352,7 +353,7 @@ void OpenGL_GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 		ImGui::OpenPopup("OptionsPopUp");
 
 		if (ImGui::Button("Delete")) {
-			IgInitInfo.AssetManager->destroyVulkan_MeshModel(uid);
+			IgInitInfo.AssetManager->destroyOpenGL_MeshModel(uid);
 		}
 		
 		ImGui::EndPopup();
@@ -360,7 +361,7 @@ void OpenGL_GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 	
 	if (node_open)
 	{
-		std::vector<std::string> ChildNodes = *IgInitInfo.AssetManager->Vulkan_MeshModelList.at(uid).getChildren();
+		std::vector<std::string> ChildNodes = *IgInitInfo.AssetManager->OpenGL_MeshModelList.at(uid).getChildren();
 		//static float placeholder_members[8] = { 0.0f, 0.0f, 1.0f, 3.1416f, 100.0f, 999.0f };
 		for (int i = 0; i < ChildNodes.size(); i++)
 		{
@@ -383,210 +384,211 @@ void OpenGL_GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 	}
 	ImGui::PopID();
 }
-*/
-////All active rendered meshes
-//void OpenGL_GUI_Renderer::renderOutlinerMenu()
-//{
-//
-//	ImGui::Begin("World Outliner");
-//
-//	if (ImGui::BeginTable("Outliner Table", 1,  ImGuiTableFlags_Resizable)) //ImGuiTableFlags_BordersOuter |
-//	{
-//		std::vector<std::string> namesVector = *sharedInfo.allAssets->ModelNames;
-//		for (int obj_i = 0; obj_i < sharedInfo.allAssets->ModelNames->size(); obj_i++)
-//		{
-//			std::string nameString = namesVector.at(obj_i);
-//			if (nameString == "") { continue; }
-//			ShowOutlinerTree(nameString.c_str(), obj_i);
-//		}
-//		ImGui::EndTable();
-//	}
-//
-//	ImGui::End();
-//
-//}
-//
-//#pragma endregion
-//
-//
-//#pragma region Details Menu
-////Entiy Has Transform
+
+//All active rendered meshes
+void OpenGL_GUI_Renderer::renderOutlinerMenu()
+{
+
+	ImGui::Begin("World Outliner");
+
+	if (ImGui::BeginTable("Outliner Table", 1,  ImGuiTableFlags_Resizable)) //ImGuiTableFlags_BordersOuter |
+	{
+		std::vector<std::string> namesVector = *sharedInfo.allAssets->ModelNames;
+		for (int obj_i = 0; obj_i < sharedInfo.allAssets->ModelNames->size(); obj_i++)
+		{
+			std::string nameString = namesVector.at(obj_i);
+			if (nameString == "") { continue; }
+			ShowOutlinerTree(nameString.c_str(), obj_i);
+		}
+		ImGui::EndTable();
+	}
+
+	ImGui::End();
+
+}
+
+#pragma endregion
+
+
+#pragma region Details Menu
+//Entiy Has Transform
 //void Entity_Details() 
 //{
 //
 //}
-//
-//void OpenGL_GUI_Renderer::renderDetailsMenu()
-//{
-//	ImGui::Begin("Details");
-//
-//	//Transform
-//	if (ImGui::CollapsingHeader("TRANSFORM"))
-//	{
-//		ImGui::Checkbox("Local Transform", detailsInfo.LocalTransform);
-//		ImGui::SliderFloat3("Position", &detailsInfo.position->x, -30.0f, 30.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-//		ImGui::SliderFloat3("Rotation", &detailsInfo.rotation->x, 0.0f, 360.0f);
-//		ImGui::SliderFloat3("Scale", &detailsInfo.scale->x, -30.0f, 30.0f);
-//	}
-//
-//	//Material
-//	if (ImGui::CollapsingHeader("MATERIAL"))
-//	{
-//		ImGui::Text("Material Selection Goes Here");
-//	}
-//
-//
-//	//Directional Light
-//	if (ImGui::CollapsingHeader("DIRECTIONAL LIGHT"))
-//	{
-//		ImGui::SliderFloat3(" Direction", &sharedInfo.allAssets->lightPointers->directionalLight[0].lightDirection.x, -1.0f, 1.0f);
-//		ImGui::ColorEdit3(" LightColor", &sharedInfo.allAssets->lightPointers->directionalLight[0].base.colour.x);
-//	}
-//
-//	//ImGui::Checkbox("Show Another Window", &show_another_window);
-//
-//
-//	//ImGui::SliderInt("SelectedMesh", counter, 0 ,1);
-//	//ImGui::InputFloat3("Pos", &detailsInfo.position->x);
-//
-//
-//	if (ImGui::CollapsingHeader("Atmosphere"))
-//	{
-//		ImGui::ColorEdit3("Atmosphere Color", (float*)&clearColor);
-//	}
-//
-//	if (ImGui::CollapsingHeader("Graphics"))
-//	{
-//		static int MSAA;
-//		ImGui::InputInt("MSAA", &IgInitInfo.CurrentGraphicSettings->MSAA , 1, 1);
-//
-//		if (ImGui::Button("Apply")) {
-//			if (!*IgInitInfo.ApplyGraphics) {
-//				*IgInitInfo.ApplyGraphics = true;
-//				 
-//			}
-//		}
-//	}
-//
-//
-//	ImGui::End();
-//
-//}
-//#pragma endregion
-//
-//
-//
-//
-//void OpenGL_GUI_Renderer::renderContentMenu() {
-//	float ySize = 300.0f;
-//	ImGui::SetNextWindowSize({ ImGui::GetMainViewport()->Size.x, ySize});
-//	ImGui::SetNextWindowPos({ ImGui::GetMainViewport()->GetCenter().x - (ImGui::GetMainViewport()->Size.x/2.0f), (ImGui::GetMainViewport()->GetCenter().y + (ImGui::GetMainViewport()->Size.y / 2.0f)) - ySize }, false);
-//	bool open;
-//	ImGui::Begin("Content Browser", &open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-//	static int FolderIndex = 0;
-//
-//	if (ImGui::Button("3D models", ImVec2(200.0f, 20.0f)))
-//	{
-//		FolderIndex = 0;
-//	}
-//	ImGui::SameLine();
-//	if (ImGui::Button("Textures", ImVec2(200.0f, 20.0f)))
-//	{
-//		FolderIndex = 1;
-//	}
-//
-//	if (FolderIndex == 0) 
-//	{
-//		ImGui::Text("Program/Models");
-//		std::string path = "Models";
-//		for (const auto& entry : std::filesystem::directory_iterator(path)) {
-//
-//			std::filesystem::path modelPath = entry;
-//			if (modelPath.extension() == ".obj") {
-//				std::string nameString = modelPath.filename().string();//namesVector.at(i);
-//
-//				if (ImGui::Button(nameString.c_str(), ImVec2(100.0f, 100.0f)))
-//				{
-//					if (IgInitInfo.AssetManager->Vulkan_MeshModelList.size() < MAX_OBJECTS) {
-//						IgInitInfo.AssetManager->createAsset(modelPath.string());
-//					}
-//				}
-//				ImGui::SameLine();
-//			}
-//		}
-//	}
-//	
-//	if (FolderIndex == 1)
-//	{
-//		ImGui::Text("Program/Textures");
-//		std::string path = "Textures";
-//		for (const auto& entry : std::filesystem::directory_iterator(path)) {
-//
-//			std::filesystem::path texPath = entry;
-//			if (texPath.extension() == ".png" || texPath.extension() == ".jpg") {
-//				std::string nameString = texPath.filename().string();//namesVector.at(i);
-//
-//				if (ImGui::Button(nameString.c_str(), ImVec2(100.0f, 100.0f)))
-//				{
-//					if (IgInitInfo.AssetManager->textureList.size() < MAX_OBJECTS) {
-//						printf("Attempting to load %s", nameString.c_str());
-//						IgInitInfo.AssetManager->addTexture(nameString.c_str());
-//					}
-//				}
-//				ImGui::SameLine();
-//			}
-//		}
-//	}
-//
-//	ImGui::End();
-//}
-//
-//void OpenGL_GUI_Renderer::renderStatsOverlay()
-//{
-//	const float PAD = 10.0f;
-//	static int corner = 0;
-//	ImGuiIO& io = ImGui::GetIO();
-//	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-//	if (corner != -1)
-//	{
-//		const ImGuiViewport* viewport = ImGui::GetMainViewport();
-//		ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
-//		ImVec2 work_size = viewport->WorkSize;
-//		ImVec2 window_pos, window_pos_pivot;
-//		window_pos.x = (corner & 1) ? (work_pos.x + work_size.x - PAD) : (work_pos.x + PAD);
-//		window_pos.y = (corner & 2) ? (work_pos.y + work_size.y - PAD) : (work_pos.y + PAD);
-//		window_pos_pivot.x = (corner & 1) ? 1.0f : 0.0f;
-//		window_pos_pivot.y = (corner & 2) ? 1.0f : 0.0f;
-//		ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-//		window_flags |= ImGuiWindowFlags_NoMove;
-//	}
-//	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-//	
-//	if (ImGui::Begin("Stats For Nerds", &statsInfo.ShowMenu, window_flags))
-//	{
-//		ImGui::Text("(right-click to change position)");
-//		ImGui::Separator();
-//		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-//		if (ImGui::IsMousePosValid())
-//			ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
-//
-//		
-//			
-//		else
-//			ImGui::Text("Mouse Position: <invalid>");
-//		if (ImGui::BeginPopupContextWindow())
-//		{
-//			if (ImGui::MenuItem("Custom", NULL, corner == -1)) corner = -1;
-//			if (ImGui::MenuItem("Top-left", NULL, corner == 0)) corner = 0;
-//			if (ImGui::MenuItem("Top-right", NULL, corner == 1)) corner = 1;
-//			if (ImGui::MenuItem("Bottom-left", NULL, corner == 2)) corner = 2;
-//			if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
-//			if (statsInfo.ShowMenu && ImGui::MenuItem("Close")) statsInfo.ShowMenu = false;
-//			ImGui::EndPopup();
-//		}
-//	}
-//	ImGui::End();
-//}
+
+void OpenGL_GUI_Renderer::renderDetailsMenu()
+{
+	ImGui::Begin("Details");
+
+	//Transform
+	if (ImGui::CollapsingHeader("TRANSFORM"))
+	{
+		ImGui::Checkbox("Local Transform", detailsInfo.LocalTransform);
+
+		ImGui::InputFloat3("Position", &detailsInfo.position->x);						//Current Position
+		ImGui::SliderFloat3("Rotation", &detailsInfo.rotation->x, 0.0f, 360.0f);		//Current Rotation
+		ImGui::InputFloat3("Scale", &detailsInfo.scale->x);								//Current Scale
+	}
+
+	//Material
+	if (ImGui::CollapsingHeader("MATERIAL"))
+	{
+		ImGui::Text("Material Selection Goes Here");
+	}
+
+
+	//Directional Light
+	if (ImGui::CollapsingHeader("DIRECTIONAL LIGHT"))
+	{
+		//ImGui::SliderFloat3(" Direction", &sharedInfo.allAssets->lightPointers->directionalLight[0].lightDirection.x, -1.0f, 1.0f);
+		//ImGui::ColorEdit3(" LightColor", &sharedInfo.allAssets->lightPointers->directionalLight[0].base.colour.x);
+	}
+
+	//ImGui::Checkbox("Show Another Window", &show_another_window);
+
+
+	//ImGui::SliderInt("SelectedMesh", counter, 0 ,1);
+	//ImGui::InputFloat3("Pos", &detailsInfo.position->x);
+
+
+	if (ImGui::CollapsingHeader("Atmosphere"))
+	{
+		ImGui::ColorEdit3("Atmosphere Color", (float*)&clearColor);
+	}
+
+	if (ImGui::CollapsingHeader("Graphics"))
+	{
+		static int MSAA;
+		//ImGui::InputInt("MSAA", &IgInitInfo.CurrentGraphicSettings->MSAA , 1, 1);
+
+		if (ImGui::Button("Apply")) {
+			/*if (!*IgInitInfo.ApplyGraphics) {
+				*IgInitInfo.ApplyGraphics = true;
+				 
+			}*/
+		}
+	}
+
+
+	ImGui::End();
+
+}
+#pragma endregion
+
+
+
+
+void OpenGL_GUI_Renderer::renderContentMenu() {
+	float ySize = 300.0f;
+	ImGui::SetNextWindowSize({ ImGui::GetMainViewport()->Size.x, ySize});
+	ImGui::SetNextWindowPos({ ImGui::GetMainViewport()->GetCenter().x - (ImGui::GetMainViewport()->Size.x/2.0f), (ImGui::GetMainViewport()->GetCenter().y + (ImGui::GetMainViewport()->Size.y / 2.0f)) - ySize }, false);
+	bool open;
+	ImGui::Begin("Content Browser", &open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+	static int FolderIndex = 0;
+
+	if (ImGui::Button("3D models", ImVec2(200.0f, 20.0f)))
+	{
+		FolderIndex = 0;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Textures", ImVec2(200.0f, 20.0f)))
+	{
+		FolderIndex = 1;
+	}
+
+	if (FolderIndex == 0) 
+	{
+		ImGui::Text("Program/Models");
+		std::string path = "Models";
+		for (const auto& entry : std::filesystem::directory_iterator(path)) {
+
+			std::filesystem::path modelPath = entry;
+			if (modelPath.extension() == ".obj") {
+				std::string nameString = modelPath.filename().string();//namesVector.at(i);
+
+				if (ImGui::Button(nameString.c_str(), ImVec2(100.0f, 100.0f)))
+				{
+					if (IgInitInfo.AssetManager->OpenGL_MeshModelList.size() < MAX_OBJECTS) {
+						IgInitInfo.AssetManager->createAsset(modelPath.string());
+					}
+				}
+				ImGui::SameLine();
+			}
+		}
+	}
+	
+	if (FolderIndex == 1)
+	{
+		ImGui::Text("Program/Textures");
+		std::string path = "Textures";
+		for (const auto& entry : std::filesystem::directory_iterator(path)) {
+
+			std::filesystem::path texPath = entry;
+			if (texPath.extension() == ".png" || texPath.extension() == ".jpg") {
+				std::string nameString = texPath.filename().string();//namesVector.at(i);
+
+				if (ImGui::Button(nameString.c_str(), ImVec2(100.0f, 100.0f)))
+				{
+					if (IgInitInfo.AssetManager->textureList.size() < MAX_OBJECTS) {
+						printf("Attempting to load %s", nameString.c_str());
+						IgInitInfo.AssetManager->addTexture(nameString.c_str());
+					}
+				}
+				ImGui::SameLine();
+			}
+		}
+	}
+
+	ImGui::End();
+}
+
+void OpenGL_GUI_Renderer::renderStatsOverlay()
+{
+	const float PAD = 10.0f;
+	static int corner = 0;
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+	if (corner != -1)
+	{
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+		ImVec2 work_size = viewport->WorkSize;
+		ImVec2 window_pos, window_pos_pivot;
+		window_pos.x = (corner & 1) ? (work_pos.x + work_size.x - PAD) : (work_pos.x + PAD);
+		window_pos.y = (corner & 2) ? (work_pos.y + work_size.y - PAD) : (work_pos.y + PAD);
+		window_pos_pivot.x = (corner & 1) ? 1.0f : 0.0f;
+		window_pos_pivot.y = (corner & 2) ? 1.0f : 0.0f;
+		ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+		window_flags |= ImGuiWindowFlags_NoMove;
+	}
+	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+	
+	if (ImGui::Begin("Stats For Nerds", &statsInfo.ShowMenu, window_flags))
+	{
+		ImGui::Text("(right-click to change position)");
+		ImGui::Separator();
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		if (ImGui::IsMousePosValid())
+			ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
+
+		
+			
+		else
+			ImGui::Text("Mouse Position: <invalid>");
+		if (ImGui::BeginPopupContextWindow())
+		{
+			if (ImGui::MenuItem("Custom", NULL, corner == -1)) corner = -1;
+			if (ImGui::MenuItem("Top-left", NULL, corner == 0)) corner = 0;
+			if (ImGui::MenuItem("Top-right", NULL, corner == 1)) corner = 1;
+			if (ImGui::MenuItem("Bottom-left", NULL, corner == 2)) corner = 2;
+			if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
+			if (statsInfo.ShowMenu && ImGui::MenuItem("Close")) statsInfo.ShowMenu = false;
+			ImGui::EndPopup();
+		}
+	}
+	ImGui::End();
+}
 
 //Secondly Destroys
 void OpenGL_GUI_Renderer::CleanUpGUI()

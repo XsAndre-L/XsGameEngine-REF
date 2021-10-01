@@ -8,10 +8,10 @@
 
 OpenGL_Assets::AllAssets* OpenGL_Assets::getAssetInfo()
 {
-	/*allAssets.ModelNames = &Vulkan_MeshModelNames;
-	allAssets.modelPointers = &Vulkan_MeshModelList;
-	allAssets.lightPointers = &allLights;
-	allAssets.texturePointers = &textureList;*/
+	allAssets.ModelNames = &OpenGL_MeshModelNames;
+	allAssets.modelPointers = &OpenGL_MeshModelList;
+	//allAssets.lightPointers = &allLights;
+	allAssets.texturePointers = &textureList;
 	return &allAssets;
 }
 
@@ -53,15 +53,13 @@ void OpenGL_Assets::createAsset(std::string ModelPath) {
 
 #pragma region Model Loading
 
-int OpenGL_Assets::createOpenGL_MeshModel(std::string modelFile)
+int OpenGL_Assets::createOpenGL_MeshModel(const std::string modelFile)
 {
 	static std::mutex lockFuncM;
-	//std::lock_guard<std::mutex> lock(lockFuncM);
 	
 	if (!lockFuncM.try_lock()) { return 1; }
 
 
-	printf("success");
 	printf("creating: %s\n", modelFile.c_str());
 	OpenGL_MeshModel model = OpenGL_MeshModel();
 
@@ -150,53 +148,53 @@ void OpenGL_Assets::destroyOpenGL_MeshModel(int ModelID)
 #pragma endregion
 
 
-//uint16_t OpenGL_Assets::addTexture(std::string fileName)
-//{
-//	static std::mutex lockFuncT;
-//
-//	if (!lockFuncT.try_lock()){ return 0; }
-//
-//	for (size_t i = 0; i < textureNames.size(); i++)
-//	{
-//		if (textureNames.at(i) == fileName)
-//		{
-//			if (selectedModel != -1)
-//				for (size_t j = 0; j < OpenGL_MeshModelList.at(selectedModel).getMeshCount(); j++)
-//				{
-//					OpenGL_MeshModelList.at(selectedModel).getMesh(j)->setTexId(i);
-//					printf("Texture Changed");
-//				}
-//
-//			lockFuncT.unlock();
-//			return i;
-//		}
-//	}
-//
-//	OpenGL_Texture texture(fileName.c_str());
-//	bool result = texture.LoadTexture();
-//
-//	if (result == 1) {
-//
-//		lockFuncT.unlock();
-//		printf("Failed To Load Texture");
-//		return 0;
-//	}
-//	printf("ja");
-//	textureList.push_back(texture);
-//	textureNames.push_back(fileName.c_str());
-//
-//	/*if (selectedModel < OpenGL_MeshModelList.size()) {
-//		for (size_t j = 0; j < OpenGL_MeshModelList.at(selectedModel).getMeshCount(); j++)
-//		{
-//			OpenGL_MeshModelList.at(selectedModel).getMesh(j)->setTexId(textureList.size() - 1);
-//			printf("Texture Changed");
-//		}
-//	}*/
-//		
-//	lockFuncT.unlock();
-//
-//	return textureList.size() - 1;
-//}
+uint16_t OpenGL_Assets::addTexture(std::string fileName)
+{
+	static std::mutex lockFuncT;
+
+	if (!lockFuncT.try_lock()){ return 0; }
+
+	for (size_t i = 0; i < textureNames.size(); i++)
+	{
+		if (textureNames.at(i) == fileName)
+		{
+			if (selectedModel != -1)
+				/*for (size_t j = 0; j < OpenGL_MeshModelList.at(selectedModel).getMeshCount(); j++)
+				{
+					OpenGL_MeshModelList.at(selectedModel).getMesh(j)->setTexId(i);
+					printf("Texture Changed");
+				}*/
+
+			lockFuncT.unlock();
+			return i;
+		}
+	}
+
+	OpenGL_Texture texture(fileName.c_str());
+	bool result = texture.LoadTexture();
+
+	if (result == 1) {
+
+		lockFuncT.unlock();
+		printf("Failed To Load Texture");
+		return 0;
+	}
+	printf("ja");
+	textureList.push_back(texture);
+	textureNames.push_back(fileName.c_str());
+
+	/*if (selectedModel < OpenGL_MeshModelList.size()) {
+		for (size_t j = 0; j < OpenGL_MeshModelList.at(selectedModel).getMeshCount(); j++)
+		{
+			OpenGL_MeshModelList.at(selectedModel).getMesh(j)->setTexId(textureList.size() - 1);
+			printf("Texture Changed");
+		}
+	}*/
+		
+	lockFuncT.unlock();
+
+	return textureList.size() - 1;
+}
 
 #pragma region Lights
 void OpenGL_Assets::addLight()

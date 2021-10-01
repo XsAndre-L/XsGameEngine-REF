@@ -1,5 +1,5 @@
 #pragma once
-#include "CommonValues.h"
+//#include "CommonValues.h"
 #include <GLEW/glew.h>
 #include "../../Window/Public/GLFW_Window.h"
 
@@ -44,6 +44,8 @@ private:
 public:
 
 	OpenGL_Assets AssetManager;
+
+
 	OpenGL_GUI_Renderer GUI_Renderer;
 	//std::vector<OpenGL_MeshModel*> modelList;
 };

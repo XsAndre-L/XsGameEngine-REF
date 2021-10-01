@@ -70,17 +70,14 @@ void Vulkan_Assets::createAsset(std::string ModelPath) {
 
 int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 {
-	static std::mutex lockFuncM;
-	//std::lock_guard<std::mutex> lock(lockFuncM);
+	static std::mutex lockFuncM;	// Making a static mutex 
 	
-	if (!lockFuncM.try_lock()) { return 1; }
+	if (!lockFuncM.try_lock()) { return 1; }	// Thread tries to lock function
 
-
-	printf("success");
 	printf("creating: %s\n", modelFile.c_str());
 	Vulkan_MeshModel model = Vulkan_MeshModel();
 
-	//---Checks if model already exists
+	#pragma region Checks if model already exists
 	for (size_t i = 0; i < Vulkan_MeshModelNames.size(); i++)
 	{
 		if (Vulkan_MeshModelNames.at(i) == modelFile.substr(7, modelFile.size())) 
@@ -98,7 +95,7 @@ int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 			return 0;
 		}
 	}
-	//---
+	#pragma endregion
 
 	#pragma region Read Vulkan_MeshModel from file
 
@@ -109,6 +106,7 @@ int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 	{
 		throw std::runtime_error("Failed to load model! (" + modelFile + ")");
 	}
+	
 
 	#pragma endregion
 
@@ -140,6 +138,7 @@ int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 		}
 	}
 
+	//And save
 	model.LoadNode(PhysicalDevice, Device, TransferQueue, GraphicsCommandPool, scene->mRootNode, scene, matToTex);
 
 	Vulkan_MeshModelList.push_back(model);
@@ -171,7 +170,7 @@ uint16_t Vulkan_Assets::addTexture(std::string fileName)
 	{
 		if (textureNames.at(i) == fileName)
 		{
-			if (selectedModel != -1)
+			if (selectedModel != 0)
 				for (size_t j = 0; j < Vulkan_MeshModelList.at(selectedModel).getMeshCount(); j++)
 				{
 					Vulkan_MeshModelList.at(selectedModel).getMesh(j)->setTexId(i);

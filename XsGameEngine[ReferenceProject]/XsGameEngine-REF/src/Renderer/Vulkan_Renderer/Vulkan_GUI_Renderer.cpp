@@ -436,10 +436,11 @@ void Vulkan_GUI_Renderer::renderDetailsMenu()
 	//Transform
 	if (ImGui::CollapsingHeader("TRANSFORM"))
 	{
-		ImGui::Checkbox("Local Transform", detailsInfo.LocalTransform);
-		ImGui::SliderFloat3("Position", &detailsInfo.position->x, -30.0f, 30.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat3("Rotation", &detailsInfo.rotation->x, 0.0f, 360.0f);
-		ImGui::SliderFloat3("Scale", &detailsInfo.scale->x, -30.0f, 30.0f);
+		ImGui::Checkbox("Local Transform", detailsInfo.LocalTransform);					//Local or Global Transform
+	
+		ImGui::InputFloat3("Position", &detailsInfo.position->x);						//Current Position
+		ImGui::SliderFloat3("Rotation", &detailsInfo.rotation->x, 0.0f, 360.0f);		//Current Rotation
+		ImGui::InputFloat3("Scale", &detailsInfo.scale->x);								//Current Scale
 	}
 
 	//Material

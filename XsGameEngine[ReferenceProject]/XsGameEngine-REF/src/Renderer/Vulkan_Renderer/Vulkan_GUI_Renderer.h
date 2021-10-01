@@ -1,5 +1,5 @@
 #pragma once
-#include "VulkanUtillities.h"
+#include "../../CommonValues.h"
 #include "../../AssetLoading/Vulkan_Assets/Vulkan_Assets.h"
 
 
@@ -13,20 +13,20 @@ class Vulkan_GUI_Renderer
 {
 public:
 	Vulkan_GUI_Renderer();
-	Vulkan_GUI_Renderer(	GLFWwindow& window,
-					VkInstance& instance,
-					VkDevice& Device,
-					VkPhysicalDevice& PhysicalDevice,
-					VkQueue& Queue, 
-					uint32_t GraphicsFamily,
-					VkRenderPass& RenderPass,
-					VkCommandPool& GraphicsCommandPool,
-					VkSampleCountFlagBits& msaaSampleCount,
-					bool& ApplyGraphics,
-					GraphicSettings& CurrentGraphicSettings,
+	Vulkan_GUI_Renderer(	
+		GLFWwindow& window,
+		VkInstance& instance,
+		VkDevice& Device,
+		VkPhysicalDevice& PhysicalDevice,
+		VkQueue& Queue, 
+		uint32_t GraphicsFamily,
+		VkRenderPass& RenderPass,
+		VkCommandPool& GraphicsCommandPool,
+		VkSampleCountFlagBits& msaaSampleCount,
+		bool& ApplyGraphics,
+		GraphicSettings& CurrentGraphicSettings,
 
-					Vulkan_Assets& AssetManager
-	);
+		Vulkan_Assets& AssetManager);
 
 
 

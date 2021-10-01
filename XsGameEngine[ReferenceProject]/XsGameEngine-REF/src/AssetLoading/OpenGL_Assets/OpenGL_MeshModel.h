@@ -19,7 +19,7 @@ public:
 	void LoadModel(const std::string& fileName);
 	void RenderModel();
 	void destroyModel();
-
+	std::vector<std::string>* getChildren() { return &Children; }
 	
 	void LoadMaterials(const aiScene* Scene);
 private:
@@ -27,6 +27,7 @@ private:
 	void LoadNode(aiNode* node, const aiScene* scene);
 	void LoadMesh(aiMesh* mesh, const aiScene* scene);
 	
+	std::vector<std::string> Children;
 
 	std::vector<OpenGL_Mesh*> meshList;
 	std::vector<OpenGL_Texture*> textureList;
