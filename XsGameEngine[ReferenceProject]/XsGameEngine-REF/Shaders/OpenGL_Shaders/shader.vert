@@ -30,7 +30,7 @@ layout(std140, binding = 0) uniform UboViewProjection
 //} pushModel;
 
 layout(location = 0) out vec3 fragColor;
-//layout(location = 1) out vec2 TexCoords;
+layout(location = 1) out vec2 TexCoords;
 //layout(location = 2) out vec3 Normal;
 //layout(location = 3) out vec3 FragPos;
 
@@ -38,7 +38,7 @@ void main(){
 	
 	gl_Position =  uboVP.projection * uboVP.view * uboVP.model * vec4(pos,1.0);
 	fragColor = vec3(0.0,0.0,1.0); //col;	 
-	//TexCoords = tex;
+	TexCoords = tex;
 	//Normal = mat3(transpose(inverse(uboViewProjection.model))) * norm;
 	//FragPos = (uboViewProjection.model * vec4(pos, 1.0)).xyz;
 }

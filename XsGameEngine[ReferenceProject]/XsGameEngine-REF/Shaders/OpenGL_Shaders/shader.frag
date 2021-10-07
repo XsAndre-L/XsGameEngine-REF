@@ -1,14 +1,14 @@
 #version 460
 
 layout(location = 0) in vec3 fragColor;
-//layout(location = 1) in vec2 TexCoords;
+layout(location = 1) in vec2 TexCoords;
 //layout(location = 2) in vec3 Normal;
 //layout(location = 3) in vec3 FragPos;
 
 layout(location = 0) out vec4 outColor; //Final output Color   
 
 
-//layout(binding = 0) uniform sampler2D textureSampler;
+layout(binding = 0) uniform sampler2D textureSampler;
 
 //layout(set = 0, binding = 2) uniform ExtraSettings
 //{
@@ -75,5 +75,6 @@ void main(){
 	//ambientColour += ambientColour2;
 	
 	//outColor = texture(textureSampler , TexCoords) * finalColour ;
-	outColor = vec4(fragColor, 1.0);
+	outColor = texture(textureSampler , TexCoords);
+	//outColor = vec4(fragColor, 1.0);
 }

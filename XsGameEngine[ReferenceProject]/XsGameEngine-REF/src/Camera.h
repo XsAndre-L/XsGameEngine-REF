@@ -14,7 +14,7 @@ public:
 	float mouseSensitivity = 20;
 	//Camera Speed
 	GLfloat moveSpeed = 2.0f;
-	GLfloat turnSpeed = 4.0f;
+	GLfloat turnSpeed = 8.0f;
 
 	
 	bool setAsActive(glm::mat4* viewMatrix);
@@ -22,8 +22,6 @@ public:
 	void setCamera(bool cursorMode, GLfloat xChange, GLfloat yChange, float deltaTime);
 	glm::vec3 getCamFront() { return front * -1.0f; }
 	void checkInputs(bool cursorMode, bool* keys, float scroll, GLfloat deltaTime);
-
-	
 
 private:
 	glm::mat4* viewMatrix = nullptr;

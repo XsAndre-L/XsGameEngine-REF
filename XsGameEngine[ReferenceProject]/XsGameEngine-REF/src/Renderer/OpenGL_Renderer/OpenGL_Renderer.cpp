@@ -1,5 +1,7 @@
 #include "OpenGL_Renderer.h"
 
+#pragma region Public Functions
+
 int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 {
 	window = newWindow;
@@ -10,7 +12,7 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 	{
 		printf("Glew initialization failed!");
 		glfwDestroyWindow(newWindow);
-		return false;
+		return 1;
 
 	}
 
@@ -20,18 +22,150 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 
 	int width, height;
 	glfwGetWindowSize(newWindow, &width, &height);
-
 	glViewport(0, 0, width, height);
 
+
+	shaders.CompileShaders();
+	/*int bufferWidth, bufferHeight;
+	glfwGetFramebufferSize(newWindow.getWindow(), &bufferWidth, &bufferHeight);*/
+	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	shaders.SetProjection(projection);
+
 	
+
+	glfwSwapInterval(1);
+
+	#if defined GUI_LAYER && defined OPENGL
+	bool test = true;
+	//GUI_Renderer = OpenGL_GUI_Renderer(*newWindow, test, AssetManager);
+	new_GUI_Renderer = GUI_Renderer(*newWindow, test, AssetManager);
+	new_GUI_Renderer.createImGuiInstance();
+	#endif
+
+	/// <summary>
+	std::string Obj1 = "Models/plane.obj";
+	std::string Obj2 = "Models/basicOBJ.obj";
+	//std::string Obj3 = "Models/Cam_Model.obj";
+	AssetManager.createAsset(Obj1.c_str());
+	AssetManager.createAsset(Obj2.c_str());
+	//AssetManager.createOpenGL_MeshModel(Obj3.c_str());
 
 	return 0;
 }
 
+
+//void OpenGL_Renderer::pushModel(const char* fileName)
+//{
+//	OpenGL_MeshModel* myModel = new OpenGL_MeshModel();
+//	myModel->LoadModel(fileName);
+//	modelList.push_back(myModel);
+//}
+
+void GLMmovements(OpenGL_MeshModel mod, GLuint MVPuniform, int modelIndex, const Shaders& shaders)
+{
+//	glm::mat4 model(1.0f);
+//	if (modelIndex == 0)
+//	{
+//#pragma region Updates
+//
+//		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
+//		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 1.0f));
+//#pragma endregion
+//	}
+//	else if (modelIndex == 2)
+//	{
+//		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -2.0f));
+//		model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+//
+//		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+//	}
+//	else {
+//		//model = glm::rotate(model, curAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+//		//model = glm::translate(model, LightPos);
+//		//model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+//	}
+
+	glm::mat4 ViewMat = shaders.GetViewMatrix();
+	glm::mat4 ModelMat = mod.getMatrix();
+	glBindBuffer(GL_UNIFORM_BUFFER, MVPuniform);
+
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, &ModelMat);
+	//glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &projection);
+	glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &ViewMat);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+}
+
+void OpenGL_Renderer::draw()
+{
+	if (AssetManager.shouldADD)
+	{
+		AssetManager.createOpenGL_MeshModel();
+	}
+
+
+#if defined GUI_LAYER && defined OPENGL
+	glClearColor(new_GUI_Renderer.clearColor.x, new_GUI_Renderer.clearColor.y, new_GUI_Renderer.clearColor.z, 1.0f);
+#endif
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+
+	glUseProgram(shaders.getProgram());
+
+	
+	for (size_t i = 0; i < AssetManager.OpenGL_MeshModelList.size(); i++)
+	{
+		GLMmovements(AssetManager.OpenGL_MeshModelList[i], shaders.getMvpLocation(), 0, shaders);	// This sets the model Uniform
+		AssetManager.OpenGL_MeshModelList[i].RenderModel();
+		
+	}
+	//printf("size %i",(modelList.size()));
+
+	//shaders.SetDirectionalLight(&mainLight);
+	//shaders.SetPointLight(pointLights, pointLightCount);
+	//shinyMaterial.useMaterial(uniformSpecularIntensityLocation, uniformShininessLocation);
+
+	//shaders.SetSpotLight(spotLights, spotLightCount);
+
+	//glUniformMatrix4fv(shaders.getUniformView(), 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+	//glUniform3f(shaders.getEyePositionLocation(), camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+	
+	glUseProgram(0);
+
+	
+	#if defined GUI_LAYER && defined OPENGL
+	OpenGL_MeshModel* mesh;
+	if (AssetManager.OpenGL_MeshModelList.size() > 0) {
+		AssetManager.OpenGL_MeshModelList[*AssetManager.SetSelected()].updateMatrix();
+		mesh = &AssetManager.OpenGL_MeshModelList[*AssetManager.SetSelected()];
+	}
+	else
+	{
+		mesh = nullptr;
+	}
+		new_GUI_Renderer.RenderMenus<OpenGL_Assets::AllAssets*>(mesh->getTransformType(),mesh->getPosition(),mesh->getRotation(),mesh->getScale(),AssetManager.SetSelected() ,AssetManager.getAssetInfo());
+		//The ImGUI Function That Renders The GUI
+		if (ImGui::GetCurrentContext())
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	#endif
+
+	glfwSwapBuffers(window);
+}
+
+
+
 void OpenGL_Renderer::shutdown_Renderer()
 {
-	printf("Deleting Window");
-	glfwDestroyWindow(window);
+	printf("Deleting Renderer\n");
 
-	glfwTerminate();
+	#if defined GUI_LAYER && defined OPENGL
+		new_GUI_Renderer.CleanUpGuiComponents();
+		new_GUI_Renderer.CleanUpGUI();
+	#endif
 }
+
+#pragma endregion
+
+

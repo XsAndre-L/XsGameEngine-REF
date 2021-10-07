@@ -11,11 +11,11 @@
 #include <iostream>
 
 
-const int MAX_DIRECTIONAL_LIGHTS = 3;
+//const int MAX_DIRECTIONAL_LIGHTS = 3;
 
 
-const int MAX_FRAME_DRAWS = 2;
-const int MAX_OBJECTS = 30;
+//const int MAX_FRAME_DRAWS = 2;
+//const int MAX_OBJECTS = 30;
 
 
 //--DEVICE EXTENSIONS
@@ -93,7 +93,12 @@ struct Vertex
 	glm::vec3 norm{};
 };
 
-static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t allowedTypes, VkMemoryPropertyFlags properties)
+static uint32_t findMemoryTypeIndex
+(
+	VkPhysicalDevice physicalDevice, 
+	uint32_t allowedTypes, 
+	VkMemoryPropertyFlags properties
+)
 {
 	//Get properties of physical device memory
 	VkPhysicalDeviceMemoryProperties memoryProperties;
@@ -110,8 +115,16 @@ static uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t al
 	return 0;
 }
 
-static void createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDeviceSize bufferSize, VkBufferUsageFlags bufferUsage,
-	VkMemoryPropertyFlags bufferProperties, VkBuffer* buffer, VkDeviceMemory* bufferMemory)
+static void createBuffer
+(
+	VkPhysicalDevice physicalDevice, 
+	VkDevice device, 
+	VkDeviceSize bufferSize, 
+	VkBufferUsageFlags bufferUsage,
+	VkMemoryPropertyFlags bufferProperties, 
+	VkBuffer* buffer, 
+	VkDeviceMemory* bufferMemory
+)
 {
 	#pragma region Create Buffer
 	VkBufferCreateInfo bufferInfo{};
@@ -154,9 +167,11 @@ static void createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDev
 #pragma endregion
 
 
-
-
-static VkCommandBuffer beginCommandBuffer(VkDevice device, VkCommandPool commandPool)
+static VkCommandBuffer beginCommandBuffer
+(
+	VkDevice device, 
+	VkCommandPool commandPool
+)
 {
 	
 	//Command buffer to hold transfer commands
@@ -184,7 +199,13 @@ static VkCommandBuffer beginCommandBuffer(VkDevice device, VkCommandPool command
 	return commandBuffer;
 }
 
-static void endAndSubmitCommandBuffer(VkDevice device, VkCommandPool commandPool, VkQueue queue, VkCommandBuffer commandBuffer)
+static void endAndSubmitCommandBuffer
+(
+	VkDevice device, 
+	VkCommandPool commandPool, 
+	VkQueue queue, 
+	VkCommandBuffer commandBuffer
+)
 {
 	vkEndCommandBuffer(commandBuffer);
 
@@ -208,7 +229,15 @@ static void endAndSubmitCommandBuffer(VkDevice device, VkCommandPool commandPool
 	vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
 }
 
-static void copyBuffer(VkDevice device, VkQueue transferQueue, VkCommandPool transferCommandPool, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize bufferSize)
+static void copyBuffer
+(
+	VkDevice device, 
+	VkQueue transferQueue, 
+	VkCommandPool transferCommandPool, 
+	VkBuffer srcBuffer, 
+	VkBuffer dstBuffer, 
+	VkDeviceSize bufferSize
+)
 {
 	VkCommandBuffer commandBuffer = beginCommandBuffer(device, transferCommandPool);
 
@@ -225,8 +254,16 @@ static void copyBuffer(VkDevice device, VkQueue transferQueue, VkCommandPool tra
 	
 }
 
-static void copyImageBuffer(VkDevice device, VkQueue transferQueue, VkCommandPool transferCommandPool,
-	VkBuffer srcBuffer, VkImage image, uint32_t width, uint32_t height)
+static void copyImageBuffer
+(
+	VkDevice device, 
+	VkQueue transferQueue, 
+	VkCommandPool transferCommandPool,
+	VkBuffer srcBuffer, 
+	VkImage image, 
+	uint32_t width, 
+	uint32_t height
+)
 {
 	VkCommandBuffer commandBuffer = beginCommandBuffer(device, transferCommandPool);
 
