@@ -26,9 +26,58 @@ OpenGL_Assets::AllAssets* OpenGL_Assets::getAssetInfo()
 
 
 #pragma region Create Asset	
-void OpenGL_Assets::asyncAssets(std::string ModelPath) {
+void OpenGL_Assets::asyncAssets(std::string ModelPath) 
+{
 	//addTexture(TexturePath);
-	createOpenGL_MeshModel(ModelPath);
+	//createOpenGL_MeshModel(ModelPath.c_str());
+	static std::mutex lockFuncM;
+	while (true) {
+		// try to lock mutex
+		if (lockFuncM.try_lock()) {
+			break;	// If successful we exit the loop
+		}
+		else {
+			// wait for previous load to finish
+			std::chrono::milliseconds interval(100);
+			std::this_thread::sleep_for(interval);
+		}
+	}
+
+	if (!shouldADD) {
+
+#pragma region Read Vulkan_MeshModel from file to ADD model
+		path = ModelPath;
+		bool ShouldRead = true;
+		for (size_t i = 0; i < OpenGL_MeshModelNames.size(); i++)
+		{
+			if (OpenGL_MeshModelNames.at(i) == ModelPath.substr(7, ModelPath.size()))
+			{
+
+				shouldADD = true;
+				ShouldRead = false;
+			}
+		}
+		if (ShouldRead) {
+			// Import "scene" with multiple meshes
+			double StartTime = glfwGetTime();
+
+			importer = new Assimp::Importer();
+			scene = importer->ReadFile(ModelPath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+			//delete importer;
+
+			if (!scene)
+			{
+				throw std::runtime_error("Failed to load model! (" + ModelPath + ")");
+			}
+			else {
+				shouldADD = true;
+				double StopTime = glfwGetTime();
+				printf("second - %f \n", (StopTime - StartTime));
+			}
+		}
+#pragma endregion
+	}
+	lockFuncM.unlock();
 }
 
 void OpenGL_Assets::createAsset(std::string ModelPath) {
@@ -53,20 +102,20 @@ void OpenGL_Assets::createAsset(std::string ModelPath) {
 
 #pragma region Model Loading
 
-int OpenGL_Assets::createOpenGL_MeshModel(const std::string modelFile)
+int OpenGL_Assets::createOpenGL_MeshModel(/*const std::string modelFile*/)
 {
 	static std::mutex lockFuncM;
 	
 	if (!lockFuncM.try_lock()) { return 1; }
 
 
-	printf("creating: %s\n", modelFile.c_str());
+	printf("creating: %s\n", path.c_str());
 	OpenGL_MeshModel model = OpenGL_MeshModel();
 
 	//---Checks if model already exists
 	for (size_t i = 0; i < OpenGL_MeshModelNames.size(); i++)
 	{
-		if (OpenGL_MeshModelNames.at(i) == modelFile.substr(7, modelFile.size()))
+		if (OpenGL_MeshModelNames.at(i) == path.substr(7, path.size()))
 		{
 			model = OpenGL_MeshModelList.at(i);
 			model.resetMatrix();
@@ -74,8 +123,9 @@ int OpenGL_Assets::createOpenGL_MeshModel(const std::string modelFile)
 
 			OpenGL_MeshModelList.push_back(model);
 			//This gets the model name without the entire Path and adds it to the list of names
-			OpenGL_MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
+			OpenGL_MeshModelNames.push_back(path.substr(7, path.size()));
 
+			shouldADD = false; 
 			lockFuncM.unlock();
 
 			return 0;
@@ -124,15 +174,16 @@ int OpenGL_Assets::createOpenGL_MeshModel(const std::string modelFile)
 	}*/
 
 	//model.LoadNode(scene->mRootNode, scene);
-	OpenGL_MeshModel* myModel = new OpenGL_MeshModel();
-	myModel->LoadModel(modelFile);
+	OpenGL_MeshModel myModel = OpenGL_MeshModel();
+	myModel.LoadModel(scene);
 	//modelList.push_back(myModel);
 
-	OpenGL_MeshModelList.push_back(*myModel);
-	delete myModel;
+	OpenGL_MeshModelList.push_back(myModel);
+	//delete myModel;
 	//This gets the model name without the entire Path and adds it to the list of names
-	OpenGL_MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
-
+	OpenGL_MeshModelNames.push_back(path.substr(7, path.size()));
+	shouldADD = false; //TODO
+	delete importer;
 	lockFuncM.unlock();
 
 	return 0;
@@ -159,37 +210,37 @@ uint16_t OpenGL_Assets::addTexture(std::string fileName)
 		if (textureNames.at(i) == fileName)
 		{
 			if (selectedModel != -1)
-				/*for (size_t j = 0; j < OpenGL_MeshModelList.at(selectedModel).getMeshCount(); j++)
+				for (size_t j = 0; j < OpenGL_MeshModelList.at(selectedModel).getMeshCount(); j++)
 				{
-					OpenGL_MeshModelList.at(selectedModel).getMesh(j)->setTexId(i);
+					OpenGL_MeshModelList.at(selectedModel).setMeshToTex(j, i);// .getMesh(j)->setTexId(i);
 					printf("Texture Changed");
-				}*/
+				}
 
 			lockFuncT.unlock();
 			return i;
 		}
 	}
 
-	OpenGL_Texture texture(fileName.c_str());
-	bool result = texture.LoadTexture();
+	OpenGL_Texture* tex = new OpenGL_Texture(fileName.c_str());
+	bool result = tex->LoadTexture();
 
-	if (result == 1) {
+	if (!result) {
 
 		lockFuncT.unlock();
 		printf("Failed To Load Texture");
 		return 0;
 	}
 	printf("ja");
-	textureList.push_back(texture);
+	OpenGL_MeshModelList.at(selectedModel).textureList.push_back(tex);
 	textureNames.push_back(fileName.c_str());
 
-	/*if (selectedModel < OpenGL_MeshModelList.size()) {
+	if (selectedModel < OpenGL_MeshModelList.size()) {
 		for (size_t j = 0; j < OpenGL_MeshModelList.at(selectedModel).getMeshCount(); j++)
 		{
-			OpenGL_MeshModelList.at(selectedModel).getMesh(j)->setTexId(textureList.size() - 1);
+			OpenGL_MeshModelList.at(selectedModel).setMeshToTex(j, (OpenGL_MeshModelList.at(selectedModel).textureList.size() - 1));
 			printf("Texture Changed");
 		}
-	}*/
+	}
 		
 	lockFuncT.unlock();
 

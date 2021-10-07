@@ -6,11 +6,12 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 
-#include "Vulkan_GUI_Renderer.h"
+#include "../GUI_Renderer.h"
 #include "../../AssetLoading/Vulkan_Assets/Vulkan_Assets.h"
 
 #include "../../Window/Public/GLFW_Window.h"
 #include "../../Camera.h"
+
 
 
 class Vulkan_Renderer
@@ -198,7 +199,7 @@ public:
 	
 
 	#ifdef GUI_LAYER
-		Vulkan_GUI_Renderer GUI;
+		GUI_Renderer GUI;
 	#else
 		const bool GUI_LAYER = false;
 	#endif

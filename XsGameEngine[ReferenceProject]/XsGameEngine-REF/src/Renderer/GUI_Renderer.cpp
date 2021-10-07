@@ -1,25 +1,23 @@
-#include "Vulkan_GUI_Renderer.h"
+﻿#include "GUI_Renderer.h"
 #include <iostream>
 #include <filesystem>
 #include <math.h>
 
-Vulkan_GUI_Renderer::Vulkan_GUI_Renderer()
-{
-}
+#ifdef VULKAN
 
-Vulkan_GUI_Renderer::Vulkan_GUI_Renderer
+GUI_Renderer::GUI_Renderer
 (
-	GLFWwindow &window, 
-	VkInstance& newInstance, 
-	VkDevice& newDevice, 
-	VkPhysicalDevice& newPhysicalDevice, 
-	VkQueue& newQueue, 
-	uint32_t newGraphicsFamily, 
-	VkRenderPass& newRenderPass, 
-	VkCommandPool& newGraphicsCommandPool, 
-	VkSampleCountFlagBits& msaaSampleCount, 
-	bool& ApplyGraphics, 
-	GraphicSettings& CurrentGraphicSettings, 
+	GLFWwindow& window,
+	VkInstance& newInstance,
+	VkDevice& newDevice,
+	VkPhysicalDevice& newPhysicalDevice,
+	VkQueue& newQueue,
+	uint32_t newGraphicsFamily,
+	VkRenderPass& newRenderPass,
+	VkCommandPool& newGraphicsCommandPool,
+	VkSampleCountFlagBits& msaaSampleCount,
+	bool& ApplyGraphics,
+	GraphicSettings& CurrentGraphicSettings,
 	Vulkan_Assets& assetManager
 )
 {
@@ -41,34 +39,33 @@ Vulkan_GUI_Renderer::Vulkan_GUI_Renderer
 	init_imGUI_Vulkan();
 }
 
-
 //Create an Instance of ImGUI (Context)
-void Vulkan_GUI_Renderer::createImGuiInstance()
+void GUI_Renderer::createImGuiInstance()
 {
 	// Setup Dear ImGui context
-	#pragma region ImGui
+#pragma region ImGui
 
 	static int CheckInstalls = 0;
 	if (CheckInstalls < 1) {
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-	
-	//ImGui::StyleColorsClassic();
-	
-		// Setup Platform/Renderer backends
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+		// Setup Dear ImGui style
+		ImGui::StyleColorsDark();
+
+		//ImGui::StyleColorsClassic();
+
+			// Setup Platform/Renderer backends
 		ImGui_ImplGlfw_InitForVulkan(IgInitInfo.mainWindow, true);
 		CheckInstalls++;
 	}
-	
 
-	#pragma endregion
+
+#pragma endregion
 }
 
 void ImGuiFontSubmit(VkDevice device, VkCommandPool commandPool, VkQueue queue) {
@@ -78,7 +75,7 @@ void ImGuiFontSubmit(VkDevice device, VkCommandPool commandPool, VkQueue queue) 
 		// Use any command queue
 	//vkResetCommandPool(device, commandPool, 0);
 	VkCommandBuffer commandBuffer = beginCommandBuffer(device, commandPool);
-	
+
 	ImGui_ImplVulkan_CreateFontsTexture(commandBuffer);
 
 	endAndSubmitCommandBuffer(device, commandPool, queue, commandBuffer);
@@ -87,7 +84,7 @@ void ImGuiFontSubmit(VkDevice device, VkCommandPool commandPool, VkQueue queue) 
 
 }
 
-void Vulkan_GUI_Renderer::init_imGUI_Vulkan()
+void GUI_Renderer::init_imGUI_Vulkan()
 {
 	//1: create descriptor pool for IMGUI
 	// the size of the pool is very oversize, but it's copied from imgui demo itself.
@@ -139,89 +136,67 @@ void Vulkan_GUI_Renderer::init_imGUI_Vulkan()
 
 	//execute a gpu command to upload imgui font textures
 
-		
+
 	ImGuiFontSubmit(*IgInitInfo.Device, *IgInitInfo.GraphicsCommandPool, *IgInitInfo.Queue);
 
 	//clear font textures from cpu data
 	ImGui_ImplVulkan_DestroyFontUploadObjects();
-		
-	
+
+
 	//add the destroy the imgui created structures
 
 }
 
-//Main Render Menus Function
-void Vulkan_GUI_Renderer::RenderMenus(bool* LocalTransform, glm::vec3* position, glm::vec3* rotation, glm::vec3* scale, int* selectedObject, const Vulkan_Assets::AllAssets* AssetList)
+#elif OPENGL
+GUI_Renderer::GUI_Renderer(GLFWwindow& window, bool& ApplyGraphics, OpenGL_Assets& AssetManager)
 {
-	//Hide and unhide Content Browser
-	if (ImGui::IsKeyPressed(ImGui::GetIO().KeyMap[ImGuiKey_Space]) && ImGui::GetIO().KeysDown[GLFW_KEY_LEFT_CONTROL]) {
-		browserInfo.ShowMenu = !browserInfo.ShowMenu;
+	IgInitInfo.mainWindow = &window;
+
+	IgInitInfo.ApplyGraphics = &ApplyGraphics;
+	/*IgInitInfo.CurrentGraphicSettings = &CurrentGraphicSettings;*/
+
+	IgInitInfo.AssetManager = &AssetManager;
+}
+
+//Create an Instance of ImGUI (Context)
+void GUI_Renderer::createImGuiInstance()
+{
+	// Setup Dear ImGui context
+#pragma region ImGui
+	const char* glsl_version = "#version 130";
+
+	static int CheckInstalls = 0;
+	if (CheckInstalls < 1) {
+
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+		// Setup Dear ImGui style
+		ImGui::StyleColorsDark();
+
+		//ImGui::StyleColorsClassic();
+
+			// Setup Platform/Renderer backends
+		ImGui_ImplGlfw_InitForOpenGL(IgInitInfo.mainWindow, true);
+		ImGui_ImplOpenGL3_Init(glsl_version);
+		CheckInstalls++;
 	}
 
-	//glfwGetWindowSize(IgInitInfo.mainWindow, &sharedInfo.width, &sharedInfo.height);
-	//Set Info
-	//sharedInfo
-	sharedInfo.selectedObject = selectedObject;
-	//sharedInfo.modelNames = AssetList->ModelNames;
-	sharedInfo.allAssets = AssetList;
-
-	//menu 'OBJECT DETAILS'
-	detailsInfo.LocalTransform = LocalTransform;
-	detailsInfo.position = position;
-	detailsInfo.rotation = rotation;
-	detailsInfo.scale = scale;
-
-	//menu 'WORLD OUTLINER'
-	//NON
-
-	//menu 'Content Browser'
-	//browserInfo.AssetLoadThread = AssetLoadThread;
-
-	#pragma region ImGUI Render Function
-
-	// Start the Dear ImGui frame
-	ImGui_ImplVulkan_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-
-
-	//imgui commands
-	//ImGui::ShowDemoWindow();
-
-	mainMenuBar();
-
-	if(outlinerInfo.ShowMenu)
-		renderOutlinerMenu();
-
-	if(detailsInfo.ShowMenu)
-		renderDetailsMenu();
-
-	if(browserInfo.ShowMenu)
-		renderContentMenu();
-
-	if (statsInfo.ShowMenu)
-		renderStatsOverlay();
-
-	
-
-	// Rendering
-	ImGui::Render();
-	ImDrawData* draw_data = ImGui::GetDrawData();
-	const bool is_minimized = (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f);
-	if (!is_minimized)
-	{
-
-	}
 
 #pragma endregion
 }
+#endif
 
 
 //TODO : Function to handle shortcuts for selected window
-//void Vulkan_GUI_Renderer::ShortCutKeyInput(){}
+//void GUI_Renderer::ShortCutKeyInput(){}
 
 #pragma region Main Bar
-void Vulkan_GUI_Renderer::ShowFileMenu()
+void GUI_Renderer::ShowFileMenu()
 {
 	ImGui::MenuItem("(demo menu)", NULL, false, false);
 	if (ImGui::MenuItem("New")) {}
@@ -297,7 +272,7 @@ void Vulkan_GUI_Renderer::ShowFileMenu()
 	if (ImGui::MenuItem("Quit", "Alt+F4")) { glfwSetWindowShouldClose(IgInitInfo.mainWindow, GL_TRUE); }
 }
 
-void Vulkan_GUI_Renderer::mainMenuBar() {
+void GUI_Renderer::MainMenuBar() {
 	if (ImGui::BeginMainMenuBar())
 	{
 		//FILE BUTTON
@@ -334,7 +309,7 @@ void Vulkan_GUI_Renderer::mainMenuBar() {
 
 #pragma region Outliner
 
-void Vulkan_GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
+void GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 {
 	// Use object uid as identifier. Most commonly you could also use the object pointer as a base ID.
 	ImGui::PushID(uid);
@@ -365,7 +340,11 @@ void Vulkan_GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 		ImGui::OpenPopup("OptionsPopUp");
 
 		if (ImGui::Button("Delete")) {
+#ifdef VULKAN
 			IgInitInfo.AssetManager->destroyVulkan_MeshModel(uid);
+#elif OPENGL
+			IgInitInfo.AssetManager->destroyOpenGL_MeshModel(uid);
+#endif
 		}
 		
 		ImGui::EndPopup();
@@ -373,7 +352,11 @@ void Vulkan_GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 	
 	if (node_open)
 	{
+#ifdef VULKAN
 		std::vector<std::string> ChildNodes = *IgInitInfo.AssetManager->Vulkan_MeshModelList.at(uid).getChildren();
+#elif OPENGL
+		std::vector<std::string> ChildNodes = *IgInitInfo.AssetManager->OpenGL_MeshModelList.at(uid).getChildren();
+#endif
 		//static float placeholder_members[8] = { 0.0f, 0.0f, 1.0f, 3.1416f, 100.0f, 999.0f };
 		for (int i = 0; i < ChildNodes.size(); i++)
 		{
@@ -398,7 +381,7 @@ void Vulkan_GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 }
 
 //All active rendered meshes
-void Vulkan_GUI_Renderer::renderOutlinerMenu()
+void GUI_Renderer::RenderOutlinerMenu()
 {
 
 	ImGui::Begin("World Outliner");
@@ -421,7 +404,6 @@ void Vulkan_GUI_Renderer::renderOutlinerMenu()
 
 #pragma endregion
 
-
 #pragma region Details Menu
 //Entiy Has Transform
 void Entity_Details() 
@@ -429,7 +411,7 @@ void Entity_Details()
 
 }
 
-void Vulkan_GUI_Renderer::renderDetailsMenu()
+void GUI_Renderer::RenderDetailsMenu()
 {
 	ImGui::Begin("Details");
 
@@ -453,8 +435,10 @@ void Vulkan_GUI_Renderer::renderDetailsMenu()
 	//Directional Light
 	if (ImGui::CollapsingHeader("DIRECTIONAL LIGHT"))
 	{
+#ifdef VULKAN
 		ImGui::SliderFloat3(" Direction", &sharedInfo.allAssets->lightPointers->directionalLight[0].lightDirection.x, -1.0f, 1.0f);
 		ImGui::ColorEdit3(" LightColor", &sharedInfo.allAssets->lightPointers->directionalLight[0].base.colour.x);
+#endif
 	}
 
 	//ImGui::Checkbox("Show Another Window", &show_another_window);
@@ -471,6 +455,7 @@ void Vulkan_GUI_Renderer::renderDetailsMenu()
 
 	if (ImGui::CollapsingHeader("Graphics"))
 	{
+#ifdef VULKAN
 		static int MSAA;
 		ImGui::InputInt("MSAA", &IgInitInfo.CurrentGraphicSettings->MSAA , 1, 1);
 
@@ -480,6 +465,7 @@ void Vulkan_GUI_Renderer::renderDetailsMenu()
 				 
 			}
 		}
+#endif
 	}
 
 
@@ -488,10 +474,9 @@ void Vulkan_GUI_Renderer::renderDetailsMenu()
 }
 #pragma endregion
 
+#pragma region Content Menu
 
-
-
-void Vulkan_GUI_Renderer::renderContentMenu() {
+void GUI_Renderer::RenderContentMenu() {
 	float ySize = 300.0f;
 	ImGui::SetNextWindowSize({ ImGui::GetMainViewport()->Size.x, ySize});
 	ImGui::SetNextWindowPos({ ImGui::GetMainViewport()->GetCenter().x - (ImGui::GetMainViewport()->Size.x/2.0f), (ImGui::GetMainViewport()->GetCenter().y + (ImGui::GetMainViewport()->Size.y / 2.0f)) - ySize }, false);
@@ -521,9 +506,15 @@ void Vulkan_GUI_Renderer::renderContentMenu() {
 
 				if (ImGui::Button(nameString.c_str(), ImVec2(100.0f, 100.0f)))
 				{
+#ifdef VULKAN
 					if (IgInitInfo.AssetManager->Vulkan_MeshModelList.size() < MAX_OBJECTS) {
 						IgInitInfo.AssetManager->createAsset(modelPath.string());
 					}
+#elif OPENGL
+					if (IgInitInfo.AssetManager->OpenGL_MeshModelList.size() < MAX_OBJECTS) {
+						IgInitInfo.AssetManager->createAsset(path + '/' + nameString.c_str());//modelPath.string()
+					}
+#endif
 				}
 				ImGui::SameLine();
 			}
@@ -555,7 +546,9 @@ void Vulkan_GUI_Renderer::renderContentMenu() {
 	ImGui::End();
 }
 
-void Vulkan_GUI_Renderer::renderStatsOverlay()
+#pragma endregion
+
+void GUI_Renderer::RenderStatsOverlay()
 {
 	const float PAD = 10.0f;
 	static int corner = 0;
@@ -583,8 +576,6 @@ void Vulkan_GUI_Renderer::renderStatsOverlay()
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		if (ImGui::IsMousePosValid())
 			ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
-
-		
 			
 		else
 			ImGui::Text("Mouse Position: <invalid>");
@@ -602,16 +593,25 @@ void Vulkan_GUI_Renderer::renderStatsOverlay()
 	ImGui::End();
 }
 
+
+#pragma region Clean-Up Functions
 //Secondly Destroys
-void Vulkan_GUI_Renderer::CleanUpGUI(VkDevice Device)
+void GUI_Renderer::CleanUpGUI()
 {
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 }
 
 //First Destroys
-void Vulkan_GUI_Renderer::CleanUpGuiComponents(VkDevice Device)
+void GUI_Renderer::CleanUpGuiComponents()
 {
+#ifdef VULKAN
 	ImGui_ImplVulkan_Shutdown();
-	vkDestroyDescriptorPool(Device, imguiPool, nullptr);
+	vkDestroyDescriptorPool(*IgInitInfo.Device, imguiPool, nullptr);
+#elif OPENGL
+	ImGui_ImplOpenGL3_Shutdown();
+#endif
 }
+#pragma endregion
+
+

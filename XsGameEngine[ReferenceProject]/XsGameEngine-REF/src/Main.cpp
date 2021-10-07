@@ -1,13 +1,23 @@
 #include "PreprocessorDefs.h"
 
-#include "Renderer/Vulkan_Renderer/Vulkan_Renderer.h"
+#ifdef VULKAN
+	#include "Renderer/Vulkan_Renderer/Vulkan_Renderer.h"
+	Vulkan_Renderer Renderer;
+#elif OPENGL
+	#include "Renderer/OpenGL_Renderer/OpenGL_Renderer.h"
+
+	OpenGL_Renderer Renderer;
+#else
+
+#endif
+
+
+
 #include "Time.h"
 
-
 GLFW_Window newWindow;
-Time programTime;
 
-Vulkan_Renderer newVulkan_Renderer;
+Time programTime;
 
 Camera camera;
 
@@ -30,24 +40,31 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-
+#ifdef VULKAN
 	//CREATE VULKAN INSTANCE -- needs the window so we get the window 
-	if (newVulkan_Renderer.init_Vulkan_Renderer(newWindow.getWindow()) == EXIT_FAILURE)
-	{ return EXIT_FAILURE; }
+	if (Renderer.init_Vulkan_Renderer(newWindow.getWindow()) == EXIT_FAILURE)
+	{
+		return EXIT_FAILURE;
+	}
+#elif OPENGL
+	//CREATE VULKAN INSTANCE -- needs the window so we get the window 
+	if (Renderer.init_OpenGL_Renderer(newWindow.getWindow()) == EXIT_FAILURE) 
+	{
+		return EXIT_FAILURE;
+	}
+#endif
 	
-
 	float deltaTime = 0.0f;
 	float angle = 0.0f;
 	
 	//camera needs to be set as active to change the vulkan view matrix
-	camera.setAsActive(newVulkan_Renderer.getViewMatrix());
+	camera.setAsActive(Renderer.getViewMatrix());
 
 	static glm::vec3 translation = { 0.0f,0.0f,0.0f };
 	static glm::vec3 rotation = { 0.0f,0.0f,0.0f };
 	//static float f = 0.0f;
 	int counter = 0;
 
-	//bool enitialMove = false;
 	
 	//PROGRAM LOOP
 	while (!newWindow.shouldClose())
@@ -65,30 +82,33 @@ int main()
 
 		//Vulkan_Renderer.AssetManager.allLights.directionalLight->lightDirection = camera.getCamFront();
 		
-		#ifdef GUI_LAYER
-			
-			newVulkan_Renderer.AssetManager.Vulkan_MeshModelList[*newVulkan_Renderer.AssetManager.SetSelected()].updateMatrix();
-			//Referense to selected mesh
-			Vulkan_MeshModel* mesh = &newVulkan_Renderer.AssetManager.Vulkan_MeshModelList[*newVulkan_Renderer.AssetManager.SetSelected()];
+		//#if defined GUI_LAYER && defined VULKAN
+		//	Vulkan_MeshModel* mesh;
+		//	if (Renderer.AssetManager.Vulkan_MeshModelList.size() > 0) {
+		//		Renderer.AssetManager.Vulkan_MeshModelList[*Renderer.AssetManager.SetSelected()].updateMatrix();
+		//		//Referense to selected mesh
+		//		 mesh = &Renderer.AssetManager.Vulkan_MeshModelList[*Renderer.AssetManager.SetSelected()];
+		//	}
+		//	else {
+		//		mesh = nullptr;
+		//	}
+		//	Vulkan_Assets::AllAssets* Assets = Renderer.AssetManager.getAssetInfo();
+		//	Renderer.GUI.RenderMenus<Vulkan_Assets::AllAssets*>(mesh->getTransformType(), mesh->getPosition(), mesh->getRotation(), mesh->getScale(), Renderer.AssetManager.SetSelected(), Assets);
+		//
+		//	//Vulkan_Renderer.AssetManager.Vulkan_MeshModelList[SelectedMesh].updateMatrix();
 
-			newVulkan_Renderer.GUI.RenderMenus(mesh->getTransformType(), mesh->getPosition(), mesh->getRotation(), mesh->getScale(), newVulkan_Renderer.AssetManager.SetSelected(), newVulkan_Renderer.AssetManager.getAssetInfo());
+		//	Renderer.clearColor = Renderer.GUI.clearColor;
+		//#endif
 
-			//Vulkan_Renderer.AssetManager.Vulkan_MeshModelList[SelectedMesh].updateMatrix();
-
-			newVulkan_Renderer.clearColor = newVulkan_Renderer.GUI.clearColor;
-		
-		#endif
-
-		newVulkan_Renderer.draw();
+		Renderer.draw();
 
 	}
 
 
 	//CLEAN UP
-	newVulkan_Renderer.cleanUp();
+	Renderer.shutdown_Renderer();
 
 	glfwDestroyWindow(newWindow.getWindow());
-
 	glfwTerminate();
 
 	return 0;

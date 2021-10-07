@@ -35,17 +35,20 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 
 	glfwSwapInterval(1);
 
-	#ifdef GUI_LAYER
+	#if defined GUI_LAYER && defined OPENGL
 	bool test = true;
-	GUI_Renderer = OpenGL_GUI_Renderer(*newWindow, test, AssetManager);
-	GUI_Renderer.createImGuiInstance();
+	//GUI_Renderer = OpenGL_GUI_Renderer(*newWindow, test, AssetManager);
+	new_GUI_Renderer = GUI_Renderer(*newWindow, test, AssetManager);
+	new_GUI_Renderer.createImGuiInstance();
 	#endif
 
 	/// <summary>
 	std::string Obj1 = "Models/plane.obj";
 	std::string Obj2 = "Models/basicOBJ.obj";
-	AssetManager.createOpenGL_MeshModel(Obj1.c_str());
-	AssetManager.createOpenGL_MeshModel(Obj2.c_str());
+	//std::string Obj3 = "Models/Cam_Model.obj";
+	AssetManager.createAsset(Obj1.c_str());
+	AssetManager.createAsset(Obj2.c_str());
+	//AssetManager.createOpenGL_MeshModel(Obj3.c_str());
 
 	return 0;
 }
@@ -97,7 +100,15 @@ void GLMmovements(OpenGL_MeshModel mod, GLuint MVPuniform, int modelIndex, const
 
 void OpenGL_Renderer::draw()
 {
-	glClearColor(GUI_Renderer.clearColor.x,GUI_Renderer.clearColor.y,GUI_Renderer.clearColor.z, 1.0f);
+	if (AssetManager.shouldADD)
+	{
+		AssetManager.createOpenGL_MeshModel();
+	}
+
+
+#if defined GUI_LAYER && defined OPENGL
+	glClearColor(new_GUI_Renderer.clearColor.x, new_GUI_Renderer.clearColor.y, new_GUI_Renderer.clearColor.z, 1.0f);
+#endif
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 
@@ -106,9 +117,9 @@ void OpenGL_Renderer::draw()
 	
 	for (size_t i = 0; i < AssetManager.OpenGL_MeshModelList.size(); i++)
 	{
-		
-		AssetManager.OpenGL_MeshModelList[i].RenderModel();
 		GLMmovements(AssetManager.OpenGL_MeshModelList[i], shaders.getMvpLocation(), 0, shaders);	// This sets the model Uniform
+		AssetManager.OpenGL_MeshModelList[i].RenderModel();
+		
 	}
 	//printf("size %i",(modelList.size()));
 
@@ -124,10 +135,17 @@ void OpenGL_Renderer::draw()
 	glUseProgram(0);
 
 	
-	#ifdef GUI_LAYER
+	#if defined GUI_LAYER && defined OPENGL
+	OpenGL_MeshModel* mesh;
+	if (AssetManager.OpenGL_MeshModelList.size() > 0) {
 		AssetManager.OpenGL_MeshModelList[*AssetManager.SetSelected()].updateMatrix();
-		OpenGL_MeshModel* mesh = &AssetManager.OpenGL_MeshModelList[*AssetManager.SetSelected()];
-		GUI_Renderer.RenderMenus(mesh->getTransformType(),mesh->getPosition(),mesh->getRotation(),mesh->getScale(),AssetManager.SetSelected() ,AssetManager.getAssetInfo());
+		mesh = &AssetManager.OpenGL_MeshModelList[*AssetManager.SetSelected()];
+	}
+	else
+	{
+		mesh = nullptr;
+	}
+		new_GUI_Renderer.RenderMenus<OpenGL_Assets::AllAssets*>(mesh->getTransformType(),mesh->getPosition(),mesh->getRotation(),mesh->getScale(),AssetManager.SetSelected() ,AssetManager.getAssetInfo());
 		//The ImGUI Function That Renders The GUI
 		if (ImGui::GetCurrentContext())
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -142,9 +160,9 @@ void OpenGL_Renderer::shutdown_Renderer()
 {
 	printf("Deleting Renderer\n");
 
-	#ifdef GUI_LAYER
-		GUI_Renderer.CleanUpGuiComponents();
-		GUI_Renderer.CleanUpGUI();
+	#if defined GUI_LAYER && defined OPENGL
+		new_GUI_Renderer.CleanUpGuiComponents();
+		new_GUI_Renderer.CleanUpGUI();
 	#endif
 }
 

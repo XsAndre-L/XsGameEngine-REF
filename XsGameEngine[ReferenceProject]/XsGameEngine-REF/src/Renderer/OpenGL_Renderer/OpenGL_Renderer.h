@@ -5,6 +5,10 @@
 
 #include "Shaders.h"
 
+//#include "OpenGL_GUI_Renderer.h"
+#ifdef OPENGL
+#include "../GUI_Renderer.h"
+#endif
 //#include "Material.h"
 #include "../../AssetLoading/OpenGL_Assets/OpenGL_Assets.h"
 
@@ -17,7 +21,7 @@
 
 #include "../../Camera.h"
 
-#include "OpenGL_GUI_Renderer.h"
+
 
 class OpenGL_Renderer
 {
@@ -46,7 +50,10 @@ public:
 	OpenGL_Assets AssetManager;
 
 
-	OpenGL_GUI_Renderer GUI_Renderer;
+	//OpenGL_GUI_Renderer GUI_Renderer;
 	//std::vector<OpenGL_MeshModel*> modelList;
+#ifdef OPENGL
+	GUI_Renderer new_GUI_Renderer;
+#endif
 };
 

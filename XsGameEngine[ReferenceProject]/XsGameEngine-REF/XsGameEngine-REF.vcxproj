@@ -44,14 +44,12 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -115,7 +113,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;VULKAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)External Libs/GLFW/include;$(SolutionDir)External Libs/GLEW/include;$(SolutionDir)External Libs/GLM;C:/VulkanSDK/1.2.170.0/Include;$(SolutionDir)External Libs/include;$(SolutionDir)External Libs/ASSIMP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
@@ -137,7 +135,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;VULKAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)External Libs/GLFW/include;$(SolutionDir)External Libs/GLEW/include;$(SolutionDir)External Libs/GLM;C:/VulkanSDK/1.2.170.0/Include;$(SolutionDir)External Libs/include;$(SolutionDir)External Libs/ASSIMP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
@@ -167,8 +165,7 @@
     <ClInclude Include="src\AssetLoading\Vulkan_Assets\Vulkan_MeshModel.h" />
     <ClInclude Include="src\AssetLoading\Vulkan_Assets\Vulkan_Texture.h" />
     <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Renderer\OpenGL_Renderer\OpenGL_GUI_Renderer.h" />
-    <ClInclude Include="src\Renderer\Vulkan_Renderer\Vulkan_GUI_Renderer.h" />
+    <ClInclude Include="src\Renderer\GUI_Renderer.h" />
     <ClInclude Include="src\PreprocessorDefs.h" />
     <ClInclude Include="src\ProgramLayers\ProgramLayers.h" />
     <ClInclude Include="src\CommonValues.h" />
@@ -203,9 +200,8 @@
     <ClCompile Include="src\AssetLoading\Vulkan_Assets\Vulkan_MeshModel.cpp" />
     <ClCompile Include="src\AssetLoading\Vulkan_Assets\Vulkan_Texture.cpp" />
     <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Renderer\OpenGL_Renderer\OpenGL_GUI_Renderer.cpp" />
-    <ClCompile Include="src\Renderer\Vulkan_Renderer\Vulkan_GUI_Renderer.cpp" />
-    <ClCompile Include="src\Main - Copy.cpp" />
+    <ClCompile Include="src\Renderer\GUI_Renderer.cpp" />
+    <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Renderer\OpenGL_Renderer\Material.cpp" />
     <ClCompile Include="src\AssetLoading\OpenGL_Assets\OpenGL_Assets.cpp" />
     <ClCompile Include="src\AssetLoading\OpenGL_Assets\OpenGL_Mesh.cpp" />

@@ -1,9 +1,9 @@
 #include "OpenGL_MeshModel.h"
 
 
-void OpenGL_MeshModel::LoadModel(const std::string& fileName)
+void OpenGL_MeshModel::LoadModel(/*const std::string& fileName*/const aiScene* scene)
 {
-	Assimp::Importer importer;
+	/*Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
 
 	if (!scene)
@@ -13,7 +13,7 @@ void OpenGL_MeshModel::LoadModel(const std::string& fileName)
 	}
 	else {
 		printf("Model (%s) loaded successfully: %s", fileName.c_str());
-	}
+	}*/
 
 	LoadNode(scene->mRootNode, scene);
 
@@ -61,7 +61,8 @@ void OpenGL_MeshModel::LoadMesh(aiMesh* mesh, const aiScene* scene)
 
 	OpenGL_Mesh* newMesh = new OpenGL_Mesh();
 	newMesh->createMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
-	meshList.push_back(newMesh);
+	meshList.push_back(*newMesh);
+	delete newMesh;
 	meshToTex.push_back(mesh->mMaterialIndex - 1); // Note - 1 because we need index, otherwise it returns size I guess
 }
 
@@ -118,7 +119,7 @@ void OpenGL_MeshModel::RenderModel()
 			textureList[materialIndex]->UseTexture();
 		}
 
-		meshList[i]->renderMesh();
+		meshList[i].renderMesh();
 	}
 }
 
@@ -127,12 +128,13 @@ void OpenGL_MeshModel::destroyModel()
 	printf("CLEARING");
 	for (size_t i = 0; i < meshList.size(); i++)
 	{
-		if (meshList[i])
-		{
-			//printf("Deleting mesh %d\n", i);
-			delete meshList[i];
-			meshList[i] = nullptr;
-		}
+		//if (meshList[i])
+		//{
+		//	//printf("Deleting mesh %d\n", i);
+		//	delete meshList[i];
+		//	meshList[i] = nullptr;
+		//}
+		
 	}
 
 	for (size_t i = 0; i < textureList.size(); i++)

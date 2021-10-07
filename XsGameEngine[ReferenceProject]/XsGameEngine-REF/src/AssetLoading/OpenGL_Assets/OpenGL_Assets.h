@@ -13,10 +13,12 @@
 class OpenGL_Assets 
 {
 public:
-	OpenGL_Assets() = default;
-	/*OpenGL_Assets(
+	Assimp::Importer* importer;
+	const aiScene* scene;
+	bool shouldADD = false;			//TODO
+	std::string path;
 
-	);*/
+	OpenGL_Assets() = default;
 
 	void asyncAssets(std::string ModelPath);
 	void createAsset(std::string ModelPath);
@@ -24,7 +26,7 @@ public:
 	#pragma region 3D Models
 	int* SetSelected() { return &selectedModel; }
 	
-	int createOpenGL_MeshModel(std::string modelFile);
+	int createOpenGL_MeshModel(/*std::string modelFile*/);
 	void destroyOpenGL_MeshModel(int MeshId);
 
 	//Scene Objects

@@ -40,8 +40,8 @@ int Vulkan_Renderer::init_Vulkan_Renderer(GLFWwindow* newWindow)
 		createSynchronisation();
 
 
-		#ifdef GUI_LAYER
-			GUI = Vulkan_GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings ,AssetManager);
+		#if defined GUI_LAYER && defined VULKAN
+			GUI = GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings ,AssetManager);
 		#else
 			printf("GUI DISABLED");
 		#endif
@@ -144,11 +144,12 @@ int Vulkan_Renderer::init_Vulkan_Renderer(GLFWwindow* newWindow)
 		};
 
 		AssetManager.addTexture("plain.png");
-		AssetManager.createVulkan_MeshModel("Models/plane.obj");
-		while (AssetManager.Vulkan_MeshModelList.size() <= 0)
+		AssetManager.createAsset("Models/plane.obj");
+		
+		/*while (AssetManager.Vulkan_MeshModelList.size() <= 0)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(5));
-		}
+		}*/
 
 		//AssetManager.createVulkan_MeshModel("Models/plane.obj");
 
@@ -167,6 +168,28 @@ int Vulkan_Renderer::init_Vulkan_Renderer(GLFWwindow* newWindow)
 //THIS IS USED TO DRAW TO THE SCREEN
 void Vulkan_Renderer::draw()
 {
+
+#if defined GUI_LAYER && defined VULKAN
+	Vulkan_MeshModel* mesh;
+	if (AssetManager.Vulkan_MeshModelList.size() > 0) {
+		AssetManager.Vulkan_MeshModelList[*AssetManager.SetSelected()].updateMatrix();
+		//Referense to selected mesh
+		mesh = &AssetManager.Vulkan_MeshModelList[*AssetManager.SetSelected()];
+	}
+	else {
+		mesh = nullptr;
+	}
+	Vulkan_Assets::AllAssets* Assets = AssetManager.getAssetInfo();
+	GUI.RenderMenus<Vulkan_Assets::AllAssets*>(mesh->getTransformType(), mesh->getPosition(), mesh->getRotation(), mesh->getScale(), AssetManager.SetSelected(), Assets);
+
+	//Vulkan_Renderer.AssetManager.Vulkan_MeshModelList[SelectedMesh].updateMatrix();
+
+	clearColor = GUI.clearColor;
+#endif
+
+	if (AssetManager.shouldADD) {	//TODO
+		AssetManager.createVulkan_MeshModel(AssetManager.path);
+	}
 
 	#pragma region Get Available Image
 	//1. Get next available image to draw too, and set something to signal when we're finished with the image.
@@ -255,8 +278,8 @@ void Vulkan_Renderer::shutdown_Renderer()
 	vkDeviceWaitIdle(mainDevice.logicalDevice);
 
 	//Clean Up GUI
-	#ifdef GUI_LAYER
-		GUI.CleanUpGUI(mainDevice.logicalDevice);
+	#if defined GUI_LAYER && defined VULKAN
+		GUI.CleanUpGUI(/*mainDevice.logicalDevice*/);
 	#else
 		printf("GUI DISABLED");
 	#endif	
@@ -1667,7 +1690,7 @@ void Vulkan_Renderer::recordCommands(uint32_t currentFrame)
 				
 			}
 
-		#ifdef GUI_LAYER
+		#if defined GUI_LAYER && defined VULKAN
 			//The ImGUI Function That Renders The GUI
 			if(ImGui::GetCurrentContext())
 				ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffers[currentFrame]);
@@ -1785,15 +1808,15 @@ void Vulkan_Renderer::recreateSwapChain()
 	createFrameBuffers();
 	createCommandBuffers();
 
-	#ifdef GUI_LAYER
-		GUI = Vulkan_GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings, AssetManager);
+	#if defined GUI_LAYER && defined VULKAN
+		GUI = GUI_Renderer(*window, Instance, mainDevice.logicalDevice, mainDevice.physicalDevice, graphicsQueue, indices.graphicsFamily, renderPass, graphicsCommandPool, msaaSamples, applyGraphics, CurrentGraphicSettings, AssetManager);
 	#endif
 }
 
 void Vulkan_Renderer::cleanUpSwapChain()
 {
-	#ifdef GUI_LAYER
-		GUI.CleanUpGuiComponents(mainDevice.logicalDevice);
+	#if defined GUI_LAYER && defined VULKAN
+		GUI.CleanUpGuiComponents(/*mainDevice.logicalDevice*/);
 	#endif
 
 	//MSAA Image & ImageView

@@ -42,8 +42,58 @@ Vulkan_Assets::Vulkan_Assets
 
 #pragma region Create Asset	
 void Vulkan_Assets::asyncAssets(std::string ModelPath) {
-	//addTexture(TexturePath);
-	createVulkan_MeshModel(ModelPath);
+	// Locks the mutex if no job is bussy and if job is busy the loop makes the thread wait
+	static std::mutex lockFuncM;
+	while (true) {
+		// try to lock mutex
+		if (lockFuncM.try_lock()) {
+			break;	// If successful we exit the loop
+		}
+		else {
+			// wait for previous load to finish
+			std::chrono::milliseconds interval(100);
+			std::this_thread::sleep_for(interval);
+		}
+	}
+
+	if (!shouldADD) {
+
+#pragma region Read Vulkan_MeshModel from file to ADD model
+		path = ModelPath;
+		bool ShouldRead = true;
+		for (size_t i = 0; i < Vulkan_MeshModelNames.size(); i++)
+		{
+			if (Vulkan_MeshModelNames.at(i) == ModelPath.substr(7, ModelPath.size()))
+			{
+
+				shouldADD = true;
+				ShouldRead = false;
+			}
+		}
+		if (ShouldRead) {
+			// Import "scene" with multiple meshes
+			double StartTime = glfwGetTime();
+
+			//Assimp::Importer importer;
+			importer = new Assimp::Importer();
+			scene = importer->ReadFile(ModelPath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+			//delete importer;
+			
+			if (!scene)
+			{
+				throw std::runtime_error("Failed to load model! (" + ModelPath + ")");
+			}
+			else {
+				shouldADD = true;
+				double StopTime = glfwGetTime();
+				printf("second - %f \n", (StopTime - StartTime));
+			}
+		}
+#pragma endregion
+
+	}
+
+	lockFuncM.unlock();
 }
 
 void Vulkan_Assets::createAsset(std::string ModelPath) {
@@ -90,25 +140,30 @@ int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 			//This gets the model name without the entire Path and adds it to the list of names
 			Vulkan_MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
 
+			shouldADD = false; //TODO
 			lockFuncM.unlock();
 
 			return 0;
 		}
 	}
 	#pragma endregion
-
+/*
 	#pragma region Read Vulkan_MeshModel from file
 
 	// Import "scene" with multiple meshes
+	double StartTime = glfwGetTime();
+	
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(modelFile, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
 	if (!scene)
 	{
 		throw std::runtime_error("Failed to load model! (" + modelFile + ")");
 	}
-	
+	shouldADD = true;
+	double StopTime = glfwGetTime();
+	printf("second - %f \n", (StopTime - StartTime) );
 
-	#pragma endregion
+	#pragma endregion*/
 
 
 	std::vector<std::string> textureNames = model.LoadMaterials(scene);
@@ -144,7 +199,8 @@ int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 	Vulkan_MeshModelList.push_back(model);
 	//This gets the model name without the entire Path and adds it to the list of names
 	Vulkan_MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
-
+	shouldADD = false; //TODO
+	delete importer;
 	lockFuncM.unlock();
 
 	return 0;

@@ -13,6 +13,11 @@
 class Vulkan_Assets 
 {
 public:
+	Assimp::Importer* importer;
+	const aiScene* scene;
+	bool shouldADD = false;			//TODO
+	std::string path;
+
 	Vulkan_Assets() = default;
 	Vulkan_Assets(
 		VkPhysicalDevice& physicalDevice,
