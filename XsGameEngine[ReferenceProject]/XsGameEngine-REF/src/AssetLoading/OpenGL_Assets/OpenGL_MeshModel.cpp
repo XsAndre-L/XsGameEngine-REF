@@ -17,7 +17,7 @@ void OpenGL_MeshModel::LoadModel(/*const std::string& fileName*/const aiScene* s
 
 	LoadNode(scene->mRootNode, scene);
 
-	LoadMaterials(scene);
+	//LoadMaterials(scene);
 }
 
 void OpenGL_MeshModel::LoadNode(aiNode* node, const aiScene* scene)
@@ -66,17 +66,19 @@ void OpenGL_MeshModel::LoadMesh(aiMesh* mesh, const aiScene* scene)
 	meshToTex.push_back(mesh->mMaterialIndex - 1); // Note - 1 because we need index, otherwise it returns size I guess
 }
 
-void OpenGL_MeshModel::LoadMaterials(const aiScene* scene)
+std::vector<std::string> OpenGL_MeshModel::LoadMaterials(const aiScene* scene)
 {
+	std::vector<std::string> textures;
+	textures.resize(scene->mNumMaterials);
 
-	textureList.resize(scene->mNumMaterials);	
+	//textureList.resize(scene->mNumMaterials);	
 	printf("NUM Materials %d\n", scene->mNumMaterials);
 
 	for (size_t i = 0; i < scene->mNumMaterials; i++)
 	{
 		aiMaterial* material = scene->mMaterials[i];
 		
-		textureList[i] = nullptr;
+		textures[i] = "";
 
 		if (material->GetTextureCount(aiTextureType_DIFFUSE))
 		{
@@ -88,40 +90,41 @@ void OpenGL_MeshModel::LoadMaterials(const aiScene* scene)
 
 				std::string texPath = std::string("Textures/") + fileName;
 
-				textureList[i] = new OpenGL_Texture(texPath.c_str());
-				printf(texPath.c_str());
+				textures[i] = fileName; // new OpenGL_Texture(texPath.c_str());
+				/*printf(texPath.c_str());
 				if (!textureList[i]->LoadTexture())
 				{
 					printf("Failed to load texture at: %s\n", fileName);
 					delete textureList[i];
 					textureList[i] = nullptr;
-				}
+				}*/
 			}
 		}
 
-		if (!textureList[i])
+		/*if (!textureList[i])
 		{
 			textureList[i] = new OpenGL_Texture("Textures/plain.png");
 			textureList[i]->LoadTextureA();
-		}
+		}*/
+		return textures;
 	}
 }
 
-void OpenGL_MeshModel::RenderModel()
-{
-	for (size_t i = 0; i < meshList.size(); i++)
-	{
-		
-		unsigned int materialIndex = meshToTex[i];
-
-		if (materialIndex < textureList.size() && textureList[materialIndex]) 
-		{
-			textureList[materialIndex]->UseTexture();
-		}
-
-		meshList[i].renderMesh();
-	}
-}
+//void OpenGL_MeshModel::RenderModel()
+//{
+//	for (size_t i = 0; i < meshList.size(); i++)
+//	{
+//		
+//		unsigned int materialIndex = meshToTex[i];
+//
+//		if (materialIndex < textureList.size() && textureList[materialIndex]) 
+//		{
+//			textureList[materialIndex]->UseTexture();
+//		}
+//
+//		meshList[i].renderMesh();
+//	}
+//}
 
 void OpenGL_MeshModel::destroyModel()
 {
@@ -137,15 +140,15 @@ void OpenGL_MeshModel::destroyModel()
 		
 	}
 
-	for (size_t i = 0; i < textureList.size(); i++)
-	{
-		if (textureList[i])
-		{
-			//printf("Deleting Texture %d\n", i);
-			delete textureList[i];
-			textureList[i] = nullptr;
-		}
-	}
+	//for (size_t i = 0; i < textureList.size(); i++)
+	//{
+	//	if (textureList[i])
+	//	{
+	//		//printf("Deleting Texture %d\n", i);
+	//		delete textureList[i];
+	//		textureList[i] = nullptr;
+	//	}
+	//}
 }
 
 

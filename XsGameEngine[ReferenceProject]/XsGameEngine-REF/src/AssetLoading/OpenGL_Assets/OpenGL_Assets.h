@@ -13,10 +13,10 @@
 class OpenGL_Assets 
 {
 public:
-	Assimp::Importer* importer;
-	const aiScene* scene;
-	bool shouldADD = false;			//TODO
-	std::string path;
+	std::vector<Assimp::Importer*> importer;
+	std::vector<const aiScene*> addedModels;
+	bool Load_Model_Files = false;			//TODO
+	std::vector<std::string> addedModelPaths;
 
 	OpenGL_Assets() = default;
 
@@ -26,12 +26,12 @@ public:
 	#pragma region 3D Models
 	int* SetSelected() { return &selectedModel; }
 	
-	int createOpenGL_MeshModel(/*std::string modelFile*/);
+	int createOpenGL_MeshModel();
 	void destroyOpenGL_MeshModel(int MeshId);
 
 	//Scene Objects
-	std::vector<std::string> OpenGL_MeshModelNames;
-	std::vector<OpenGL_MeshModel> OpenGL_MeshModelList;
+	std::vector<std::string> MeshModelNames;
+	std::vector<OpenGL_MeshModel> MeshModelList;
 	#pragma endregion
 
 
@@ -86,7 +86,7 @@ private:
 	VkDescriptorSetLayout* SamplerSetLayout{ nullptr };*/
 
 
-	std::thread* AssetLoadThread{ nullptr };
+	std::vector<std::thread*> AssetLoadThread;
 	
 };
 

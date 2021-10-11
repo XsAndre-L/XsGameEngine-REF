@@ -191,11 +191,44 @@ void GUI_Renderer::createImGuiInstance()
 }
 #endif
 
-
 //TODO : Function to handle shortcuts for selected window
 //void GUI_Renderer::ShortCutKeyInput(){}
 
 #pragma region Main Bar
+
+void GUI_Renderer::MainMenuBar() {
+	if (ImGui::BeginMainMenuBar())
+	{
+		//FILE BUTTON
+		if (ImGui::BeginMenu("File"))
+		{
+			ShowFileMenu();
+			ImGui::EndMenu();
+		}
+		//EDIT BUTTON
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+			ImGui::Separator();
+			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+			ImGui::EndMenu();
+		}
+		//WINDOWS BUTTON
+		if (ImGui::BeginMenu("Windows"))
+		{
+			if (ImGui::MenuItem("Details", "", &detailsInfo.ShowMenu)) {}
+			if (ImGui::MenuItem("Outliner", "", &outlinerInfo.ShowMenu)) {}
+			if (ImGui::MenuItem("Content Browser", "", &browserInfo.ShowMenu)) {}
+			if (ImGui::MenuItem("Stats For Nerds", "", &statsInfo.ShowMenu)) {}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+}
+
 void GUI_Renderer::ShowFileMenu()
 {
 	ImGui::MenuItem("(demo menu)", NULL, false, false);
@@ -272,42 +305,31 @@ void GUI_Renderer::ShowFileMenu()
 	if (ImGui::MenuItem("Quit", "Alt+F4")) { glfwSetWindowShouldClose(IgInitInfo.mainWindow, GL_TRUE); }
 }
 
-void GUI_Renderer::MainMenuBar() {
-	if (ImGui::BeginMainMenuBar())
-	{
-		//FILE BUTTON
-		if (ImGui::BeginMenu("File"))
-		{
-			ShowFileMenu();
-			ImGui::EndMenu();
-		}
-		//EDIT BUTTON
-		if (ImGui::BeginMenu("Edit"))
-		{
-			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-			ImGui::EndMenu();
-		}
-		//WINDOWS BUTTON
-		if (ImGui::BeginMenu("Windows"))
-		{
-			if (ImGui::MenuItem("Details", "", &detailsInfo.ShowMenu)) {}
-			if (ImGui::MenuItem("Outliner", "", &outlinerInfo.ShowMenu)) {}
-			if (ImGui::MenuItem("Content Browser", "", &browserInfo.ShowMenu)) {}
-			if (ImGui::MenuItem("Stats For Nerds", "", &statsInfo.ShowMenu)) {}
-			ImGui::EndMenu();
-		}
-		ImGui::EndMainMenuBar();
-	}
-}
-
 #pragma endregion
 
 #pragma region Outliner
+
+//All active rendered meshes
+void GUI_Renderer::RenderOutlinerMenu()
+{
+
+	ImGui::Begin("World Outliner");
+
+	if (ImGui::BeginTable("Outliner Table", 1, ImGuiTableFlags_Resizable)) //ImGuiTableFlags_BordersOuter |
+	{
+		std::vector<std::string> namesVector = *sharedInfo.allAssets->ModelNames;
+		for (int obj_i = 0; obj_i < sharedInfo.allAssets->ModelNames->size(); obj_i++)
+		{
+			std::string nameString = namesVector.at(obj_i);
+			if (nameString == "") { continue; }
+			ShowOutlinerTree(nameString.c_str(), obj_i);
+		}
+		ImGui::EndTable();
+	}
+
+	ImGui::End();
+
+}
 
 void GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 {
@@ -352,11 +374,9 @@ void GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 	
 	if (node_open)
 	{
-#ifdef VULKAN
-		std::vector<std::string> ChildNodes = *IgInitInfo.AssetManager->Vulkan_MeshModelList.at(uid).getChildren();
-#elif OPENGL
-		std::vector<std::string> ChildNodes = *IgInitInfo.AssetManager->OpenGL_MeshModelList.at(uid).getChildren();
-#endif
+
+		std::vector<std::string> ChildNodes = *IgInitInfo.AssetManager->MeshModelList.at(uid).getChildren();
+
 		//static float placeholder_members[8] = { 0.0f, 0.0f, 1.0f, 3.1416f, 100.0f, 999.0f };
 		for (int i = 0; i < ChildNodes.size(); i++)
 		{
@@ -380,31 +400,10 @@ void GUI_Renderer::ShowOutlinerTree(const char* prefix, int uid)
 	ImGui::PopID();
 }
 
-//All active rendered meshes
-void GUI_Renderer::RenderOutlinerMenu()
-{
-
-	ImGui::Begin("World Outliner");
-
-	if (ImGui::BeginTable("Outliner Table", 1,  ImGuiTableFlags_Resizable)) //ImGuiTableFlags_BordersOuter |
-	{
-		std::vector<std::string> namesVector = *sharedInfo.allAssets->ModelNames;
-		for (int obj_i = 0; obj_i < sharedInfo.allAssets->ModelNames->size(); obj_i++)
-		{
-			std::string nameString = namesVector.at(obj_i);
-			if (nameString == "") { continue; }
-			ShowOutlinerTree(nameString.c_str(), obj_i);
-		}
-		ImGui::EndTable();
-	}
-
-	ImGui::End();
-
-}
-
 #pragma endregion
 
 #pragma region Details Menu
+
 //Entiy Has Transform
 void Entity_Details() 
 {
@@ -431,7 +430,6 @@ void GUI_Renderer::RenderDetailsMenu()
 		ImGui::Text("Material Selection Goes Here");
 	}
 
-
 	//Directional Light
 	if (ImGui::CollapsingHeader("DIRECTIONAL LIGHT"))
 	{
@@ -441,18 +439,13 @@ void GUI_Renderer::RenderDetailsMenu()
 #endif
 	}
 
-	//ImGui::Checkbox("Show Another Window", &show_another_window);
-
-
-	//ImGui::SliderInt("SelectedMesh", counter, 0 ,1);
-	//ImGui::InputFloat3("Pos", &detailsInfo.position->x);
-
-
+	//Atmosphere
 	if (ImGui::CollapsingHeader("Atmosphere"))
 	{
 		ImGui::ColorEdit3("Atmosphere Color", (float*)&clearColor);
 	}
 
+	//Graphics Settings
 	if (ImGui::CollapsingHeader("Graphics"))
 	{
 #ifdef VULKAN
@@ -468,15 +461,19 @@ void GUI_Renderer::RenderDetailsMenu()
 #endif
 	}
 
-
 	ImGui::End();
 
 }
+
 #pragma endregion
 
 #pragma region Content Menu
 
 void GUI_Renderer::RenderContentMenu() {
+
+#define MODELS_FOLDER 0		//Folder 0
+#define TEXTURES_FOLDER 1	//Folder 1
+
 	float ySize = 300.0f;
 	ImGui::SetNextWindowSize({ ImGui::GetMainViewport()->Size.x, ySize});
 	ImGui::SetNextWindowPos({ ImGui::GetMainViewport()->GetCenter().x - (ImGui::GetMainViewport()->Size.x/2.0f), (ImGui::GetMainViewport()->GetCenter().y + (ImGui::GetMainViewport()->Size.y / 2.0f)) - ySize }, false);
@@ -486,15 +483,15 @@ void GUI_Renderer::RenderContentMenu() {
 
 	if (ImGui::Button("3D models", ImVec2(200.0f, 20.0f)))
 	{
-		FolderIndex = 0;
+		FolderIndex = MODELS_FOLDER;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Textures", ImVec2(200.0f, 20.0f)))
 	{
-		FolderIndex = 1;
+		FolderIndex = TEXTURES_FOLDER;
 	}
 
-	if (FolderIndex == 0) 
+	if (FolderIndex == MODELS_FOLDER)
 	{
 		ImGui::Text("Program/Models");
 		std::string path = "Models";
@@ -505,23 +502,17 @@ void GUI_Renderer::RenderContentMenu() {
 				std::string nameString = modelPath.filename().string();//namesVector.at(i);
 
 				if (ImGui::Button(nameString.c_str(), ImVec2(100.0f, 100.0f)))
-				{
-#ifdef VULKAN
-					if (IgInitInfo.AssetManager->Vulkan_MeshModelList.size() < MAX_OBJECTS) {
+				{	//All models
+					if (IgInitInfo.AssetManager->MeshModelList.size() < MAX_OBJECTS) {
 						IgInitInfo.AssetManager->createAsset(modelPath.string());
 					}
-#elif OPENGL
-					if (IgInitInfo.AssetManager->OpenGL_MeshModelList.size() < MAX_OBJECTS) {
-						IgInitInfo.AssetManager->createAsset(path + '/' + nameString.c_str());//modelPath.string()
-					}
-#endif
 				}
 				ImGui::SameLine();
 			}
 		}
 	}
 	
-	if (FolderIndex == 1)
+	else if (FolderIndex == TEXTURES_FOLDER)
 	{
 		ImGui::Text("Program/Textures");
 		std::string path = "Textures";
@@ -532,7 +523,7 @@ void GUI_Renderer::RenderContentMenu() {
 				std::string nameString = texPath.filename().string();//namesVector.at(i);
 
 				if (ImGui::Button(nameString.c_str(), ImVec2(100.0f, 100.0f)))
-				{
+				{	//All textures
 					if (IgInitInfo.AssetManager->textureList.size() < MAX_OBJECTS) {
 						printf("Attempting to load %s", nameString.c_str());
 						IgInitInfo.AssetManager->addTexture(nameString.c_str());
@@ -542,7 +533,7 @@ void GUI_Renderer::RenderContentMenu() {
 			}
 		}
 	}
-
+	
 	ImGui::End();
 }
 

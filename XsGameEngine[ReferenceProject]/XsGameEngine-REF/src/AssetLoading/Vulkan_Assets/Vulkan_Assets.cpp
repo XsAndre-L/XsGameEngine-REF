@@ -8,8 +8,8 @@
 
 Vulkan_Assets::AllAssets* Vulkan_Assets::getAssetInfo()
 {
-	allAssets.ModelNames = &Vulkan_MeshModelNames;
-	allAssets.modelPointers = &Vulkan_MeshModelList;
+	allAssets.ModelNames = &MeshModelNames;
+	allAssets.modelPointers = &MeshModelList;
 	allAssets.lightPointers = &allLights;
 	allAssets.texturePointers = &textureList;
 	return &allAssets;
@@ -56,17 +56,17 @@ void Vulkan_Assets::asyncAssets(std::string ModelPath) {
 		}
 	}
 
-	if (!shouldADD) {
+	if (!Load_Model_Files) {
 
 #pragma region Read Vulkan_MeshModel from file to ADD model
 		path = ModelPath;
 		bool ShouldRead = true;
-		for (size_t i = 0; i < Vulkan_MeshModelNames.size(); i++)
+		for (size_t i = 0; i < MeshModelNames.size(); i++)
 		{
-			if (Vulkan_MeshModelNames.at(i) == ModelPath.substr(7, ModelPath.size()))
+			if (MeshModelNames.at(i) == ModelPath.substr(7, ModelPath.size()))
 			{
 
-				shouldADD = true;
+				Load_Model_Files = true;
 				ShouldRead = false;
 			}
 		}
@@ -84,7 +84,7 @@ void Vulkan_Assets::asyncAssets(std::string ModelPath) {
 				throw std::runtime_error("Failed to load model! (" + ModelPath + ")");
 			}
 			else {
-				shouldADD = true;
+				Load_Model_Files = true;
 				double StopTime = glfwGetTime();
 				printf("second - %f \n", (StopTime - StartTime));
 			}
@@ -128,19 +128,19 @@ int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 	Vulkan_MeshModel model = Vulkan_MeshModel();
 
 	#pragma region Checks if model already exists
-	for (size_t i = 0; i < Vulkan_MeshModelNames.size(); i++)
+	for (size_t i = 0; i < MeshModelNames.size(); i++)
 	{
-		if (Vulkan_MeshModelNames.at(i) == modelFile.substr(7, modelFile.size())) 
+		if (MeshModelNames.at(i) == modelFile.substr(7, modelFile.size())) 
 		{
-			model = Vulkan_MeshModelList.at(i);
+			model = MeshModelList.at(i);
 			model.resetMatrix();
 			model.makeInstance();
 
-			Vulkan_MeshModelList.push_back(model);
+			MeshModelList.push_back(model);
 			//This gets the model name without the entire Path and adds it to the list of names
-			Vulkan_MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
+			MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
 
-			shouldADD = false; //TODO
+			Load_Model_Files = false; //TODO
 			lockFuncM.unlock();
 
 			return 0;
@@ -159,7 +159,7 @@ int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 	{
 		throw std::runtime_error("Failed to load model! (" + modelFile + ")");
 	}
-	shouldADD = true;
+	Load_Model_Files = true;
 	double StopTime = glfwGetTime();
 	printf("second - %f \n", (StopTime - StartTime) );
 
@@ -196,10 +196,10 @@ int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 	//And save
 	model.LoadNode(PhysicalDevice, Device, TransferQueue, GraphicsCommandPool, scene->mRootNode, scene, matToTex);
 
-	Vulkan_MeshModelList.push_back(model);
+	MeshModelList.push_back(model);
 	//This gets the model name without the entire Path and adds it to the list of names
-	Vulkan_MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
-	shouldADD = false; //TODO
+	MeshModelNames.push_back(modelFile.substr(7, modelFile.size()));
+	Load_Model_Files = false; //TODO
 	delete importer;
 	lockFuncM.unlock();
 
@@ -209,8 +209,8 @@ int Vulkan_Assets::createVulkan_MeshModel(std::string modelFile)
 void Vulkan_Assets::destroyVulkan_MeshModel(int ModelID) 
 {
 	vkDeviceWaitIdle(*Device);
-	Vulkan_MeshModelList.at(ModelID).destroyModel();
-	Vulkan_MeshModelNames.at(ModelID) = "";
+	MeshModelList.at(ModelID).destroyModel();
+	MeshModelNames.at(ModelID) = "";
 }
 
 #pragma endregion
@@ -227,9 +227,9 @@ uint16_t Vulkan_Assets::addTexture(std::string fileName)
 		if (textureNames.at(i) == fileName)
 		{
 			if (selectedModel != 0)
-				for (size_t j = 0; j < Vulkan_MeshModelList.at(selectedModel).getMeshCount(); j++)
+				for (size_t j = 0; j < MeshModelList.at(selectedModel).getMeshCount(); j++)
 				{
-					Vulkan_MeshModelList.at(selectedModel).getMesh(j)->setTexId(i);
+					MeshModelList.at(selectedModel).getMesh(j)->setTexId(i);
 					printf("Texture Changed");
 				}
 
@@ -251,10 +251,10 @@ uint16_t Vulkan_Assets::addTexture(std::string fileName)
 	textureList.push_back(texture);
 	textureNames.push_back(fileName.c_str());
 
-	if (selectedModel < Vulkan_MeshModelList.size()) {
-		for (size_t j = 0; j < Vulkan_MeshModelList.at(selectedModel).getMeshCount(); j++)
+	if (selectedModel < MeshModelList.size()) {
+		for (size_t j = 0; j < MeshModelList.at(selectedModel).getMeshCount(); j++)
 		{
-			Vulkan_MeshModelList.at(selectedModel).getMesh(j)->setTexId(textureList.size() - 1);
+			MeshModelList.at(selectedModel).getMesh(j)->setTexId(textureList.size() - 1);
 			printf("Texture Changed");
 		}
 	}
@@ -295,9 +295,9 @@ void Vulkan_Assets::cleanUpAssets()
 
 	}
 
-	for (size_t i = 0; i < Vulkan_MeshModelList.size(); i++)
+	for (size_t i = 0; i < MeshModelList.size(); i++)
 	{
-		Vulkan_MeshModelList[i].destroyModel();
+		MeshModelList[i].destroyModel();
 	}
 
 	for (size_t i = 0; i < textureList.size(); i++)

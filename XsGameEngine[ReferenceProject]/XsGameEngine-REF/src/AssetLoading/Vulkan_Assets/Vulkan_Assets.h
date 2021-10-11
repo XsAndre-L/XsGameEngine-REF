@@ -15,7 +15,7 @@ class Vulkan_Assets
 public:
 	Assimp::Importer* importer;
 	const aiScene* scene;
-	bool shouldADD = false;			//TODO
+	bool Load_Model_Files = false;			//TODO
 	std::string path;
 
 	Vulkan_Assets() = default;
@@ -39,8 +39,8 @@ public:
 	void destroyVulkan_MeshModel(int MeshId);
 
 	//Scene Objects
-	std::vector<std::string> Vulkan_MeshModelNames;
-	std::vector<Vulkan_MeshModel> Vulkan_MeshModelList;
+	std::vector<std::string> MeshModelNames;
+	std::vector<Vulkan_MeshModel> MeshModelList;
 	#pragma endregion
 
 
@@ -50,7 +50,6 @@ public:
 	std::vector<std::string> textureNames;
 	std::vector<Vulkan_Texture> textureList;
 	#pragma endregion
-
 
 	#pragma region Lights
 	void addLight();

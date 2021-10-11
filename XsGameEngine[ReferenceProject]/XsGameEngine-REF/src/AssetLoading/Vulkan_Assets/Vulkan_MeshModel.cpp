@@ -138,13 +138,10 @@ Vulkan_Mesh* Vulkan_MeshModel::LoadMesh
 			//printf("x: %d, y: %d, z: %d\n", mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 		}
 		
-
 		vertices[i].col = { 1.0f, 1.0f, 1.0f };
-
 	}
 
 	
-
 	for (size_t i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];

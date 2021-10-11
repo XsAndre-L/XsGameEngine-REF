@@ -88,7 +88,6 @@ private:
 			GLFWwindow* mainWindow{};
 
 			//SETTINGS
-
 			bool* ApplyGraphics{};
 			//GraphicSettings* CurrentGraphicSettings{};
 
@@ -148,11 +147,13 @@ private:
 	void ShowFileMenu();
 	void MainMenuBar();
 
-	void ShowOutlinerTree(const char* prefix, int uid);
 	void RenderOutlinerMenu();
-
+	void ShowOutlinerTree(const char* prefix, int uid);
+	
 	void RenderDetailsMenu();
+
 	void RenderContentMenu();
+
 	void RenderStatsOverlay();
 
 #pragma endregion
@@ -166,20 +167,27 @@ public:
 		glm::vec3* rotation, 
 		glm::vec3* scale, 
 		int* selectedObject, 
-		const T AssetList
+		const T assetList
 	)
 	{
-			//Hide and unhide Content Browser
+
+#pragma region Hotkeys
+		
+		//Shortcuts should happen in a diffirent funcion
+		// This function should check what menu is currently being used and the shortcut could be asigned an unique function dependent on what menu we are on
+			//Hide and unhide Content Browser							 [ Left_Ctrl + Space ]
 			if (ImGui::IsKeyPressed(ImGui::GetIO().KeyMap[ImGuiKey_Space]) && ImGui::GetIO().KeysDown[GLFW_KEY_LEFT_CONTROL]) {
 				browserInfo.ShowMenu = !browserInfo.ShowMenu;
 			}
 
-			//glfwGetWindowSize(IgInitInfo.mainWindow, &sharedInfo.width, &sharedInfo.height);
+#pragma endregion
+
+
 			//Set Info
 			//sharedInfo
 			sharedInfo.selectedObject = selectedObject;
 			//sharedInfo.modelNames = AssetList->ModelNames;
-			sharedInfo.allAssets = AssetList;
+			sharedInfo.allAssets = assetList;
 
 			//menu 'OBJECT DETAILS'
 			detailsInfo.LocalTransform = LocalTransform;
@@ -191,7 +199,7 @@ public:
 			//NON
 
 			//menu 'Content Browser'
-			//browserInfo.AssetLoadThread = AssetLoadThread;
+			
 
 			#pragma region ImGUI Render Function
 

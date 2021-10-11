@@ -146,7 +146,7 @@ int Vulkan_Renderer::init_Vulkan_Renderer(GLFWwindow* newWindow)
 		AssetManager.addTexture("plain.png");
 		AssetManager.createAsset("Models/plane.obj");
 		
-		/*while (AssetManager.Vulkan_MeshModelList.size() <= 0)
+		/*while (AssetManager.MeshModelList.size() <= 0)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		}*/
@@ -171,10 +171,10 @@ void Vulkan_Renderer::draw()
 
 #if defined GUI_LAYER && defined VULKAN
 	Vulkan_MeshModel* mesh;
-	if (AssetManager.Vulkan_MeshModelList.size() > 0) {
-		AssetManager.Vulkan_MeshModelList[*AssetManager.SetSelected()].updateMatrix();
+	if (AssetManager.MeshModelList.size() > 0) {
+		AssetManager.MeshModelList[*AssetManager.SetSelected()].updateMatrix();
 		//Referense to selected mesh
-		mesh = &AssetManager.Vulkan_MeshModelList[*AssetManager.SetSelected()];
+		mesh = &AssetManager.MeshModelList[*AssetManager.SetSelected()];
 	}
 	else {
 		mesh = nullptr;
@@ -182,12 +182,12 @@ void Vulkan_Renderer::draw()
 	Vulkan_Assets::AllAssets* Assets = AssetManager.getAssetInfo();
 	GUI.RenderMenus<Vulkan_Assets::AllAssets*>(mesh->getTransformType(), mesh->getPosition(), mesh->getRotation(), mesh->getScale(), AssetManager.SetSelected(), Assets);
 
-	//Vulkan_Renderer.AssetManager.Vulkan_MeshModelList[SelectedMesh].updateMatrix();
+	//Vulkan_Renderer.AssetManager.MeshModelList[SelectedMesh].updateMatrix();
 
 	clearColor = GUI.clearColor;
 #endif
 
-	if (AssetManager.shouldADD) {	//TODO
+	if (AssetManager.Load_Model_Files) {	//TODO
 		AssetManager.createVulkan_MeshModel(AssetManager.path);
 	}
 
@@ -285,9 +285,9 @@ void Vulkan_Renderer::shutdown_Renderer()
 	#endif	
 	
 	
-	/*for (size_t i = 0; i < Vulkan_MeshModelList.size(); i++)
+	/*for (size_t i = 0; i < MeshModelList.size(); i++)
 	{
-		Vulkan_MeshModelList[i].destroyModel();
+		MeshModelList[i].destroyModel();
 	}*/
 
 	vkDestroyDescriptorPool(mainDevice.logicalDevice, samplerDescriptorPool, nullptr);
@@ -1647,17 +1647,17 @@ void Vulkan_Renderer::recordCommands(uint32_t currentFrame)
 		{
 			throw std::runtime_error("Failerd to begin Command Buffer!");
 		}
-		//printf("MODELS NUM - %d\n", AssetManager.Vulkan_MeshModelList.size());
+		//printf("MODELS NUM - %d\n", AssetManager.MeshModelList.size());
 		{
 			vkCmdBeginRenderPass(commandBuffers[currentFrame], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
 			//For every Vulkan_MeshModel
-			for (size_t i = 0; i < AssetManager.Vulkan_MeshModelList.size(); i++)
+			for (size_t i = 0; i < AssetManager.MeshModelList.size(); i++)
 			{
-				Vulkan_MeshModel *currentVulkan_MeshModel = &AssetManager.Vulkan_MeshModelList[i];
-				if (AssetManager.Vulkan_MeshModelList[i].getState()) { continue; }
+				Vulkan_MeshModel *currentVulkan_MeshModel = &AssetManager.MeshModelList[i];
+				if (AssetManager.MeshModelList[i].getState()) { continue; }
 				auto temp = currentVulkan_MeshModel->getMatrix();
 				
 				vkCmdPushConstants(commandBuffers[currentFrame], pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(Matrix), &temp);

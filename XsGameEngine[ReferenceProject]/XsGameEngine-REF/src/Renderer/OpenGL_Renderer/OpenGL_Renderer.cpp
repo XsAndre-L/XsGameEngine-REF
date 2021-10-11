@@ -17,7 +17,6 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 	}
 
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_KHR_vulkan_glsl);
 	glEnable(GL_ARB_gl_spirv);	//Allows for spir-v Shaders
 
 	int width, height;
@@ -26,18 +25,16 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 
 
 	shaders.CompileShaders();
-	/*int bufferWidth, bufferHeight;
-	glfwGetFramebufferSize(newWindow.getWindow(), &bufferWidth, &bufferHeight);*/
+
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 	shaders.SetProjection(projection);
 
 	
-
 	glfwSwapInterval(1);
 
 	#if defined GUI_LAYER && defined OPENGL
 	bool test = true;
-	//GUI_Renderer = OpenGL_GUI_Renderer(*newWindow, test, AssetManager);
+	
 	new_GUI_Renderer = GUI_Renderer(*newWindow, test, AssetManager);
 	new_GUI_Renderer.createImGuiInstance();
 	#endif
@@ -45,53 +42,24 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 	/// <summary>
 	std::string Obj1 = "Models/plane.obj";
 	std::string Obj2 = "Models/basicOBJ.obj";
-	//std::string Obj3 = "Models/Cam_Model.obj";
+
 	AssetManager.createAsset(Obj1.c_str());
 	AssetManager.createAsset(Obj2.c_str());
+	//AssetManager.addTexture("Textures/plain.png");
 	//AssetManager.createOpenGL_MeshModel(Obj3.c_str());
 
 	return 0;
 }
 
-
-//void OpenGL_Renderer::pushModel(const char* fileName)
-//{
-//	OpenGL_MeshModel* myModel = new OpenGL_MeshModel();
-//	myModel->LoadModel(fileName);
-//	modelList.push_back(myModel);
-//}
-
+//AT the moment this function only refreshes the View and Model Matrices
 void GLMmovements(OpenGL_MeshModel mod, GLuint MVPuniform, int modelIndex, const Shaders& shaders)
 {
-//	glm::mat4 model(1.0f);
-//	if (modelIndex == 0)
-//	{
-//#pragma region Updates
-//
-//		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
-//		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 1.0f));
-//#pragma endregion
-//	}
-//	else if (modelIndex == 2)
-//	{
-//		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -2.0f));
-//		model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-//
-//		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-//	}
-//	else {
-//		//model = glm::rotate(model, curAngle, glm::vec3(0.0f, 1.0f, 0.0f));
-//		//model = glm::translate(model, LightPos);
-//		//model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-//	}
-
 	glm::mat4 ViewMat = shaders.GetViewMatrix();
 	glm::mat4 ModelMat = mod.getMatrix();
 	glBindBuffer(GL_UNIFORM_BUFFER, MVPuniform);
 
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, &ModelMat);
-	//glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &projection);
-	glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &ViewMat);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, &ModelMat);
+		glBufferSubData(GL_UNIFORM_BUFFER, 64, 64, &ViewMat);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -100,7 +68,7 @@ void GLMmovements(OpenGL_MeshModel mod, GLuint MVPuniform, int modelIndex, const
 
 void OpenGL_Renderer::draw()
 {
-	if (AssetManager.shouldADD)
+	if (AssetManager.Load_Model_Files)
 	{
 		AssetManager.createOpenGL_MeshModel();
 	}
@@ -108,6 +76,9 @@ void OpenGL_Renderer::draw()
 
 #if defined GUI_LAYER && defined OPENGL
 	glClearColor(new_GUI_Renderer.clearColor.x, new_GUI_Renderer.clearColor.y, new_GUI_Renderer.clearColor.z, 1.0f);
+#else
+	glClearColor(40.0f, 40.0f, 40.0f, 1.0f);
+	
 #endif
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -115,10 +86,24 @@ void OpenGL_Renderer::draw()
 	glUseProgram(shaders.getProgram());
 
 	
-	for (size_t i = 0; i < AssetManager.OpenGL_MeshModelList.size(); i++)
+	for (size_t i = 0; i < AssetManager.MeshModelList.size(); i++)	// TODO
 	{
-		GLMmovements(AssetManager.OpenGL_MeshModelList[i], shaders.getMvpLocation(), 0, shaders);	// This sets the model Uniform
-		AssetManager.OpenGL_MeshModelList[i].RenderModel();
+		GLMmovements(AssetManager.MeshModelList[i], shaders.getMvpLocation(), 0, shaders);	// This sets the model Uniform
+		//AssetManager.OpenGL_MeshModelList[i].RenderModel();
+		auto currModel = AssetManager.MeshModelList[i];
+		for (size_t i = 0; i < currModel.getMeshCount(); i++)
+		{
+
+			uint32_t materialIndex = currModel.getMeshToTex()->at(i);//meshToTex[i];
+
+			if (materialIndex < AssetManager.textureList.size() && &AssetManager.textureList[materialIndex] != nullptr)
+			{
+				AssetManager.textureList[materialIndex].UseTexture();
+			}
+
+			//currModel.meshList[i].renderMesh();
+			currModel.getMesh(i)->renderMesh();
+		}
 		
 	}
 	//printf("size %i",(modelList.size()));
@@ -137,9 +122,9 @@ void OpenGL_Renderer::draw()
 	
 	#if defined GUI_LAYER && defined OPENGL
 	OpenGL_MeshModel* mesh;
-	if (AssetManager.OpenGL_MeshModelList.size() > 0) {
-		AssetManager.OpenGL_MeshModelList[*AssetManager.SetSelected()].updateMatrix();
-		mesh = &AssetManager.OpenGL_MeshModelList[*AssetManager.SetSelected()];
+	if (AssetManager.MeshModelList.size() > 0) {
+		AssetManager.MeshModelList[*AssetManager.SetSelected()].updateMatrix();
+		mesh = &AssetManager.MeshModelList[*AssetManager.SetSelected()];
 	}
 	else
 	{

@@ -84,10 +84,10 @@ int main()
 		
 		//#if defined GUI_LAYER && defined VULKAN
 		//	Vulkan_MeshModel* mesh;
-		//	if (Renderer.AssetManager.Vulkan_MeshModelList.size() > 0) {
-		//		Renderer.AssetManager.Vulkan_MeshModelList[*Renderer.AssetManager.SetSelected()].updateMatrix();
+		//	if (Renderer.AssetManager.MeshModelList.size() > 0) {
+		//		Renderer.AssetManager.MeshModelList[*Renderer.AssetManager.SetSelected()].updateMatrix();
 		//		//Referense to selected mesh
-		//		 mesh = &Renderer.AssetManager.Vulkan_MeshModelList[*Renderer.AssetManager.SetSelected()];
+		//		 mesh = &Renderer.AssetManager.MeshModelList[*Renderer.AssetManager.SetSelected()];
 		//	}
 		//	else {
 		//		mesh = nullptr;
@@ -95,7 +95,7 @@ int main()
 		//	Vulkan_Assets::AllAssets* Assets = Renderer.AssetManager.getAssetInfo();
 		//	Renderer.GUI.RenderMenus<Vulkan_Assets::AllAssets*>(mesh->getTransformType(), mesh->getPosition(), mesh->getRotation(), mesh->getScale(), Renderer.AssetManager.SetSelected(), Assets);
 		//
-		//	//Vulkan_Renderer.AssetManager.Vulkan_MeshModelList[SelectedMesh].updateMatrix();
+		//	//Vulkan_Renderer.AssetManager.MeshModelList[SelectedMesh].updateMatrix();
 
 		//	Renderer.clearColor = Renderer.GUI.clearColor;
 		//#endif
