@@ -1,4 +1,0 @@
-
-[submodule "Submodules/glew"]
-	path = Submodules/glew
-	url = https://github.com/nigels-com/glew.git
