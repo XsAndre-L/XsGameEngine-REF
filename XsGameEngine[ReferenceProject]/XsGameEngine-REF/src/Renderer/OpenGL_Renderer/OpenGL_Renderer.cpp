@@ -6,7 +6,7 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 {
 	window = newWindow;
 
-	glewExperimental = GL_TRUE;
+	/*glewExperimental = GL_TRUE;
 
 	if (glewInit() != GLEW_OK)
 	{
@@ -14,10 +14,18 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 		glfwDestroyWindow(newWindow);
 		return 1;
 
+	}*/
+
+	int gladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+	if (gladStatus == 0)
+	{
+		printf("Glad initialization failed!");
+		glfwDestroyWindow(newWindow);
+		return 1;
 	}
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_ARB_gl_spirv);	//Allows for spir-v Shaders
+	glEnable(GL_ARB_gl_spirv);	//Allows for spir-v Shaders	//TODO
 
 	int width, height;
 	glfwGetWindowSize(newWindow, &width, &height);

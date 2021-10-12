@@ -1,5 +1,6 @@
 #pragma once
-#include <GLEW/glew.h>
+//#include <GLEW/glew.h>
+#include "../../../vendor/Glad/glad.h"
 #include <stb_image/stb_image.h>
 
 

@@ -4,7 +4,8 @@
 //#include <string>
 #include <vector>
 
-#include <GLEW/glew.h>
+//#include <GLEW/glew.h>
+#include "../../../vendor/Glad/glad.h"
 
 //#include "CommonValues.h"
 
