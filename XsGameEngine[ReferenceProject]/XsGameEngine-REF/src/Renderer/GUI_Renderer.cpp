@@ -597,7 +597,7 @@ void GUI_Renderer::CleanUpGUI()
 void GUI_Renderer::CleanUpGuiComponents()
 {
 #ifdef VULKAN
-	ImGui_ImplVulkan_Shutdown();
+	//ImGui_ImplVulkan_Shutdown();
 	vkDestroyDescriptorPool(*IgInitInfo.Device, imguiPool, nullptr);
 #elif OPENGL
 	ImGui_ImplOpenGL3_Shutdown();

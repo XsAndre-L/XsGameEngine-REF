@@ -1,7 +1,7 @@
 #pragma once
 //#include "CommonValues.h"
 //#include <GLEW/glew.h>
-#include "../../../vendor/Glad/glad.h"
+#include "Glad/glad.h"
 #include "../../Window/Public/GLFW_Window.h"
 
 #include "Shaders.h"

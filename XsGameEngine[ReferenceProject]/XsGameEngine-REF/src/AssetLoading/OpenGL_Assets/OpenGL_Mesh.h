@@ -1,6 +1,6 @@
 #pragma once
 //#include <GLEW/glew.h>
-#include "../../../vendor/Glad/glad.h"
+#include "Glad/glad.h"
 #include <stdint.h>
 
 class OpenGL_Mesh

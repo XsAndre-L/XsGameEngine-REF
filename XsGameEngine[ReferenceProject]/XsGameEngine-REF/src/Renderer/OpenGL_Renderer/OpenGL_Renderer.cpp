@@ -6,16 +6,6 @@ int OpenGL_Renderer::init_OpenGL_Renderer(GLFWwindow* newWindow)
 {
 	window = newWindow;
 
-	/*glewExperimental = GL_TRUE;
-
-	if (glewInit() != GLEW_OK)
-	{
-		printf("Glew initialization failed!");
-		glfwDestroyWindow(newWindow);
-		return 1;
-
-	}*/
-
 	int gladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	if (gladStatus == 0)
 	{

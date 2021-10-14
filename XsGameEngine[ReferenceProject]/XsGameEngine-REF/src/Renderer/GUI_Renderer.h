@@ -1,15 +1,15 @@
 #pragma once
 #include "../CommonValues.h"
 
-#include "../../vendor/ImGUI/imgui.h"
-#include "../../vendor/ImGUI/imgui_impl_glfw.h"
+#include "ImGUI\imgui.h"
+#include "ImGUI\imgui_impl_glfw.h"
 
 #ifdef VULKAN
 	#include "../AssetLoading/Vulkan_Assets/Vulkan_Assets.h"
-	#include "../../vendor/ImGUI/Vulkan/imgui_impl_vulkan.h"
+	#include "ImGUI/Vulkan/imgui_impl_vulkan.h"
 #elif OPENGL
 	#include "../AssetLoading/OpenGL_Assets/OpenGL_Assets.h"
-	#include "../../vendor/ImGUI/OpenGL/imgui_impl_opengl3.h"
+	#include "ImGUI/OpenGL/imgui_impl_opengl3.h"
 #endif
 
 

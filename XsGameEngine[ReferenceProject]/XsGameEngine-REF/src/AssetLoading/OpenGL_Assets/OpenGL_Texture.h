@@ -1,7 +1,7 @@
 #pragma once
 //#include <GLEW/glew.h>
-#include "../../../vendor/Glad/glad.h"
-#include <stb_image/stb_image.h>
+#include "Glad/glad.h"
+#include <Stb_Image/stb_image.h>
 
 
 class OpenGL_Texture

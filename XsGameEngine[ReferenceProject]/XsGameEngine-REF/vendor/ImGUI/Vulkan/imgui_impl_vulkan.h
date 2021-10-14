@@ -6,7 +6,8 @@
 // Missing features:
 //  [ ] Renderer: User texture binding. Changes of ImTextureID aren't supported by this backend! See https://github.com/ocornut/imgui/pull/914
 
-// You can copy and use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this.
+// You can use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this. 
+// Prefer including the entire imgui/ repository into your project (either as a copy or as a submodule), and only build the backends you need.
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
@@ -21,7 +22,7 @@
 // Read comments in imgui_impl_vulkan.h.
 
 #pragma once
-#include "../imgui.h"      // IMGUI_IMPL_API
+#include "..\imgui.h"      // IMGUI_IMPL_API
 
 // [Configuration] in order to use a custom Vulkan function loader:
 // (1) You'll need to disable default Vulkan function prototypes.
@@ -56,7 +57,7 @@ struct ImGui_ImplVulkan_InitInfo
     uint32_t                        MinImageCount;          // >= 2
     uint32_t                        ImageCount;             // >= MinImageCount
     VkSampleCountFlagBits           MSAASamples;            // >= VK_SAMPLE_COUNT_1_BIT
-    const VkAllocationCallbacks* Allocator;
+    const VkAllocationCallbacks*    Allocator;
     void                            (*CheckVkResultFn)(VkResult err);
 };
 
@@ -135,8 +136,8 @@ struct ImGui_ImplVulkanH_Window
     uint32_t            FrameIndex;             // Current frame being rendered to (0 <= FrameIndex < FrameInFlightCount)
     uint32_t            ImageCount;             // Number of simultaneous in-flight frames (returned by vkGetSwapchainImagesKHR, usually derived from min_image_count)
     uint32_t            SemaphoreIndex;         // Current set of swapchain wait semaphores we're using (needs to be distinct from per frame data)
-    ImGui_ImplVulkanH_Frame* Frames;
-    ImGui_ImplVulkanH_FrameSemaphores* FrameSemaphores;
+    ImGui_ImplVulkanH_Frame*            Frames;
+    ImGui_ImplVulkanH_FrameSemaphores*  FrameSemaphores;
 
     ImGui_ImplVulkanH_Window()
     {
