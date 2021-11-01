@@ -35,8 +35,8 @@ PUBLIC "XsGameEngine/vendor"
 target_link_directories(${PROJECT_NAME}
 	PRIVATE "Submodules/glfw/src"
 	PRIVATE "$ENV{VULKAN_SDK}/Lib"
-	PRIVATE "Submodules/assimp/build/lib/${CMAKE_BUILD_TYPE}"
-	PRIVATE "Submodules/assimp/build/contrib/zlib/${CMAKE_BUILD_TYPE}"
+	PRIVATE "${PROJECT_BINARY_DIR}/Submodules/assimp/contrib/zlib"
+	PRIVATE "${PROJECT_BINARY_DIR}/Submodules/assimp/lib"
 )
 
 target_link_libraries(${PROJECT_NAME}
