@@ -30,12 +30,13 @@ PUBLIC "$ENV{VULKAN_SDK}/include"
 PUBLIC "Submodules/glfw/include"
 PUBLIC "Submodules/glm"
 PUBLIC "Submodules/assimp/include"
+PUBLIC "${PROJECT_BINARY_DIR}/Submodules/assimp/include"
 PUBLIC "XsGameEngine/vendor"
 )
 
 
 target_link_directories(${PROJECT_NAME}
-	PRIVATE "Submodules/glfw/src"
+	PRIVATE "${PROJECT_BINARY_DIR}/Submodules/glfw/src"
 	PRIVATE "$ENV{VULKAN_SDK}/Lib"
 	PRIVATE "${PROJECT_BINARY_DIR}/Submodules/assimp/contrib/zlib"
 	PRIVATE "${PROJECT_BINARY_DIR}/Submodules/assimp/lib"
@@ -45,8 +46,8 @@ target_link_libraries(${PROJECT_NAME}
 	"glfw"
 	"opengl32"
 	"vulkan-1"
-	"zlibstaticd"
 	"assimp-vc142-mtd"
+	"zlibstaticd"
 )
 
 file(COPY ${PROJECT_SOURCE_DIR}/XsGameEngine/Models DESTINATION ${PROJECT_BINARY_DIR})
