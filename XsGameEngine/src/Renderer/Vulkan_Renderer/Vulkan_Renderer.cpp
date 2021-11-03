@@ -219,13 +219,7 @@ void Vulkan_Renderer::shutdown_Renderer()
 {
 	vkDeviceWaitIdle(mainDevice.logicalDevice);
 
-	//TODO : Make sure Gui is fine being deleted with swapchain
-	//Clean Up GUI
-	#if defined GUI_LAYER && defined VULKAN
-		//GUI.CleanUpGUI(/*mainDevice.logicalDevice*/);
-	#else
-		printf("GUI DISABLED");
-	#endif	
+	
 	
 
 	vkDestroyDescriptorPool(mainDevice.logicalDevice, samplerDescriptorPool, nullptr);
@@ -264,7 +258,9 @@ void Vulkan_Renderer::shutdown_Renderer()
 		vkDestroyFence(mainDevice.logicalDevice, drawFences[i], nullptr);
 	}
 
+
 	cleanUpSwapChain();
+	
 	vkDestroyCommandPool(mainDevice.logicalDevice, graphicsCommandPool, nullptr);
 
 	vkDestroySurfaceKHR(Instance, Surface, nullptr);						//DESTROY SURFACE
@@ -1754,7 +1750,7 @@ void Vulkan_Renderer::recreateSwapChain()
 void Vulkan_Renderer::cleanUpSwapChain()
 {
 	#if defined GUI_LAYER && defined VULKAN
-		//GUI.CleanUpGuiComponents(/*mainDevice.logicalDevice*/);
+		GUI.CleanUpGuiComponents();
 		GUI.CleanUpGUI();
 	#endif
 

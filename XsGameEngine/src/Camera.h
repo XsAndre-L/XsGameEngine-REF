@@ -20,7 +20,7 @@ public:
 	bool setAsActive(glm::mat4* viewMatrix);
 
 	void setCamera(bool cursorMode, GLfloat xChange, GLfloat yChange, float deltaTime);
-	glm::vec3 getCamFront() { return front * -1.0f; }
+	const glm::vec3 getCamFront() { return front * -1.0f; }
 	void checkInputs(bool cursorMode, bool* keys, float scroll, GLfloat deltaTime);
 
 private:

@@ -589,6 +589,7 @@ void GUI_Renderer::RenderStatsOverlay()
 //Secondly Destroys
 void GUI_Renderer::CleanUpGUI()
 {
+	
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 }
@@ -597,8 +598,8 @@ void GUI_Renderer::CleanUpGUI()
 void GUI_Renderer::CleanUpGuiComponents()
 {
 #ifdef VULKAN
-	//ImGui_ImplVulkan_Shutdown();
-	//vkDestroyDescriptorPool(*IgInitInfo.Device, imguiPool, nullptr);
+	ImGui_ImplVulkan_Shutdown();
+	vkDestroyDescriptorPool(*IgInitInfo.Device, imguiPool, nullptr);
 	
 #elif OPENGL
 	ImGui_ImplOpenGL3_Shutdown();

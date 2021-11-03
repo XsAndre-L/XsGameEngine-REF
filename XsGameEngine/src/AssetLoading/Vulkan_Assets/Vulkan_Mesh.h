@@ -21,10 +21,10 @@ public:
 	void setTexId(size_t ID) { texId = ID; }
 
 	//virtual Vulkan_Mesh getOBJ() override { return *this; }
-	uint32_t getVertexCount() { return vertexCount; };
-	uint32_t getIndexCount() { return indexCount; };
-	VkBuffer getVertexBuffer() { return vertexBuffer; };
-	VkBuffer getIndexBuffer() { return indexBuffer; };
+	const uint32_t getVertexCount() { return vertexCount; };
+	const uint32_t getIndexCount() { return indexCount; };
+	const VkBuffer getVertexBuffer() { return vertexBuffer; };
+	const VkBuffer getIndexBuffer() { return indexBuffer; };
 
 	void destroyBuffers();
 	
