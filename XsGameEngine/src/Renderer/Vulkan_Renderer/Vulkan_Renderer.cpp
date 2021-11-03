@@ -56,64 +56,6 @@ int Vulkan_Renderer::init_Vulkan_Renderer(GLFWwindow* newWindow)
 		//.model = glm::mat4(1.0f);
 		uboViewProjection.projection[1][1] *= -1;
 
-		//Vertex Data		Cube
-		/*std::vector<Vertex> meshVertices = {
-			{{0.5, -0.5, 0.0}, {1.0f, 0.0f, 0.0f }},	//0
-			{{0.5, 0.5, 0.0}, {1.0f, 0.0f, 0.0f }},		//1
-			{{-0.5, 0.5, 0.0}, {1.0f, 0.0f, 0.0f }},	//2
-			{{-0.5, -0.5, 0.0}, {0.0f, 0.0f, 1.0f }},	//3
-
-			//{{0.5, -0.5, 0.0}, {1.0f, 0.0f, 0.0f }},	//0
-			{{0.5, -0.5, -1.0}, {0.0f, 1.0f, 0.0f }},	//4
-			{{0.5, 0.5, -1.0}, {0.0f, 1.0f, 0.0f }},	//5
-			//{{0.5, 0.5, 0.0}, {1.0f, 0.0f, 0.0f }}	//1
-
-			{{-0.5, -0.5, -1.0}, {0.0f, 1.0f, 0.0f }},	//6
-
-			{ {-0.5, 0.5, -1.0}, {0.0f, 1.0f, 0.0f }}
-			//{{-0.5, -0.5, 0.0}, {1.0f, 0.0f, 0.0f }}
-
-
-			//{{-0.1, -0.4, 0.0}, {1.0f, 0.0f, 0.0f }},	//0
-			//{{-0.1, 0.4, 0.0}, {0.0f, 1.0f, 0.0f }},	//1
-			//{{-0.9, 0.4, 0.0}, {0.0f, 0.0f, 1.0f }},	//2
-			//{{-0.9, -0.4, 0.0}, {0.5f, 0.5f, 0.0f }},	//3
-		};
-
-		//sirkle
-		std::vector<Vertex> meshVertices = {
-			{{0.0, 0.0, 0.0}, {0.5f, 0.0f, 0.5f }},	//0
-			{{0.0, 0.5, 0.0}, {0.0f, 0.5f, 0.0f }},		//1
-			{{-0.35, 0.35, 0.0}, {0.0f, 0.5f, 0.0f }},	//2
-			{{-0.5, 0.0, 0.0}, {0.0f, 0.5f, 0.0f }},	//3
-
-
-			{{-0.35, -0.35, 0.0}, {0.0f, 0.5f, 0.0f }},	//4
-			{{0.0, -0.5, 0.0}, {0.0f, 0.5f, 0.0f }},		//5
-			{ {0.35, -0.35, 0.0}, {0.0f, 0.5f, 0.0f }},	//6
-			{{0.5, 0.0, 0.0}, {0.0f, 0.5f, 0.0f }},
-			{{0.35, 0.35, 0.0}, {0.0f, 0.5f, 0.0f }}
-		};
-		std::vector<Vertex> meshVertices2 = {
-			{{0.0, 0.0, 0.0}, {0.5f, 1.0f, 0.5f }},	//0
-			{{0.0, 0.5, 0.0}, {0.0f, 0.5f, 0.0f }},		//1
-			{{-0.35, 0.35, 0.0}, {0.0f, 0.5f, 0.0f }},	//2
-			{{-0.5, 0.0, 0.0}, {0.0f, 0.5f, 0.0f }},	//3
-
-
-			{{-0.35, -0.35, 0.0}, {0.0f, 0.5f, 0.0f }},	//4
-			{{0.0, -0.5, 0.0}, {0.0f, 0.5f, 0.0f }},		//5
-			{ {0.35, -0.35, 0.0}, {0.0f, 0.5f, 0.0f }},	//6
-			{{0.5, 0.0, 0.0}, {0.0f, 0.5f, 1.0f }},
-			{{0.35, 0.35, 0.0}, {0.0f, 0.5f, 0.0f }}
-		};
-
-		std::vector<Vertex> meshVertices3 = {
-			{{0.9, -0.4, 0.0}, {1.0f, 0.0f, 0.0f } , {1.0f, 1.0f}},	//0
-			{{0.9, 0.4, 0.0}, {0.0f, 1.0f, 0.0f }, {1.0f, 0.0f}},		//1
-			{{0.1, 0.4, 0.0}, {0.0f, 0.0f, 1.0f }, {0.0f, 0.0f}},		//2
-			{{0.1, -0.4, 0.0}, {0.5f, 0.5f, 0.0f }, {0.0f, 1.0f}},	//3
-		};*/
 
 		std::vector<uint32_t> meshIndices = {
 			0,1,2,
@@ -277,18 +219,14 @@ void Vulkan_Renderer::shutdown_Renderer()
 {
 	vkDeviceWaitIdle(mainDevice.logicalDevice);
 
+	//TODO : Make sure Gui is fine being deleted with swapchain
 	//Clean Up GUI
 	#if defined GUI_LAYER && defined VULKAN
-		GUI.CleanUpGUI(/*mainDevice.logicalDevice*/);
+		//GUI.CleanUpGUI(/*mainDevice.logicalDevice*/);
 	#else
 		printf("GUI DISABLED");
 	#endif	
 	
-	
-	/*for (size_t i = 0; i < MeshModelList.size(); i++)
-	{
-		MeshModelList[i].destroyModel();
-	}*/
 
 	vkDestroyDescriptorPool(mainDevice.logicalDevice, samplerDescriptorPool, nullptr);
 	vkDestroyDescriptorSetLayout(mainDevice.logicalDevice, samplerSetLayout, nullptr);
@@ -1816,7 +1754,8 @@ void Vulkan_Renderer::recreateSwapChain()
 void Vulkan_Renderer::cleanUpSwapChain()
 {
 	#if defined GUI_LAYER && defined VULKAN
-		GUI.CleanUpGuiComponents(/*mainDevice.logicalDevice*/);
+		//GUI.CleanUpGuiComponents(/*mainDevice.logicalDevice*/);
+		GUI.CleanUpGUI();
 	#endif
 
 	//MSAA Image & ImageView

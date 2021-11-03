@@ -7,7 +7,7 @@ add_subdirectory(Submodules)
 add_subdirectory(XsGameEngine)
 
 #Compiler Configurations
-add_compile_definitions(VULKAN)
+add_compile_definitions(OPENGL)
 
 add_compile_options(-std=c++17)
 set(CMAKE_CXX_STANDARD 17)

@@ -46,7 +46,7 @@ void GUI_Renderer::createImGuiInstance()
 #pragma region ImGui
 
 	static int CheckInstalls = 0;
-	if (CheckInstalls < 1) {
+	if (true) {
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -598,7 +598,8 @@ void GUI_Renderer::CleanUpGuiComponents()
 {
 #ifdef VULKAN
 	//ImGui_ImplVulkan_Shutdown();
-	vkDestroyDescriptorPool(*IgInitInfo.Device, imguiPool, nullptr);
+	//vkDestroyDescriptorPool(*IgInitInfo.Device, imguiPool, nullptr);
+	
 #elif OPENGL
 	ImGui_ImplOpenGL3_Shutdown();
 #endif
