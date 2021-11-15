@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20.0)
+cmake_minimum_required(VERSION 3.21.0)
 
 project(XsGameEngine)
 
@@ -7,10 +7,12 @@ add_subdirectory(Submodules)
 add_subdirectory(XsGameEngine)
 
 #Compiler Configurations
-add_compile_definitions(OPENGL)
+add_compile_definitions(VULKAN)
 
-add_compile_options(-std=c++17)
-set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 if(EXISTS "$ENV{VULKAN_SDK}")
@@ -24,6 +26,7 @@ add_executable(${PROJECT_NAME}
 ${ALL_CODE}
 
 )
+
 
 target_include_directories(${PROJECT_NAME} 
 PUBLIC "$ENV{VULKAN_SDK}/include"

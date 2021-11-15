@@ -589,9 +589,8 @@ void GUI_Renderer::RenderStatsOverlay()
 //Secondly Destroys
 void GUI_Renderer::CleanUpGUI()
 {
-	
 	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
+	//ImGui::DestroyContext(); // This causes a crash when graphic settings change
 }
 
 //First Destroys
