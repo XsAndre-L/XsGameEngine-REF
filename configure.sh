@@ -1,1 +1,0 @@
-cmake -D BUILD_SHARED_LIBS=OFF -S . -B out/build

@@ -1,0 +1,151 @@
+{
+    "projectName": "GameEngine",
+    "appEntry": "src/main.cpp",
+    "buildDir": "build",
+    "libsDir": "libs",
+    "scripts": {
+        "build": "codeframe build",
+        "build:release": "codeframe build -m=release",
+        "clean:all": "clean m=all",
+        "debug:start": "./build/debug/GameEngine.exe",
+        "start": "./build/debug/GameEngine.exe"
+    },
+    "dependencies": [
+        {
+            "name": "codeframe",
+            "libPath": "codeframe",
+            "type": "library",
+            "linkType": "source",
+            "outputType": "static",
+            "options": {},
+            "custom": true
+        },
+        {
+            "name": "raylib",
+            "libPath": "external/raylib",
+            "type": "library",
+            "linkType": "static",
+            "outputType": "static",
+            "options": {},
+            "libs": [
+                "raylib"
+            ],
+            "version": "5.5"
+        },
+        {
+            "name": "vulkan",
+            "libPath": "external/vulkan",
+            "type": "library",
+            "linkType": "static",
+            "outputType": "static",
+            "options": {},
+            "libs": [
+                "vulkan-1"
+            ]
+        },
+        {
+            "name": "assimp",
+            "libPath": "external/assimp",
+            "type": "library",
+            "linkType": "static",
+            "outputType": "static",
+            "options": {},
+            "libs": [
+                "assimp"
+            ],
+            "version": "6.0.2"
+        },
+        {
+            "name": "imgui",
+            "libPath": "external/imgui",
+            "type": "library",
+            "linkType": "source",
+            "outputType": "static",
+            "options": {
+                "backends": [
+                    "glfw",
+                    "opengl",
+                    "vulkan"
+                ]
+            },
+            "version": "1.92.2"
+        },
+        {
+            "name": "glad",
+            "libPath": "external/glad",
+            "type": "library",
+            "linkType": "source",
+            "outputType": "static",
+            "options": {}
+        },
+        {
+            "name": "stb-img",
+            "libPath": "external/stb-img",
+            "type": "library",
+            "linkType": "header_only",
+            "outputType": "static",
+            "options": {}
+        },
+        {
+            "name": "glfw",
+            "libPath": "external/glfw",
+            "type": "library",
+            "linkType": "static",
+            "outputType": "static",
+            "options": {},
+            "libs": [
+                "glfw3"
+            ]
+        },
+        {
+            "name": "glm",
+            "libPath": "external/glm",
+            "type": "library",
+            "linkType": "source",
+            "outputType": "static",
+            "options": {},
+            "libs": [
+                "glm"
+            ],
+            "version": "1.0.1"
+        },
+        {
+            "name": "zlib",
+            "libPath": "external/zlib",
+            "type": "library",
+            "linkType": "static",
+            "outputType": "static",
+            "options": {},
+            "libs": [
+                "zlib"
+            ]
+        }
+    ],
+    "bundle": {
+        "bundlePath": "build/bundle",
+        "resources": [
+            {
+                "from": "./build/release/GameEngine.exe",
+                "to": "./bin/GameEngine.exe"
+            }
+        ]
+    },
+    "document": {
+        "docsPath": "docs"
+    },
+    "projectPreset": {
+        "type": "cpp",
+        "details": {
+            "cppVersion": "c++23",
+            "cVersion": "c23"
+        }
+    },
+    "systemLibs": [],
+    "custom": {
+        "compileFlags": [
+            "-DVULKAN",
+            "-DGLFW_INCLUDE_NONE",
+            "-DASSIMP_BUILD_ZLIB=OFF"
+        ]
+    }
+}

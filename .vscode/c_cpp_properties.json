@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "name": "windows-clang-x64",
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "defines": [
+        "_DEBUG",
+        "UNICODE",
+        "_UNICODE",
+        "VULKAN"
+      ],
+      "windowsSdkVersion": "10.0.22621.0",
+      "cppStandard": "c++23",
+      "cStandard": "c23",
+      "compilerPath": "${env:CODE_FRAME_SDK}/dependencies/cpp/clang/bin/clang",
+      "intelliSenseMode": "windows-clang-x64"
+    }
+  ],
+  "version": 4
+}
